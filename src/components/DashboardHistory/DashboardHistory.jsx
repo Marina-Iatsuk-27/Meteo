@@ -32,26 +32,105 @@ export default function DashboardHistory({ deviceHistory, isMeteo, isGround }) {
 
         if (isMeteo) {
             // Строим графики для метеоданных
-            chartsRef.current.temperatureChart = createChart('temperatureChart', 'Температура (°C)', timestamps, deviceHistory.map(entry => entry.temperature || null), 'rgba(255, 99, 132, 1)');
-            chartsRef.current.humidityChart = createChart('humidityChart', 'Влажность (%)', timestamps, deviceHistory.map(entry => entry.humidity || null), 'rgba(54, 162, 235, 1)');
-            chartsRef.current.pressureChart = createChart('pressureChart', 'Давление (hPa)', timestamps, deviceHistory.map(entry => entry.pressure || null), 'rgba(75, 192, 192, 1)');
-            chartsRef.current.rainfallChart = createChart('rainfallChart', 'Осадки (мм)', timestamps, deviceHistory.map(entry => entry.rainfall === '-' ? null : entry.rainfall), 'rgba(153, 102, 255, 1)');
-            console.log('deviceHistory in meteo', deviceHistory)
+            chartsRef.current.temperatureChart = createChart(
+                'temperatureChart',
+                'Температура (°C)',
+                timestamps,
+                deviceHistory.map(entry => entry?.temperature ?? null),
+                'rgba(255, 99, 132, 1)'
+            );
+            chartsRef.current.humidityChart = createChart(
+                'humidityChart',
+                'Влажность (%)',
+                timestamps,
+                deviceHistory.map(entry => entry?.humidity ?? null),
+                'rgba(54, 162, 235, 1)'
+            );
+            chartsRef.current.pressureChart = createChart(
+                'pressureChart',
+                'Давление (hPa)',
+                timestamps,
+                deviceHistory.map(entry => entry?.pressure ?? null),
+                'rgba(75, 192, 192, 1)'
+            );
+            chartsRef.current.rainfallChart = createChart(
+                'rainfallChart',
+                'Осадки (мм)',
+                timestamps,
+                deviceHistory.map(entry => entry?.rainfall === '-' ? null : entry?.rainfall),
+                'rgba(153, 102, 255, 1)'
+            );
+            console.log('deviceHistory in meteo', deviceHistory);
         }
-
+        
         if (isGround) {
             // Строим графики для данных грунтового датчика
-            chartsRef.current.conductivityChart = createChart('conductivityChart', 'Проводимость', timestamps, deviceHistory.map(entry => entry.uplink.object.conductivity || null), 'rgba(255, 159, 64, 1)');
-            chartsRef.current.humidityChart = createChart('groundHumidityChart', 'Влажность (%)', timestamps, deviceHistory.map(entry => entry.uplink.object.humidity || null), 'rgba(54, 162, 235, 1)');
-            chartsRef.current.phChart = createChart('phChart', 'pH', timestamps, deviceHistory.map(entry => entry.uplink.object.ph || null), 'rgba(75, 192, 192, 1)');
-            chartsRef.current.phosphorusChart = createChart('phosphorusChart', 'Фосфор', timestamps, deviceHistory.map(entry => entry.uplink.object.phosphorus || null), 'rgba(153, 102, 255, 1)');
-            chartsRef.current.potassiumChart = createChart('potassiumChart', 'Калий', timestamps, deviceHistory.map(entry => entry.uplink.object.potassium || null), 'rgba(255, 99, 132, 1)');
-            chartsRef.current.saltSaturationChart = createChart('saltSaturationChart', 'Насыщенность солей', timestamps, deviceHistory.map(entry => entry.uplink.object.salt_saturation || null), 'rgba(54, 162, 235, 1)');
-            chartsRef.current.tdsChart = createChart('tdsChart', 'TDS', timestamps, deviceHistory.map(entry => entry.uplink.object.tds || null), 'rgba(75, 192, 192, 1)');
-            chartsRef.current.temperatureChart = createChart('groundTemperatureChart', 'Температура (°C)', timestamps, deviceHistory.map(entry => entry.uplink.object.temperature || null), 'rgba(153, 102, 255, 1)');
+            chartsRef.current.conductivityChart = createChart(
+                'conductivityChart',
+                'Проводимость',
+                timestamps,
+                deviceHistory.map(entry => entry?.uplink?.object?.conductivity ?? null),
+                'rgba(255, 159, 64, 1)'
+            );
+            chartsRef.current.humidityChart = createChart(
+                'groundHumidityChart',
+                'Влажность (%)',
+                timestamps,
+                deviceHistory.map(entry => entry?.uplink?.object?.humidity ?? null),
+                'rgba(54, 162, 235, 1)'
+            );
+            chartsRef.current.phChart = createChart(
+                'phChart',
+                'pH',
+                timestamps,
+                deviceHistory.map(entry => entry?.uplink?.object?.ph ?? null),
+                'rgba(75, 192, 192, 1)'
+            );
+            chartsRef.current.phosphorusChart = createChart(
+                'phosphorusChart',
+                'Фосфор',
+                timestamps,
+                deviceHistory.map(entry => entry?.uplink?.object?.phosphorus ?? null),
+                'rgba(153, 102, 255, 1)'
+            );
+            chartsRef.current.potassiumChart = createChart(
+                'potassiumChart',
+                'Калий',
+                timestamps,
+                deviceHistory.map(entry => entry?.uplink?.object?.potassium ?? null),
+                'rgba(255, 99, 132, 1)'
+            );
+            chartsRef.current.saltSaturationChart = createChart(
+                'saltSaturationChart',
+                'Насыщенность солей',
+                timestamps,
+                deviceHistory.map(entry => entry?.uplink?.object?.salt_saturation ?? null),
+                'rgba(54, 162, 235, 1)'
+            );
+            chartsRef.current.tdsChart = createChart(
+                'tdsChart',
+                'TDS',
+                timestamps,
+                deviceHistory.map(entry => entry?.uplink?.object?.tds ?? null),
+                'rgba(75, 192, 192, 1)'
+            );
+            chartsRef.current.temperatureChart = createChart(
+                'groundTemperatureChart',
+                'Температура (°C)',
+                timestamps,
+                deviceHistory.map(entry => entry?.uplink?.object?.temperature ?? null),
+                'rgba(153, 102, 255, 1)'
+            );
+            chartsRef.current.nitrogenChart = createChart(
+                'nitrogenChart',
+                'Азот',
+                timestamps,
+                deviceHistory.map(entry => entry?.uplink?.object?.nitrogen ?? null),
+                'rgba(255, 206, 86, 1)'
+            );
             console.log('deviceHistory in ground', deviceHistory);
-            chartsRef.current.nitrogenChart = createChart('nitrogenChart', 'Азот', timestamps, deviceHistory.map(entry => entry.uplink.object.nitrogen || null), 'rgba(255, 206, 86, 1)');
         }
+        
 
         // Уничтожаем графики при размонтировании компонента
         return () => destroyCharts();
