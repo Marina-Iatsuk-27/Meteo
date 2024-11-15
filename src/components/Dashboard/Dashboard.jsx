@@ -7,18 +7,75 @@ const Dashboard = ({ deviceData, isMeteo, isGround }) => {
   if (!deviceData) return null;
 
     // Функция для определения цвета влажности воздуха
-    const getAirHumidityColor = (humidity) => {
-        if (humidity < 30) return '#4682B4'; // синий
-        if (humidity >= 30 && humidity < 60) return '#32CD32'; // зеленый
+    const getAirHumidityColor = (indicator) => {
+        if (indicator < 30) return '#4682B4'; // синий
+        if (indicator >= 30 && indicator < 60) return '#32CD32'; // зеленый
         return '#FF6347'; // красный
       };
     
       // Функция для определения цвета температуры воздуха
-      const getAirTemperatureColor = (temp) => {
-        if (temp < 15) return '#0000ff'; // синий
-        if (temp >= 15 && temp <= 25) return '#00ff00'; // зеленый
+      const getAirTemperatureColor = (indicator) => {
+        if (indicator < 15) return '#0000ff'; // синий
+        if (indicator >= 15 && indicator <= 25) return '#32CD32'; // зеленый
         return '#ff0000'; // красный
       };
+
+      //атмосферное давление
+      const getAirPressureColor = (indicator) => {
+              if (indicator < 740) return '#0000ff'; // синий
+              if (indicator >= 740 && indicator <= 779) return '#32CD32'; // зеленый
+              return '#ff0000'; // красный
+            };
+
+      // Температурпа почвы
+      const getGroundTemperatureColor = (indicator) => {
+        if (indicator < 16) return '#0000ff'; // синий
+        if (indicator >= 16 && indicator <= 22) return '#32CD32'; // зеленый
+        return '#ff0000'; // красный
+      };
+
+      // Влажность почвы
+      const getGroundHumidityColor = (indicator) => {
+        if (indicator < 10) return '#0000ff'; // синий
+        if (indicator >= 10 && indicator <= 40) return '#32CD32'; // зеленый
+        return '#ff0000'; // красный
+      };
+
+      // Проводимость ЕС
+      const getGroundConductivityColor = (indicator) => {
+        if (indicator < 200) return '#0000ff'; // синий
+        if (indicator >= 200 && indicator <= 1200) return '#32CD32'; // зеленый
+        return '#ff0000'; // красный
+      };
+      
+      // PH
+      const getGroundPHColor = (indicator) => {
+        if (indicator < 5) return '#0000ff'; // синий
+        if (indicator >= 5 && indicator <= 8) return '#32CD32'; // зеленый
+        return '#ff0000'; // красный
+      };
+
+      // азот
+      const getGroundNitrogenColor = (indicator) => {
+        if (indicator < 20) return '#0000ff'; // синий
+        if (indicator >= 20 && indicator <= 50) return '#32CD32'; // зеленый
+        return '#ff0000'; // красный
+      };
+
+      // фосфор
+      const getGroundPhosphorusColor = (indicator) => {
+        if (indicator < 15) return '#0000ff'; // синий
+        if (indicator >= 15 && indicator <= 30) return '#32CD32'; // зеленый
+        return '#ff0000'; // красный
+      };
+
+      // калий
+      const getGroundPotassiumColor = (indicator) => {
+        if (indicator < 50) return '#0000ff'; // синий
+        if (indicator >= 50 && indicator <= 200) return '#32CD32'; // зеленый
+        return '#ff0000'; // красный
+      };
+            
 
   if (isMeteo) {
     // Отображение для метеостанции
@@ -98,7 +155,7 @@ const Dashboard = ({ deviceData, isMeteo, isGround }) => {
 
         <div className={styles.gaugeContainer}>
           <h3>Атмосф. давление</h3>
-          <div className={styles.pressureValue}>{pressure} мм рт. ст.</div>
+          <div className={styles.pressureValue} style={{ color: getAirPressureColor(pressure) }}>{pressure} мм рт. ст.</div>
         </div>
 
         <div className={styles.gaugeContainer}>
@@ -145,7 +202,7 @@ const Dashboard = ({ deviceData, isMeteo, isGround }) => {
                 background
                 clockWise
                 dataKey="value"
-                fill={getTemperatureColor(temperature)}
+                fill={getGroundTemperatureColor(temperature)}
               />
             </RadialBarChart>
             <div className={styles.label}>{temperature}°C</div>
@@ -175,7 +232,7 @@ const Dashboard = ({ deviceData, isMeteo, isGround }) => {
                 background
                 clockWise
                 dataKey="value"
-                fill={getHumidityColor(humidity)}
+                fill={getGroundHumidityColor(humidity)}
               />
             </RadialBarChart>
             <div className={styles.label}>{humidity}%</div>
@@ -183,27 +240,22 @@ const Dashboard = ({ deviceData, isMeteo, isGround }) => {
 
           <div className={styles.gaugeContainer}>
             <h3>Проводимость</h3>
-            <div className={styles.value}>{conductivity} мкСм/см</div>
-          </div>
-
-          <div className={styles.gaugeContainer}>
-            <h3>Насыщенность солями</h3>
-            <div className={styles.value}>{saltSaturation} мг/л</div>
+            <div className={styles.value} style={{ color: getGroundConductivityColor(conductivity)}}>{conductivity} мкСм/см</div>
           </div>
 
           <div className={styles.gaugeContainer}>
             <h3>Азот (N)</h3>
-            <div className={styles.value}>{nitrogen} мг/л</div>
+            <div className={styles.value} style={{ color: getGroundNitrogenColor(nitrogen) }}>{nitrogen} мг/л</div>
           </div>
 
           <div className={styles.gaugeContainer}>
             <h3>Фосфор (P)</h3>
-            <div className={styles.value}>{phosphorus} мг/л</div>
+            <div className={styles.value} style={{ color: getGroundPhosphorusColor(phosphorus) }}>{phosphorus} мг/л</div>
           </div>
 
           <div className={styles.gaugeContainer}>
             <h3>Калий (K)</h3>
-            <div className={styles.value}>{potassium} мг/л</div>
+            <div className={styles.value} style={{ color: getGroundPotassiumColor(potassium)}}>{potassium} мг/л</div>
           </div>
 
           <div className={styles.gaugeContainer}>
@@ -230,7 +282,8 @@ const Dashboard = ({ deviceData, isMeteo, isGround }) => {
                 background
                 clockWise
                 dataKey="value"
-                fill="#8A2BE2"
+                fill={getGroundPHColor(humidity)}
+               
               />
             </RadialBarChart>
             <div className={styles.label}>{ph}</div>
