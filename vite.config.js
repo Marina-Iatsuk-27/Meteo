@@ -8,16 +8,20 @@ export default defineConfig({
 
     //для node.js
     proxy: {
-      '/enqueue': {
-        target: 'http://localhost:3001',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/enqueue/, '/enqueue'),
-      },
+       // Внешний API
       '/api': {
         target: 'https://sandbox.rightech.io',
         changeOrigin: true,
-      }
+      },
+      // Внутренний API
+    '/internal': {
+      target: 'http://localhost:5000',
+      changeOrigin: true,
+      rewrite: (path) => path.replace(/^\/internal/, '') 
     },
+      
+    },
+    
     
   }
 })

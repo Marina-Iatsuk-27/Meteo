@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState,useContext } from "react";
 import { useParams } from 'react-router-dom';
 import GETHISTORY from "../Services/GETHISTORY";
-
+import Loader from "../components/Loader/Loader"
 
 
 export const DeviceHistoryContext = createContext(); // Создаем контекст
@@ -28,7 +28,7 @@ export function GetDeviceHistory({ children }) {
 
 
     if (!deviceHistory) {
-        return <h1>Загружаем историю датчика...</h1>; 
+        return <Loader text="Загружаем историю устройства..."/>;; 
     }
 
     return (

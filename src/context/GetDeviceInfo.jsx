@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
 import GETINFO from "../Services/GETINFO";
+import Loader from "../components/Loader/Loader"
 
 export const MeteoInfoContext = createContext();
 
@@ -22,7 +23,7 @@ export function GetDeviceInfo({ children }) {
     }
 
     if (!deviceData) {
-        return <h1>Загружаем данные датчика...</h1>;
+        return <Loader text="Загружаем информацию устройства..."/>;
     }
 
     return (

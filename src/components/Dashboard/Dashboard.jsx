@@ -83,14 +83,11 @@ const Dashboard = ({ deviceData, isMeteo, isGround }) => {
     const humidity = deviceData.state.uplink.object.humidity || 0;
     const pressure = deviceData.state.uplink.object.pressure || 0;
     const rainfall = deviceData.state.uplink.object.rainfall || 0;
- 
-
 
 
     return (
       <div className={styles.dashboardContainer}>
         {/* <h1 className={styles.title}>Данные метеостанции</h1> */}
-        {/* Визуализация для метеостанции */}
         
         <div className={styles.dataSection}>
         <div className={styles.gaugeContainer}>
@@ -169,7 +166,6 @@ const Dashboard = ({ deviceData, isMeteo, isGround }) => {
     const temperature = deviceData.state.uplink.object.temperature || 0;
     const humidity = deviceData.state.uplink.object.humidity || 0;
     const conductivity = deviceData.state.uplink.object.conductivity || 0;
-    const saltSaturation = deviceData.state.uplink.object.salt_saturation || 0;
     const nitrogen = deviceData.state.uplink.object.nitrogen || 0;
     const phosphorus = deviceData.state.uplink.object.phosphorus || 0;
     const potassium = deviceData.state.uplink.object.potassium || 0;

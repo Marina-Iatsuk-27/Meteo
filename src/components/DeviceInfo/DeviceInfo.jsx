@@ -17,7 +17,7 @@ export default function MeteoInfo() {
   };
    // Проверка типа устройства
    const deviceName = deviceData?.name || '';
-   console.log(deviceName);
+  //  console.log(deviceName);
    const isMeteo = deviceName.toLowerCase().includes('meteo');
    const isGround = deviceName.toLowerCase().includes('ground');
 

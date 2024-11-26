@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import GETLIST from "../Services/GETLIST";
+import Loader from "../components/Loader/Loader"
 
 
 export const DevicesListContext = createContext(); // Создаем контекст
@@ -22,7 +23,7 @@ export function GetDevicesList({ children }) {
     }
 
     if (!devicesList) {
-        return <h1>Загружаем список устройств...</h1>; // Пока данные загружаются, показываем сообщение
+        return <Loader text="Загружаем список устройств..."/>;
     }
 
     return (
@@ -32,4 +33,4 @@ export function GetDevicesList({ children }) {
     ); // Возвращаем провайдер контекста
 }
 
-export default GetDevicesList; // Экспортируем компонент
+export default GetDevicesList; 

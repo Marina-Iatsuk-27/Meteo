@@ -14,6 +14,8 @@ export default function DevicesList() {
 
   console.log('filteredDevices',filteredDevices);
 
+
+
   return (
     <div className={style.deviceListContainer}>
     <h1>Список устройств:</h1>
