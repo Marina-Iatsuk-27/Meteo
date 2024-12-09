@@ -3,7 +3,7 @@ class GETHISTORY{
     static async getDevice(id) {
         
         // Устанавливаем границы интервала
-        const fromDate = '2024-11-15T00:00'; // с 15 ноября
+        const fromDate = '2024-12-01T00:00'; // с 01 декабря
             
         // Текущая дата и время
         const toDate = new Date().toISOString().slice(0, 16); // Преобразуем текущую дату в формат YYYY-MM-DDThh:mm

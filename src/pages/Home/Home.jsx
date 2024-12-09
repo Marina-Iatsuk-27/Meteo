@@ -1,16 +1,17 @@
 import React from 'react';
 import DevicesList from '../../components/DevicesList/DevicesList';
-import Authorisation from '../../components/Authorisation/Authorisation';
+import Map from '../../components/Map/Map'
 import { GetDevicesList } from '../../context/GetDevicesList';
+import style from "./Home.module.scss";
+
 
 
 export default function Home() {
   return (
     <GetDevicesList>
-      <div>
+      <div className={style.homeContainer}>
+        <Map/>
         <DevicesList />
-        <Authorisation />
-
       </div>
     </GetDevicesList>
   );

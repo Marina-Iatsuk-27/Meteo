@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './Authorisation.module.scss';
 
@@ -8,6 +9,7 @@ export default function Authorisation() {
   const [isLoginMode, setIsLoginMode] = useState(true); // Режим "Логин" по умолчанию
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate(); // Хук для навигации
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,6 +20,8 @@ export default function Authorisation() {
         localStorage.setItem('token', response.data.token);
         setMessage('Вы успешно вошли в систему!');
         setError('');
+        // Переход на домашнюю страницу
+        navigate('/');
       } else {
         // Регистрация
         await axios.post('/internal/register', { username, password });

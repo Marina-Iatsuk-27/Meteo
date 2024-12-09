@@ -25,12 +25,10 @@ app.use(bodyParser.json());
 
 // Создание подключения к MySQL
 const db = mysql.createConnection({
-//   host: host, // IP вашего сервера 154.5.87.87
-//   password: password, // Пароль пользователя
-host: process.env.HOST,
-password: process.env.PASSWORD,
+  host: process.env.HOST,
+  password: process.env.PASSWORD,
   user: 'root',          // Имя пользователя
-  database: 'users',  // Название  базы данных
+  database: 'meteo',  // Название  базы данных
   port: 3306             // Порт MySQL
 });
 

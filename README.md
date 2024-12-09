@@ -11,8 +11,8 @@ npm install axios
 
 <!-- для паролей:  -->
 npm install dotenv
-
-
+<!-- для карты:  -->
+npm install react-leaflet leaflet
 
 
 запуск node backend/loginApi
