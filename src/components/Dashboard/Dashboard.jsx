@@ -4,6 +4,8 @@ import { RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts';
 import styles from './Dashboard.module.scss';
 
 const Dashboard = ({ deviceData, isMeteo, isGround }) => {
+
+  console.log('xnj d devisedata на странице девайса: ',deviceData);
   if (!deviceData) return null;
 
     // Функция для определения цвета влажности воздуха

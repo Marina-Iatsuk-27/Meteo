@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { DevicesListContext } from "../../context/GetDevicesList";
 import { Link } from 'react-router-dom'; 
 import style from "./DevicesList.module.scss"
 
-export default function DevicesList() {
+export default function DevicesList({ setFilteredDevices }) {
   console.log("запуск списка");
   const { devicesList } = useContext(DevicesListContext);
   console.log('devicesList',devicesList);
@@ -13,6 +13,10 @@ export default function DevicesList() {
   );
 
   console.log('filteredDevices',filteredDevices);
+   // Передача отфильтрованных устройств наверх. монтирование 1 раз
+   useEffect(() => {
+    setFilteredDevices(filteredDevices);
+  }, []);
 
 
 

@@ -1,4 +1,7 @@
 body{
   height: 100vh;
   width: 100vw;
+  font-family: "Zen Kaku Gothic New", sans-serif;
+  display: flex;
+  justify-content: center;
 }

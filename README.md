@@ -13,6 +13,9 @@ npm install axios
 npm install dotenv
 <!-- для карты:  -->
 npm install react-leaflet leaflet
+<!-- для иконок:  -->
+npm install react-icons
+
 
 
 запуск node backend/loginApi

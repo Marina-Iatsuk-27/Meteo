@@ -1,0 +1,43 @@
+.mapContainer {
+    display: flex;
+    margin: 50px auto;
+    height: 40vh;
+  }
+  
+  .sidebar {
+    width: 200px;
+    padding: 10px;
+    background-color: #f7f7f7;
+    border-right: 1px solid #ddd;
+  }
+  
+  .sidebarTitle {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .sensorList {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sensorItem {
+    margin-bottom: 10px;
+  }
+  
+  .sensorButton {
+    padding: 8px 10px;
+    width: 100%;
+    background-color: #7fa480;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .map {
+    flex: 1;
+    height: 100%;
+    width: 100%;
+  }
+  
