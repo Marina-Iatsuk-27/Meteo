@@ -6,6 +6,7 @@ import Header from '../Header/Header';
 import Home from '../../pages/Home/Home';
 import DeviceInfo from '../../pages/Device/Device';
 import Authorisation from '../Authorisation/Authorisation';
+import Library from '../../pages/Library/Library';
 import { useAuth } from '../../context/AuthContext';
 
 function App() {
@@ -27,6 +28,10 @@ function App() {
         <Route
           path="/device/:id"
           element={token ? <DeviceInfo /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/library"
+          element={token ? <Library /> : <Navigate to="/login" replace />}
         />
       </Routes>
     </Router>

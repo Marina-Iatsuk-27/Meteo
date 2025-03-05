@@ -15,6 +15,14 @@ npm install dotenv
 npm install react-leaflet leaflet
 <!-- для иконок:  -->
 npm install react-icons
+<!-- для таблицы эксель:  -->
+npm install xlsx
+
+
+<!-- открыть: -->
+node backend/loginApi  
+npm run dev 
+
 
 
 

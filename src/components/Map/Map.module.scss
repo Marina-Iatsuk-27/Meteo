@@ -40,4 +40,63 @@
     height: 100%;
     width: 100%;
   }
+
+  .popupContainer {
+    background-color: #ffffff; /* Белый фон */
+    border: 1px solid #ddd; /* Светло-серая рамка */
+    border-radius: 8px; /* Закругленные углы */
+    padding: 16px; /* Отступы внутри */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Легкая тень */
+    max-width: 400px; /* Максимальная ширина */
+    font-family: Arial, sans-serif; /* Красивый шрифт */
+    color: #333; /* Темный текст */
+  }
+  
+  .header {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 12px;
+  }
+  
+  .id {
+    font-size: 14px;
+    color: #666; /* Серый текст для ID */
+    margin-bottom: 12px;
+  }
+  
+  .sectionTitle {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #0056b3; /* Темно-синий */
+  }
+  
+  .list {
+    list-style-type: none; /* Убираем маркеры списка */
+    padding: 0;
+  }
+  
+  .listItem {
+    margin-bottom: 8px;
+  }
+  
+  .listItem b {
+    color: #444; /* Подчеркнутые элементы темнее */
+  }
+  
+  
+  .popupContainer {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
   

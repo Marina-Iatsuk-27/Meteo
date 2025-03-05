@@ -73,64 +73,63 @@ const DeviceMap = ({ filteredDevices }) => {
               icon={customIcon}
             >
              <Popup>
-  <div>
-    <h4>{sensor.state.uplink.deviceInfo.deviceName}</h4>
-    <p>
-      <b>ID:</b> {sensor.id}
-    </p>
-    <div>
-      <h5>Показатели:</h5>
-      <ul>
-        {sensor.state.uplink.object.conductivity && (
-          <li>
-            <b>Проводимость:</b> {sensor.state.uplink.object.conductivity}
-          </li>
-        )}
-        {sensor.state.uplink.object.humidity && (
-          <li>
-            <b>Влажность:</b> {sensor.state.uplink.object.humidity}
-          </li>
-        )}
-        {sensor.state.uplink.object.nitrogen && (
-          <li>
-            <b>Азот:</b> {sensor.state.uplink.object.nitrogen}
-          </li>
-        )}
-        {sensor.state.uplink.object.ph && (
-          <li>
-            <b>ph:</b> {sensor.state.uplink.object.ph}
-          </li>
-        )}
-        {sensor.state.uplink.object.phosphorus && (
-          <li>
-            <b>Фосфор:</b> {sensor.state.uplink.object.phosphorus}
-          </li>
-        )}
-        {sensor.state.uplink.object.potassium && (
-          <li>
-            <b>Калий:</b> {sensor.state.uplink.object.potassium}
-          </li>
-        )}
-        {sensor.state.uplink.object.temperature && (
-          <li>
-            <b>Температура:</b> {sensor.state.uplink.object.temperature}
-          </li>
-        )}
-        {sensor.state.uplink.object.pressure && (
-          <li>
-            <b>Атмосферное давление:</b> {sensor.state.uplink.object.pressure}
-          </li>
-        )}
-        {sensor.state.uplink.object.rainfall && (
-          <li>
-            <b>Осадки:</b> {sensor.state.uplink.object.rainfall}
-          </li>
-        )}
-      </ul>
+    <div className={styles.popupContainer}>
+      <h4 className={styles.header}>{sensor.state.uplink.deviceInfo.deviceName}</h4>
+      <p className={styles.id}>
+        <b>ID:</b> {sensor.id}
+      </p>
+      <div>
+        <h5 className={styles.sectionTitle}>Показатели:</h5>
+        <ul className={styles.list}>
+          {sensor.state.uplink.object.conductivity && (
+            <li className={styles.listItem}>
+              <b>Проводимость:</b> {sensor.state.uplink.object.conductivity}
+            </li>
+          )}
+          {sensor.state.uplink.object.humidity && (
+            <li className={styles.listItem}>
+              <b>Влажность:</b> {sensor.state.uplink.object.humidity}
+            </li>
+          )}
+          {sensor.state.uplink.object.nitrogen && (
+            <li className={styles.listItem}>
+              <b>Азот:</b> {sensor.state.uplink.object.nitrogen}
+            </li>
+          )}
+          {sensor.state.uplink.object.ph && (
+            <li className={styles.listItem}>
+              <b>ph:</b> {sensor.state.uplink.object.ph}
+            </li>
+          )}
+          {sensor.state.uplink.object.phosphorus && (
+            <li className={styles.listItem}>
+              <b>Фосфор:</b> {sensor.state.uplink.object.phosphorus}
+            </li>
+          )}
+          {sensor.state.uplink.object.potassium && (
+            <li className={styles.listItem}>
+              <b>Калий:</b> {sensor.state.uplink.object.potassium}
+            </li>
+          )}
+          {sensor.state.uplink.object.temperature && (
+            <li className={styles.listItem}>
+              <b>Температура:</b> {sensor.state.uplink.object.temperature}
+            </li>
+          )}
+          {sensor.state.uplink.object.pressure && (
+            <li className={styles.listItem}>
+              <b>Атмосферное давление:</b> {sensor.state.uplink.object.pressure}
+            </li>
+          )}
+          {sensor.state.uplink.object.rainfall && (
+            <li className={styles.listItem}>
+              <b>Осадки:</b> {sensor.state.uplink.object.rainfall}
+            </li>
+          )}
+        </ul>
+      </div>
     </div>
-
-  </div>
-</Popup>
+  </Popup>
 
             </Marker>
           ))}

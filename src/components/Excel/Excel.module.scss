@@ -1,0 +1,103 @@
+$form-color: #7fa480;
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  &__title {
+    font-size: 24px;
+    color: $form-color;
+    margin-bottom: 20px;
+  }
+
+  &__upload-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  &__file-input {
+    padding: 10px;
+    border: 1px solid $form-color;
+    border-radius: 5px;
+    font-size: 14px;
+    outline: none;
+
+    &:focus {
+      border-color: darken($form-color, 10%);
+    }
+  }
+
+  &__download-button {
+    padding: 10px 20px;
+    background-color: $form-color;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: lighten($form-color, 10%);
+    }
+  }
+
+  &__table-section {
+    margin-top: 20px;
+    overflow-x: auto;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+    &-header {
+      background-color: $form-color;
+      color: #fff;
+    }
+
+    &-header-cell {
+      padding: 10px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+
+    &-body {
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+    }
+
+    &-row {
+      &:hover {
+        background-color: lighten($form-color, 20%);
+      }
+    }
+
+    &-cell {
+      padding: 10px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+  }
+  &__saveButton {
+    padding: 10px 20px;
+    background-color: $form-color;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    margin: 10px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: lighten($form-color, 10%);
+    }
+  }
+}
