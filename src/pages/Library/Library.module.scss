@@ -1,0 +1,8 @@
+@use '../../assets/styles/templates' as templates; // Импорт переменных
+
+.excelContainer{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

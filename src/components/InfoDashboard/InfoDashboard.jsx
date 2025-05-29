@@ -19,48 +19,88 @@ export default function InfoDashboard({ filteredDevices }) {
   const renderGroundData = (device) => (
     <div className={style.dataList}>
       <h1 className={style.title}>Показатели почвы</h1>
-      <div className={style.dataRow}>
-        <img src={iconConductivity} alt="Проводимость" className={style.icon} />
-        <span className={style.label}>Проводимость:</span>
-        <span className={style.text}>{device.state.uplink.object.conductivity || ''}</span>
-        <span className={style.unit}>мСм/см</span> 
+      <div className={style.rows}> 
+
+        <div className={style.dataRow}>
+          <img src={iconConductivity} alt="Проводимость" className={style.icon} />
+          <div className={style.dataInfo}>
+            <span className={style.label}>Проводимость:</span>
+            <div className={style.dataIndication}>
+              <span className={style.text}>{device.state.uplink.object.conductivity || ''}</span>
+              <span className={style.unit}>мСм/см</span> 
+            </div>
+          </div> 
+        </div>
+
+
+        <div className={style.dataRow}>
+          <img src={iconPh} alt="pH" className={style.icon} />
+          <div className={style.dataInfo}>
+            <span className={style.label}>pH:</span>
+            <div className={style.dataIndication}>
+              <span className={style.text}>{device.state.uplink.object.ph || ''}</span>
+              <span className={style.unit}>pH</span>
+            </div>
+          </div>
+        </div>
+
+        <div className={style.dataRow}>
+          <img src={iconSoilHumidity} alt="Влажность почвы" className={style.icon} />
+          <div className={style.dataInfo}>
+            <span className={style.label}>Влажность почвы:</span>
+            <div className={style.dataIndication}>
+              <span className={style.text}>{device.state.uplink.object.humidity || ''}</span>
+              <span className={style.unit}>%</span>
+            </div>
+          </div>
+        </div>
+
+        <div className={style.dataRow}>
+          <img src={iconSoilTemperature} alt="Температура почвы" className={style.icon} />
+          <div className={style.dataInfo}>
+            <span className={style.label}>Температура почвы:</span>
+            <div className={style.dataIndication}>
+              <span className={style.text}>{device.state.uplink.object.temperature || ''}</span>
+              <span className={style.unit}>°C</span>
+            </div>
+          </div>
+        </div>
+
+        <div className={style.dataRow}>
+          <img src={iconNitrogen} alt="Азот" className={style.icon} />
+          <div className={style.dataInfo}>
+            <span className={style.label}>Азот:</span>
+            <div className={style.dataIndication}>
+              <span className={style.text}>{device.state.uplink.object.nitrogen || ''}</span>
+              <span className={style.unit}>г/кг</span>
+            </div>
+          </div>
+        </div>
+
+        <div className={style.dataRow}>
+          <img src={iconPhosphorus} alt="Фосфор" className={style.icon} />
+          <div className={style.dataInfo}>
+            <span className={style.label}>Фосфор:</span>
+            <div className={style.dataIndication}>
+              <span className={style.text}>{device.state.uplink.object.phosphorus || ''}</span>
+              <span className={style.unit}>г/кг</span>
+            </div>
+          </div>
+        </div>
+
+        <div className={style.dataRow}>
+          <img src={iconPotassium} alt="Калий" className={style.icon} />
+          <div className={style.dataInfo}>
+            <span className={style.label}>Калий:</span>
+            <div className={style.dataIndication}>
+              <span className={style.text}>{device.state.uplink.object.potassium || ''}</span>
+              <span className={style.unit}>г/кг</span>
+            </div>
+          </div>
+        </div>
+
       </div>
-      <div className={style.dataRow}>
-        <img src={iconPh} alt="pH" className={style.icon} />
-        <span className={style.label}>pH:</span>
-        <span className={style.text}>{device.state.uplink.object.ph || ''}</span>
-        <span className={style.unit}>pH</span>
-      </div>
-      <div className={style.dataRow}>
-        <img src={iconSoilHumidity} alt="Влажность почвы" className={style.icon} />
-        <span className={style.label}>Влажность почвы:</span>
-        <span className={style.text}>{device.state.uplink.object.humidity || ''}</span>
-        <span className={style.unit}>%</span>
-      </div>
-      <div className={style.dataRow}>
-        <img src={iconSoilTemperature} alt="Температура почвы" className={style.icon} />
-        <span className={style.label}>Температура почвы:</span>
-        <span className={style.text}>{device.state.uplink.object.temperature || ''}</span>
-        <span className={style.unit}>°C</span>
-      </div>
-      <div className={style.dataRow}>
-        <img src={iconNitrogen} alt="Азот" className={style.icon} />
-        <span className={style.label}>Азот:</span>
-        <span className={style.text}>{device.state.uplink.object.nitrogen || ''}</span>
-        <span className={style.unit}>г/кг</span>
-      </div>
-      <div className={style.dataRow}>
-        <img src={iconPhosphorus} alt="Фосфор" className={style.icon} />
-        <span className={style.label}>Фосфор:</span>
-        <span className={style.text}>{device.state.uplink.object.phosphorus || ''}</span>
-        <span className={style.unit}>г/кг</span>
-      </div>
-      <div className={style.dataRow}>
-        <img src={iconPotassium} alt="Калий" className={style.icon} />
-        <span className={style.label}>Калий:</span>
-        <span className={style.text}>{device.state.uplink.object.potassium || ''}</span>
-        <span className={style.unit}>г/кг</span>
-      </div>
+      
     </div>
   );
   
@@ -68,30 +108,53 @@ export default function InfoDashboard({ filteredDevices }) {
   const renderMeteoData = (device) => (
     <div className={style.dataList}>
        <h1 className={style.title}>Показатели воздуха</h1>
-      <div className={style.dataRow}>
+       <div className={style.rows}>
+       <div className={style.dataRow}>
         <img src={iconAirTemperature} alt="Температура воздуха" className={style.icon} />
-        <span className={style.label}>Температура воздуха:</span>
-        <span className={style.text}>{device.state.uplink.object.temperature || ''}</span>
-        <span className={style.unit}>°C</span>
+        <div className={style.dataInfo}>
+          <span className={style.label}>Температура воздуха:</span>
+          <div className={style.dataIndication}>
+            <span className={style.text}>{device.state.uplink.object.temperature || ''}</span>
+            <span className={style.unit}>°C</span>
+          </div>
+        </div>
       </div>
+
       <div className={style.dataRow}>
         <img src={iconAirHumidity} alt="Влажность воздуха" className={style.icon} />
-        <span className={style.label}>Влажность воздуха:</span>
-        <span className={style.text}>{device.state.uplink.object.humidity || ''}</span>
-        <span className={style.unit}>%</span>
+        <div className={style.dataInfo}>
+          <span className={style.label}>Влажность воздуха:</span>
+          <div className={style.dataIndication}>
+            <span className={style.text}>{device.state.uplink.object.humidity || ''}</span>
+            <span className={style.unit}>%</span>
+          </div>
+        </div>
       </div>
+
       <div className={style.dataRow}>
         <img src={iconPressure} alt="Атмосферное давление" className={style.icon} />
-        <span className={style.label}>Атмосферное давление:</span>
-        <span className={style.text}>{device.state.uplink.object.pressure || ''}</span>
-        <span className={style.unit}>мм рт. ст.</span>
+        <div className={style.dataInfo}>
+          <span className={style.label}>Атмосферное давление:</span>
+          <div className={style.dataIndication}>
+            <span className={style.text}>{device.state.uplink.object.pressure || ''}</span>
+            <span className={style.unit}>мм рт. ст.</span>
+          </div>
+        </div>
       </div>
+
       <div className={style.dataRow}>
         <img src={iconRainfall} alt="Осадки" className={style.icon} />
-        <span className={style.label}>Осадки:</span>
-        <span className={style.text}>{device.state.uplink.object.rainfall || ''}</span>
-        <span className={style.unit}>мм</span>
+        <div className={style.dataInfo}>
+          <span className={style.label}>Осадки:</span>
+          <div className={style.dataIndication}>
+            <span className={style.text}>{device.state.uplink.object.rainfall || ''}</span>
+            <span className={style.unit}>мм</span>
+          </div>
+        </div>
       </div>
+
+      </div>
+      
     </div>
   );
   
@@ -112,14 +175,14 @@ export default function InfoDashboard({ filteredDevices }) {
   };
 
   return (
-    <div className={style.dashboardContainer}>
-      <div className={style.grid}>
+    <div className={style.infoDashboard}>
+      
         {filteredDevices.map((device) => (
           <div className={style.card} key={device.id}>
             {renderDeviceData(device)}
           </div>
         ))}
-      </div>
+      
     </div>
   );
 }

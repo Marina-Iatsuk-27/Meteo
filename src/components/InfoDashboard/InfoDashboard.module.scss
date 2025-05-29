@@ -1,140 +1,177 @@
-.dashboardContainer {
+@use '../../assets/styles/templates' as templates; // Импорт переменных
+
+/* Базовые стили */
+.infoDashboard {
+  width: 80vw;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  width: 100%;
   gap: 20px;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 3% 20px 20px;
 }
 
 .grid {
+  width: 90%;
   display: flex;
   flex-wrap: wrap;
-  width: 100%;
-  gap: 20px;
   justify-content: flex-start;
+  gap: 20px;
 }
 
 .title {
-  color: #7fa480fc;
   font-size: 1.5rem;
+  color: #7fa480fc;
   margin: 0;
   padding-top: 0;
 }
 
 .card {
-  width: calc(25% - 15px); /* 4 карточки в ряду (25% ширины минус отступы) */
+  width: 100%;
   padding: 15px;
-  background-color: #fff;
+  background-color: templates.$cardColor;
   border: 1px solid #7fa4806b;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
 .dataList {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
+.rows {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 20px;
+}
+
 .dataRow {
+  min-width: 10%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-family: 'Roboto', sans-serif;
   padding: 1%;
-  border: 1px solid #7fa4801a;
+  border: 1px solid templates.$accentBeige;
   transition: transform 0.2s, background-color 0.3s;
 }
 
 .dataRow:hover {
   transform: scale(1.05);
-  background-color: #f0f7f4;
+  background-color: templates.$mainBackgroundColor;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .label {
   display: inline-flex;
   align-items: center;
-  font-size: 1.2rem;
-  color: #4a4a4a;
+  font-size: 1rem;
+  color: templates.$secondaryTextColor;
   padding-right: 3%;
-  
 }
 
 .text {
   margin-left: auto;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #7fa480fc;
-  
+  font-size: 2.5rem;
+  font-weight: bolder;
+  color: templates.$mainTextColor;
 }
 
 .icon {
-  width: 30px;
-  height: 30px;
-  margin-right: 8px;
+  width: 60px;
+  height: 60px;
+  margin-right: 5%;
+}
+
+.dataInfo {
+  width: 60%;
+  margin: 5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .unit {
   margin-left: 1%;
   text-align: end;
-  color: #7fa480c7;
+  font-size: 1rem;
+  color: templates.$secondaryTextColor;
 }
 
-/* Адаптивные стили */
-@media (max-width: 1200px) {
-  .card {
-    width: calc(33.33% - 15px); /* 3 карточки в ряду */
+/* === Адаптив === */
+
+/* Большие экраны: ширина контейнера — 50vw */
+@media (min-width: 1440px) {
+  .infoDashboard {
+    width: 50vw;
   }
 }
 
-@media (max-width: 992px) {
-  .card {
-    width: calc(50% - 15px); /* 2 карточки в ряду */
+/* Средние экраны: планшеты */
+@media (max-width: 1024px) {
+  .infoDashboard {
+    width: 90vw;
+    padding: 20px;
+    gap: 15px;
+  }
+
+  .grid {
+    width: 100%;
+    gap: 15px;
+  }
+
+  .icon {
+    width: 50px;
+    height: 50px;
   }
 
   .text {
-    font-size: 1.8rem; /* Уменьшаем размер текста */
+    font-size: 2rem;
   }
 
-  .label {
-    font-size: 1.2rem;
+  .label, .unit {
+    font-size: 0.9rem;
+  }
+
+  .dataInfo {
+    width: 100%;
+    margin: 0;
   }
 }
 
+/* Малые экраны: телефоны */
 @media (max-width: 768px) {
-  .card {
-    width: calc(50% - 15px); /* 2 карточки в ряду */
+  .infoDashboard {
+    width: 95vw;
+    flex-direction: column;
+    padding: 15px;
+    gap: 10px;
+  }
+
+  .grid {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .rows {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
   }
 
   .text {
-    font-size: 1.6rem; /* Еще меньше размер текста */
-  }
-
-  .label {
     font-size: 1rem;
   }
-}
 
-@media (max-width: 576px) {
-  .card {
-    width: 100%; /* 1 карточка в ряду */
-  }
-
-  .text {
-    font-size: 1.4rem; /* Минимальный размер текста */
-  }
-
-  .label {
-    font-size: 0.9rem;
+  .label, .unit {
+    font-size: 0.85rem;
   }
 }

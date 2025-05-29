@@ -1,102 +1,190 @@
+@use '../../assets/styles/templates' as templates; // Импорт переменных
+
+/* Базовые стили */
 .mapContainer {
-    display: flex;
-    margin: 50px auto;
-    height: 40vh;
+  width: 80vw;
+  height: 50vh;
+  display: flex;
+  margin-top: 50px;
+}
+
+.sidebar {
+  width: 200px;
+  padding: 10px;
+  background-color: templates.$mainBackgroundColor;
+  border-right: 1px solid #ddd;
+}
+
+.sidebarTitle {
+  margin-bottom: 10px;
+}
+
+.sensorList {
+  margin-right: 20%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+}
+
+.sensorItem {
+  margin-bottom: 10px;
+}
+
+.sensorButton {
+  width: 100%;
+  padding: 8px 10px;
+  background-color: templates.$khakiPrimary;
+  color: templates.$mainBackgroundColor;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+}
+
+.popupContainer {
+  max-width: 400px;
+  padding: 16px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  color: #333;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.header {
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.id {
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.sectionTitle {
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #0056b3;
+}
+
+.list {
+  padding: 0;
+  list-style-type: none;
+}
+
+.listItem {
+  margin-bottom: 8px;
+}
+
+.listItem b {
+  color: #444;
+}
+
+/* === Адаптив === */
+
+/* Большие экраны */
+@media (min-width: 1440px) {
+  .mapContainer {
+    width: 50vw;
   }
-  
+}
+
+/* Планшеты */
+@media (max-width: 1024px) {
+  .mapContainer {
+    width: 90vw;
+    height: 60vh;
+    flex-direction: column;
+  }
+
   .sidebar {
-    width: 200px;
-    padding: 10px;
-    background-color: #f7f7f7;
-    border-right: 1px solid #ddd;
-  }
-  
-  .sidebarTitle {
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-  
-  .sensorList {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .sensorItem {
-    margin-bottom: 10px;
-  }
-  
-  .sensorButton {
-    padding: 8px 10px;
     width: 100%;
-    background-color: #7fa480;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
   }
-  
+
+  .sensorList {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-right: 0;
+    width: 100%;
+  }
+
+  // .sensorItem {
+  //   flex: 1 1 45%;
+  // }
+
   .map {
-    flex: 1;
-    height: 100%;
+    height: 20vh;
     width: 100%;
   }
 
   .popupContainer {
-    background-color: #ffffff; /* Белый фон */
-    border: 1px solid #ddd; /* Светло-серая рамка */
-    border-radius: 8px; /* Закругленные углы */
-    padding: 16px; /* Отступы внутри */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Легкая тень */
-    max-width: 400px; /* Максимальная ширина */
-    font-family: Arial, sans-serif; /* Красивый шрифт */
-    color: #333; /* Темный текст */
+    max-width: 100%;
   }
-  
-  .header {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 12px;
+}
+
+/* Телефоны */
+@media (max-width: 768px) {
+  .mapContainer {
+    width: 95vw;
+    height: 70vh;
+    flex-direction: column;
+    margin-top: 20px;
   }
-  
-  .id {
-    font-size: 14px;
-    color: #666; /* Серый текст для ID */
-    margin-bottom: 12px;
+
+  .sidebar {
+    width: 100%;
+    padding: 8px;
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .sectionTitle {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 8px;
-    color: #0056b3; /* Темно-синий */
+
+  .sensorList {
+    flex-direction: column;
+    width: 100%;
+    margin-right: 0;
   }
-  
-  .list {
-    list-style-type: none; /* Убираем маркеры списка */
-    padding: 0;
+
+  .sensorItem {
+    width: 100%;
   }
-  
-  .listItem {
-    margin-bottom: 8px;
+
+  .sensorButton {
+    padding: 6px 8px;
+    font-size: 0.9rem;
   }
-  
-  .listItem b {
-    color: #444; /* Подчеркнутые элементы темнее */
-  }
-  
-  
+
   .popupContainer {
-    animation: fadeIn 0.3s ease-in-out;
+    padding: 12px;
+    font-size: 0.9rem;
   }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
+
+  .header, .sectionTitle {
+    font-size: 1rem;
   }
-  
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

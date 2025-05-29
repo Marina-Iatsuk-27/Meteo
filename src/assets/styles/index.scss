@@ -1,0 +1,27 @@
+
+@use './templates.scss' as templates; // Импорт переменных
+html {
+  scroll-behavior: smooth;
+
+}
+
+body{
+
+  width: 100vw;
+  margin-bottom: 15%;
+  font-family: "Zen Kaku Gothic New", sans-serif;
+  font-size: xx-large; 
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  color: templates.$mainTextColor;
+  background-color: templates.$mainBackgroundColor;
+}
+#root{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+

@@ -26,7 +26,8 @@ npm run dev
 
 
 
-запуск node backend/loginApi
+запуск:
+node backend/loginApi
 npm run dev
 
 qwertasdf2

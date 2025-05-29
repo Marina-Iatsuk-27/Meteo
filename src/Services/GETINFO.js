@@ -2,8 +2,10 @@ class GETINFO {
   static async getDevice(id) { // добавляем параметр id для передачи
       const token = import.meta.env.VITE_TOKEN;
 
+    
+
       try {
-        const response = await fetch(`/api/v1/objects/${id}`, {
+        const response = await fetch(`api/v1/objects/${id}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,

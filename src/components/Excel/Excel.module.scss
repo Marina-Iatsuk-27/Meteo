@@ -1,17 +1,18 @@
-$form-color: #7fa480;
+@use '../../assets/styles/templates' as templates; // Импорт переменных
 
 .form-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: templates.$cardColor;
+  color: templates.$secondaryTextColor;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
   &__title {
     font-size: 24px;
-    color: $form-color;
+    color: templates.$khakiPrimary;
     margin-bottom: 20px;
   }
 
@@ -19,33 +20,30 @@ $form-color: #7fa480;
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
+ 
   }
 
   &__file-input {
     padding: 10px;
-    border: 1px solid $form-color;
+    border: 1px solid templates.$khakiPrimary;
     border-radius: 5px;
     font-size: 14px;
     outline: none;
 
     &:focus {
-      border-color: darken($form-color, 10%);
+      border-color: darken(templates.$khakiPrimary, 10%);
+      
     }
+  }
+  &__note{
+    font-size: 10px;
+   padding-bottom: 2%
   }
 
   &__download-button {
-    padding: 10px 20px;
-    background-color: $form-color;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: lighten($form-color, 10%);
-    }
+    @include templates.default-button-style(10px 10px, 14px, 5px);
   }
+  
 
   &__table-section {
     margin-top: 20px;
@@ -58,7 +56,7 @@ $form-color: #7fa480;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
     &-header {
-      background-color: $form-color;
+      background-color: templates.$khakiPrimary;
       color: #fff;
     }
 
@@ -76,7 +74,7 @@ $form-color: #7fa480;
 
     &-row {
       &:hover {
-        background-color: lighten($form-color, 20%);
+        background-color: lighten(templates.$khakiPrimary, 20%);
       }
     }
 
@@ -87,17 +85,6 @@ $form-color: #7fa480;
     }
   }
   &__saveButton {
-    padding: 10px 20px;
-    background-color: $form-color;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    margin: 10px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: lighten($form-color, 10%);
-    }
+    @include templates.default-button-style(10px 10px, 14px, 5px);
   }
 }

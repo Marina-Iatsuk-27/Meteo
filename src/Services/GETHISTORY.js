@@ -12,7 +12,7 @@ class GETHISTORY{
         
         
         try {
-          const response = await fetch(`/api/v1/objects/${id}/packets?from=${fromDate}&to=${toDate}`, {
+          const response = await fetch(`api/v1/objects/${id}/packets?from=${fromDate}&to=${toDate}`, {
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${token}`,

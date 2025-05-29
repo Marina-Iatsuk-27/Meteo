@@ -18,20 +18,32 @@ function App() {
       <Header />
       <Routes>
         {/* Авторизация */}
-        <Route path="/login" element={<Authorisation />} />
+        {/* <Route path="/login" element={<Authorisation />} /> */}
 
         {/* Защищённые маршруты */}
-        <Route
+        {/* <Route
           path="/"
           element={token ? <Home /> : <Navigate to="/login" replace />}
-        />
+        /> */}
         <Route
+          path="/"
+          element={ <Home /> }
+        />
+        {/* <Route
           path="/device/:id"
           element={token ? <DeviceInfo /> : <Navigate to="/login" replace />}
-        />
+        /> */}
         <Route
+          path="/device/:id"
+          element={ <DeviceInfo /> }
+        />
+        {/* <Route
           path="/library"
           element={token ? <Library /> : <Navigate to="/login" replace />}
+        /> */}
+        <Route
+          path="/library"
+          element={ <Library /> }
         />
       </Routes>
     </Router>

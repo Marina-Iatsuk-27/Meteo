@@ -1,5 +1,5 @@
 import React from 'react'
-import './assets/index.css'
+import './assets/styles/index.scss'
 import App from './components/App/App'
 import ReactDOM from 'react-dom/client'; 
 import { AuthProvider } from './context/AuthContext';

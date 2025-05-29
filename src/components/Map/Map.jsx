@@ -57,7 +57,7 @@ const DeviceMap = ({ filteredDevices }) => {
         <MapContainer
           center={[44.61, 33.52]}
           zoom={10}
-          style={{ height: "100%", width: "100%" }}
+           style={{ height: "100%", width: "100%", borderRadius: "10px",boxShadow: "0 5px 9px rgba(0, 0, 0, 0.1)" }}
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

@@ -1,10 +1,128 @@
-.headerContainer{
+@use '../../assets/styles/templates' as templates; // Импорт переменных
+
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    height: 5%;
+    height: 8vh;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: templates.$khakiPrimary;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .headerContainer {
+    width: 80vw;
+    height: 60px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-}
-.homeLogo{
-    width: 2vw;
-}
+    margin: 0 auto;
+    position: relative;
+  }
+  
+  .homeLogo {
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    color: templates.$cardColor;
+    text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .burger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 25px;
+    height: 18px;
+    cursor: pointer;
+  
+    span {
+      display: block;
+      height: 3px;
+      background-color: templates.$cardColor;
+      border-radius: 3px;
+      transition: 0.3s;
+    }
+  }
+  
+  .navMenu {
+    display: flex;
+    list-style: none;
+    gap: 20px;
+  }
+  
+  .nav {
+    padding: 8px 15px;
+    background-color: templates.$khakiLight;
+    color: templates.$cardColor;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  
+    &:hover {
+      background-color: templates.$khakiDark;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+  
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+  
+  /* Адаптивность */
+  @media (max-width: 768px) {
+    .header {
+        height: 5vh;
+    }
+    .homeLogo{
+        margin-bottom: 5%;
+    }
+    .burger {
+      display: flex;
+      
+    }
+  
+    .navMenu {
+      display: none;
+      position: fixed;
+      left: 0;
+      top: 5vh;
+      flex-direction: column;
+     // width: 100vw;
+      //height: 13vh;
+      background-color: templates.$khakiPrimary;
+      
+    padding: 0;
+    margin: 0;
+      gap: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      width: 100%;
+    }
+  
+    .navMenu.active {
+      display: flex;
+      width: 100vw;
+      align-items: center;
+      justify-content: space-around;
+   
+    }
+  
+    .nav {
+      text-align: center;
+      width: 80%;
+      margin: 3%;
+    }
+  }
+  
+  
+// @media (max-width: 768px) {
+//   .header-content {
+//     flex-direction: column;
+//     text-align: center;
+//   }
+// }

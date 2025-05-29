@@ -22,7 +22,7 @@ export default function DevicesList({ setFilteredDevices }) {
 
   return (
     <div className={style.deviceListContainer}>
-    <h1>Список устройств:</h1>
+    <h3>Список устройств:</h3>
     <table>
       <thead>
         <tr>

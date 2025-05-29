@@ -1,4 +1,8 @@
+@use '../../assets/styles/templates.scss' as templates; // Импорт переменных
+
 .homeContainer{
-    // width: 90%;
-    // height: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
 }

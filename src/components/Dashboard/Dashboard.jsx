@@ -88,7 +88,7 @@ const Dashboard = ({ deviceData, isMeteo, isGround }) => {
 
 
     return (
-      <div className={styles.dashboardContainer}>
+      <div className={styles.infoDashboard}>
         {/* <h1 className={styles.title}>Данные метеостанции</h1> */}
         
         <div className={styles.dataSection}>
@@ -174,7 +174,7 @@ const Dashboard = ({ deviceData, isMeteo, isGround }) => {
     const ph = deviceData.state.uplink.object.ph || 0;
 
     return (
-      <div className={styles.dashboardContainer}>
+      <div className={styles.infoDashboard}>
         <div className={styles.dataSection}>
           <div className={styles.gaugeContainer}>
             <h3>Температура</h3>
