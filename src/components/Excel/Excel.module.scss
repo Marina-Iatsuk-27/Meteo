@@ -1,90 +1,155 @@
-@use '../../assets/styles/templates' as templates; // Импорт переменных
+@use '../../assets/styles/templates' as t; // Короткий алиас для удобства
 
 .form-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  background-color: templates.$cardColor;
-  color: templates.$secondaryTextColor;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  gap: 16px; // Унифицированный отступ между элементами
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  color: t.$secondaryTextColor;
+  background-color: t.$mainBackgroundColor;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 
   &__title {
-    font-size: 24px;
-    color: templates.$khakiPrimary;
-    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    color: t.$khakiPrimary;
+    margin: 0;
+    text-align: center;
   }
 
   &__upload-section {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
- 
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
   &__file-input {
-    padding: 10px;
-    border: 1px solid templates.$khakiPrimary;
-    border-radius: 5px;
-    font-size: 14px;
-    outline: none;
+    padding: 8px 12px;
+    border: 1px solid t.$khakiPrimary;
+    border-radius: 6px;
+    font-size: 13px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
 
-    &:focus {
-      border-color: darken(templates.$khakiPrimary, 10%);
-      
+    &:hover {
+      border-color: darken(t.$khakiPrimary, 10%);
+    }
+
+    &::file-selector-button {
+      padding: 4px 8px;
+      margin-right: 8px;
+      border: none;
+      border-radius: 4px;
+      background: t.$khakiPrimary;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &:hover {
+        background: darken(t.$khakiPrimary, 10%);
+      }
     }
   }
-  &__note{
-    font-size: 10px;
-   padding-bottom: 2%
+
+  &__note {
+    font-size: 12px;
+    color: lighten(t.$secondaryTextColor, 20%);
+    text-align: center;
+    margin-top: -8px; // Уменьшаем отступ от предыдущего блока
   }
 
-  &__download-button {
-    @include templates.default-button-style(10px 10px, 14px, 5px);
+  &__download-button,
+  &__saveButton {
+    @include t.default-button-style(8px 16px, 13px, 6px);
+    min-width: 140px;
   }
-  
 
   &__table-section {
-    margin-top: 20px;
+    margin-top: 8px;
     overflow-x: auto;
+    border-radius: 8px;
+    //border: 1px solid lighten(t.$khakiPrimary, 40%);
+    box-shadow: none;
+  }
+  &__note-info{
+    font-size: 20px;
+    color: lighten(t.$secondaryTextColor, 20%); 
   }
 
   &__table {
     width: 100%;
-    border-collapse: collapse;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13px;
+    color: t.$secondaryTextColor;
+    border: 1px solid lighten(t.$khakiPrimary, 40%);
+    border-radius: 8px;
 
     &-header {
-      background-color: templates.$khakiPrimary;
-      color: #fff;
+      position: sticky;
+      top: 0;
     }
 
     &-header-cell {
-      padding: 10px;
+      padding: 10px 12px;
       text-align: left;
-      border: 1px solid #ddd;
-    }
-
-    &-body {
-      tr:nth-child(even) {
-        background-color: #f2f2f2;
+      font-weight: 500;
+      color: white;
+      background: t.$khakiPrimary;
+      border-bottom: 1px solid darken(t.$khakiPrimary, 8%);
+      
+      &:first-child {
+        border-top-left-radius: 7px;
+      }
+      
+      &:last-child {
+        border-top-right-radius: 7px;
       }
     }
 
     &-row {
+      transition: background-color 0.15s;
+
+      &:nth-child(even) {
+        background-color: lighten(t.$khakiPrimary, 48%);
+      }
+
       &:hover {
-        background-color: lighten(templates.$khakiPrimary, 20%);
+        background-color: lighten(t.$khakiPrimary, 42%);
+      }
+
+      &:last-child {
+        td {
+          border-bottom: none;
+          
+          &:first-child {
+            border-bottom-left-radius: 7px;
+          }
+          
+          &:last-child {
+            border-bottom-right-radius: 7px;
+          }
+        }
       }
     }
 
     &-cell {
-      padding: 10px;
-      text-align: left;
-      border: 1px solid #ddd;
+      padding: 10px 12px;
+      border-bottom: 1px solid lighten(t.$khakiPrimary, 45%);
+      max-width: 300px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
+
   &__saveButton {
-    @include templates.default-button-style(10px 10px, 14px, 5px);
+    align-self: center;
+    margin-top: 8px;
   }
 }

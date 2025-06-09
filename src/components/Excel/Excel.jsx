@@ -113,9 +113,10 @@ const downloadTemplate = () => {
        
       </div>
       <div className={style["form-container__note"]}>Выгрузите шаблон, заполните  и загрузите его в систему</div>
-
+      
       {data.length > 0 && (
         <div className={style["form-container__table-section"]}>
+          <p className={style["form-container__note-info"]}>Превью:</p>
           <table className={style["form-container__table"]}>
             <thead className={style["form-container__table-header"]}>
               <tr>
