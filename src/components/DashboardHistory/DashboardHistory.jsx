@@ -215,39 +215,57 @@ export default function DashboardHistory({ deviceHistory, isMeteo, isGround }) {
 
 
     return (
-        <div>
-            <h2>Дашборд</h2>
-            {isMeteo && (
-                <>
-                    <h3>Метеостанция</h3>
-                    <div style={{ width: '90vw', height: '400px' }}>
-                        <canvas id="temperatureChart" className={style.canvas}></canvas>
-                    </div>
-                    <div style={{ width: '90vw', height: '400px' }}>
-                        <canvas id="humidityChart" className={style.canvas}></canvas>
-                    </div>
-                    <div style={{ width: '90vw', height: '400px' }}>
-                        <canvas id="pressureChart" className={style.canvas}></canvas>
-                    </div>
-                    <div style={{ width: '90vw', height: '400px' }}>
-                        <canvas id="rainfallChart" className={style.canvas}></canvas>
-                    </div>
-                </>
-            )}
-            {isGround && (
-                <>
-                    <h3>Геодатчик</h3>
-                    <div style={{ width: '90vw', height: '400px' }}><canvas id="conductivityChart" className={style.canvas}></canvas></div>
-                    <div style={{ width: '90vw', height: '400px' }}><canvas id="groundHumidityChart" className={style.canvas}></canvas></div>
-                    <div style={{ width: '90vw', height: '400px' }}><canvas id="phChart" className={style.canvas}></canvas></div>
-                    <div style={{ width: '90vw', height: '400px' }}><canvas id="phosphorusChart" className={style.canvas}></canvas></div>
-                    <div style={{ width: '90vw', height: '400px' }}><canvas id="potassiumChart" className={style.canvas}></canvas></div>
-                    <div style={{ width: '90vw', height: '400px' }}><canvas id="saltSaturationChart" className={style.canvas}></canvas></div>
-                    <div style={{ width: '90vw', height: '400px' }}><canvas id="tdsChart" className={style.canvas}></canvas></div>
-                    <div style={{ width: '90vw', height: '400px' }}><canvas id="groundTemperatureChart" className={style.canvas}></canvas></div>
-                    <div style={{ width: '90vw', height: '400px' }}><canvas id="nitrogenChart" className={style.canvas}></canvas></div>
-                </>
-            )}
+        <div className={style.chartsContainer}>
+          <h2>График изменений</h2>
+          {isMeteo && (
+            <>
+              <h3>Метеостанция</h3>
+              <div className={style.chartWrapper}>
+                <canvas id="temperatureChart" className={style.canvas}></canvas>
+              </div>
+              <div className={style.chartWrapper}>
+                <canvas id="humidityChart" className={style.canvas}></canvas>
+              </div>
+              <div className={style.chartWrapper}>
+                <canvas id="pressureChart" className={style.canvas}></canvas>
+              </div>
+              <div className={style.chartWrapper}>
+                <canvas id="rainfallChart" className={style.canvas}></canvas>
+              </div>
+            </>
+          )}
+          {isGround && (
+            <>
+              <h3>Геодатчик</h3>
+              <div className={style.chartWrapper}>
+                <canvas id="conductivityChart" className={style.canvas}></canvas>
+              </div>
+              <div className={style.chartWrapper}>
+                <canvas id="groundHumidityChart" className={style.canvas}></canvas>
+              </div>
+              <div className={style.chartWrapper}>
+                <canvas id="phChart" className={style.canvas}></canvas>
+              </div>
+              <div className={style.chartWrapper}>
+                <canvas id="phosphorusChart" className={style.canvas}></canvas>
+              </div>
+              <div className={style.chartWrapper}>
+                <canvas id="potassiumChart" className={style.canvas}></canvas>
+              </div>
+              <div className={style.chartWrapper}>
+                <canvas id="saltSaturationChart" className={style.canvas}></canvas>
+              </div>
+              <div className={style.chartWrapper}>
+                <canvas id="tdsChart" className={style.canvas}></canvas>
+              </div>
+              <div className={style.chartWrapper}>
+                <canvas id="groundTemperatureChart" className={style.canvas}></canvas>
+              </div>
+              <div className={style.chartWrapper}>
+                <canvas id="nitrogenChart" className={style.canvas}></canvas>
+              </div>
+            </>
+          )}
         </div>
-    );
+      );
 }

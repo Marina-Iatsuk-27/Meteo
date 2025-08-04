@@ -1,0 +1,257 @@
+[
+  {
+    "time": "2024-11-10T05:00:00Z",
+    "uplink": {
+      "deviceInfo": {
+        "deviceName": "MeteoStation-1",
+        "devEui": "0016c0000016d7d9",
+        "deviceClassEnabled": "CLASS_A",
+        "deviceProfileName": "Smartiko-RM-IPE36-868"
+      },
+      "object": {
+        "temperature": 15.2,
+        "humidity": 72,
+        "pressure": 1015,
+        "rainfall": 0,
+        "batteryVoltage": 3.9,
+        "windSpeedMin": 0.8,
+        "windDirectionMax": 30,
+        "wetTemperature": 14.5,
+        "windDirectionAvg": 25,
+        "windSpeedAvg": 1.0,
+        "windSpeedMax": 1.5
+      }
+    }
+  },
+  {
+    "time": "2024-11-10T08:00:00Z",
+    "uplink": {
+      "deviceInfo": {
+        "deviceName": "MeteoStation-1",
+        "devEui": "0016c0000016d7d9",
+        "deviceClassEnabled": "CLASS_A",
+        "deviceProfileName": "Smartiko-RM-IPE36-868"
+      },
+      "object": {
+        "temperature": 18.5,
+        "humidity": 65,
+        "pressure": 1013,
+        "rainfall": 0,
+        "batteryVoltage": 3.8,
+        "windSpeedMin": 1.2,
+        "windDirectionMax": 45,
+        "wetTemperature": 17.8,
+        "windDirectionAvg": 40,
+        "windSpeedAvg": 1.5,
+        "windSpeedMax": 2.1
+      }
+    }
+  },
+  {
+    "time": "2024-11-10T11:00:00Z",
+    "uplink": {
+      "deviceInfo": {
+        "deviceName": "MeteoStation-1",
+        "devEui": "0016c0000016d7d9",
+        "deviceClassEnabled": "CLASS_A",
+        "deviceProfileName": "Smartiko-RM-IPE36-868"
+      },
+      "object": {
+        "temperature": 22.7,
+        "humidity": 58,
+        "pressure": 1012,
+        "rainfall": 0,
+        "batteryVoltage": 3.7,
+        "windSpeedMin": 1.8,
+        "windDirectionMax": 60,
+        "wetTemperature": 21.2,
+        "windDirectionAvg": 55,
+        "windSpeedAvg": 2.3,
+        "windSpeedMax": 3.0
+      }
+    }
+  },
+  {
+    "time": "2024-11-10T14:00:00Z",
+    "uplink": {
+      "deviceInfo": {
+        "deviceName": "MeteoStation-1",
+        "devEui": "0016c0000016d7d9",
+        "deviceClassEnabled": "CLASS_A",
+        "deviceProfileName": "Smartiko-RM-IPE36-868"
+      },
+      "object": {
+        "temperature": 25.3,
+        "humidity": 52,
+        "pressure": 1011,
+        "rainfall": 0.2,
+        "batteryVoltage": 3.6,
+        "windSpeedMin": 2.2,
+        "windDirectionMax": 75,
+        "wetTemperature": 23.8,
+        "windDirectionAvg": 70,
+        "windSpeedAvg": 2.8,
+        "windSpeedMax": 3.5
+      }
+    }
+  },
+  {
+    "time": "2024-11-10T17:00:00Z",
+    "uplink": {
+      "deviceInfo": {
+        "deviceName": "MeteoStation-1",
+        "devEui": "0016c0000016d7d9",
+        "deviceClassEnabled": "CLASS_A",
+        "deviceProfileName": "Smartiko-RM-IPE36-868"
+      },
+      "object": {
+        "temperature": 23.1,
+        "humidity": 55,
+        "pressure": 1012,
+        "rainfall": 0,
+        "batteryVoltage": 3.5,
+        "windSpeedMin": 1.5,
+        "windDirectionMax": 65,
+        "wetTemperature": 21.7,
+        "windDirectionAvg": 60,
+        "windSpeedAvg": 2.0,
+        "windSpeedMax": 2.8
+      }
+    }
+  },
+  {
+    "time": "2024-11-10T20:00:00Z",
+    "uplink": {
+      "deviceInfo": {
+        "deviceName": "MeteoStation-1",
+        "devEui": "0016c0000016d7d9",
+        "deviceClassEnabled": "CLASS_A",
+        "deviceProfileName": "Smartiko-RM-IPE36-868"
+      },
+      "object": {
+        "temperature": 19.8,
+        "humidity": 63,
+        "pressure": 1013,
+        "rainfall": 0,
+        "batteryVoltage": 3.4,
+        "windSpeedMin": 1.0,
+        "windDirectionMax": 50,
+        "wetTemperature": 18.5,
+        "windDirectionAvg": 45,
+        "windSpeedAvg": 1.5,
+        "windSpeedMax": 2.0
+      }
+    }
+  },
+  {
+    "time": "2024-11-10T08:30:00Z",
+    "uplink": {
+      "deviceInfo": {
+        "deviceName": "GroundSensor-5277",
+        "devEui": "70b3d50ad0005277",
+        "deviceClassEnabled": "CLASS_A",
+        "deviceProfileName": "Ground Sensor Vega SI-13v2"
+      },
+      "object": {
+        "temperature": 15.3,
+        "humidity": 42,
+        "conductivity": 1250,
+        "nitrogen": 25,
+        "ph": 6.8,
+        "phosphorus": 15,
+        "potassium": 120,
+        "salt_saturation": 2.1,
+        "tds": 850
+      }
+    }
+  },
+  {
+    "time": "2024-11-10T11:30:00Z",
+    "uplink": {
+      "deviceInfo": {
+        "deviceName": "GroundSensor-5277",
+        "devEui": "70b3d50ad0005277",
+        "deviceClassEnabled": "CLASS_A",
+        "deviceProfileName": "Ground Sensor Vega SI-13v2"
+      },
+      "object": {
+        "temperature": 17.8,
+        "humidity": 38,
+        "conductivity": 1350,
+        "nitrogen": 26,
+        "ph": 6.7,
+        "phosphorus": 16,
+        "potassium": 125,
+        "salt_saturation": 2.3,
+        "tds": 900
+      }
+    }
+  },
+  {
+    "time": "2024-11-10T14:30:00Z",
+    "uplink": {
+      "deviceInfo": {
+        "deviceName": "GroundSensor-5277",
+        "devEui": "70b3d50ad0005277",
+        "deviceClassEnabled": "CLASS_A",
+        "deviceProfileName": "Ground Sensor Vega SI-13v2"
+      },
+      "object": {
+        "temperature": 19.2,
+        "humidity": 35,
+        "conductivity": 1400,
+        "nitrogen": 27,
+        "ph": 6.6,
+        "phosphorus": 17,
+        "potassium": 130,
+        "salt_saturation": 2.5,
+        "tds": 950,
+        "message": "служебный пакет"
+      }
+    }
+  },
+  {
+    "time": "2024-11-10T17:30:00Z",
+    "uplink": {
+      "deviceInfo": {
+        "deviceName": "GroundSensor-5277",
+        "devEui": "70b3d50ad0005277",
+        "deviceClassEnabled": "CLASS_A",
+        "deviceProfileName": "Ground Sensor Vega SI-13v2"
+      },
+      "object": {
+        "temperature": 18.5,
+        "humidity": 40,
+        "conductivity": 1375,
+        "nitrogen": 26,
+        "ph": 6.7,
+        "phosphorus": 16,
+        "potassium": 128,
+        "salt_saturation": 2.4,
+        "tds": 925
+      }
+    }
+  },
+  {
+    "time": "2024-11-10T20:30:00Z",
+    "uplink": {
+      "deviceInfo": {
+        "deviceName": "GroundSensor-5277",
+        "devEui": "70b3d50ad0005277",
+        "deviceClassEnabled": "CLASS_A",
+        "deviceProfileName": "Ground Sensor Vega SI-13v2"
+      },
+      "object": {
+        "temperature": 16.7,
+        "humidity": 45,
+        "conductivity": 1300,
+        "nitrogen": 25,
+        "ph": 6.8,
+        "phosphorus": 15,
+        "potassium": 122,
+        "salt_saturation": 2.2,
+        "tds": 875
+      }
+    }
+  }
+]

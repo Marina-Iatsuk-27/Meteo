@@ -9,74 +9,74 @@ const Dashboard = ({ deviceData, isMeteo, isGround }) => {
   if (!deviceData) return null;
 
     // Функция для определения цвета влажности воздуха
-    const getAirHumidityColor = (indicator) => {
-        if (indicator < 30) return '#4682B4'; // синий
-        if (indicator >= 30 && indicator < 60) return '#32CD32'; // зеленый
-        return '#FF6347'; // красный
-      };
-    
-      // Функция для определения цвета температуры воздуха
-      const getAirTemperatureColor = (indicator) => {
-        if (indicator < 15) return '#0000ff'; // синий
-        if (indicator >= 15 && indicator <= 25) return '#32CD32'; // зеленый
-        return '#ff0000'; // красный
-      };
+const getAirHumidityColor = (indicator) => {
+  if (indicator < 30) return '#889069'; // светло-хаки (низкая влажность)
+  if (indicator >= 30 && indicator < 60) return '#606c38'; // основной хаки (норма)
+  return '#d1603d'; // терракотовый (высокая влажность)
+};
 
-      //атмосферное давление
-      const getAirPressureColor = (indicator) => {
-              if (indicator < 740) return '#0000ff'; // синий
-              if (indicator >= 740 && indicator <= 779) return '#32CD32'; // зеленый
-              return '#ff0000'; // красный
-            };
+// Функция для определения цвета температуры воздуха
+const getAirTemperatureColor = (indicator) => {
+  if (indicator < 15) return '#5e7ce2'; // мягкий синий (холодно)
+  if (indicator >= 15 && indicator <= 25) return '#606c38'; // основной хаки (норма)
+  return '#d1603d'; // терракотовый (жарко)
+};
 
-      // Температурпа почвы
-      const getGroundTemperatureColor = (indicator) => {
-        if (indicator < 16) return '#0000ff'; // синий
-        if (indicator >= 16 && indicator <= 22) return '#32CD32'; // зеленый
-        return '#ff0000'; // красный
-      };
+// Функция для определения цвета атмосферного давления
+const getAirPressureColor = (indicator) => {
+  if (indicator < 740) return '#5e7ce2'; // мягкий синий (низкое)
+  if (indicator >= 740 && indicator <= 779) return '#606c38'; // основной хаки (норма)
+  return '#d1603d'; // терракотовый (высокое)
+};
 
-      // Влажность почвы
-      const getGroundHumidityColor = (indicator) => {
-        if (indicator < 10) return '#0000ff'; // синий
-        if (indicator >= 10 && indicator <= 40) return '#32CD32'; // зеленый
-        return '#ff0000'; // красный
-      };
+// Функция для определения цвета температуры почвы
+const getGroundTemperatureColor = (indicator) => {
+  if (indicator < 16) return '#5e7ce2'; // мягкий синий (холодно)
+  if (indicator >= 16 && indicator <= 22) return '#606c38'; // основной хаки (норма)
+  return '#d1603d'; // терракотовый (жарко)
+};
 
-      // Проводимость ЕС
-      const getGroundConductivityColor = (indicator) => {
-        if (indicator < 200) return '#0000ff'; // синий
-        if (indicator >= 200 && indicator <= 1200) return '#32CD32'; // зеленый
-        return '#ff0000'; // красный
-      };
-      
-      // PH
-      const getGroundPHColor = (indicator) => {
-        if (indicator < 5) return '#0000ff'; // синий
-        if (indicator >= 5 && indicator <= 8) return '#32CD32'; // зеленый
-        return '#ff0000'; // красный
-      };
+// Функция для определения цвета влажности почвы
+const getGroundHumidityColor = (indicator) => {
+  if (indicator < 10) return '#5e7ce2'; // мягкий синий (сухо)
+  if (indicator >= 10 && indicator <= 40) return '#606c38'; // основной хаки (норма)
+  return '#d1603d'; // терракотовый (влажно)
+};
 
-      // азот
-      const getGroundNitrogenColor = (indicator) => {
-        if (indicator < 20) return '#0000ff'; // синий
-        if (indicator >= 20 && indicator <= 50) return '#32CD32'; // зеленый
-        return '#ff0000'; // красный
-      };
+// Функция для определения цвета проводимости почвы (EC)
+const getGroundConductivityColor = (indicator) => {
+  if (indicator < 200) return '#5e7ce2'; // мягкий синий (низкая)
+  if (indicator >= 200 && indicator <= 1200) return '#606c38'; // основной хаки (норма)
+  return '#d1603d'; // терракотовый (высокая)
+};
 
-      // фосфор
-      const getGroundPhosphorusColor = (indicator) => {
-        if (indicator < 15) return '#0000ff'; // синий
-        if (indicator >= 15 && indicator <= 30) return '#32CD32'; // зеленый
-        return '#ff0000'; // красный
-      };
+// Функция для определения цвета pH почвы
+const getGroundPHColor = (indicator) => {
+  if (indicator < 5) return '#5e7ce2'; // мягкий синий (кислая)
+  if (indicator >= 5 && indicator <= 8) return '#606c38'; // основной хаки (норма)
+  return '#d1603d'; // терракотовый (щелочная)
+};
 
-      // калий
-      const getGroundPotassiumColor = (indicator) => {
-        if (indicator < 50) return '#0000ff'; // синий
-        if (indicator >= 50 && indicator <= 200) return '#32CD32'; // зеленый
-        return '#ff0000'; // красный
-      };
+// Функция для определения цвета содержания азота в почве
+const getGroundNitrogenColor = (indicator) => {
+  if (indicator < 20) return '#5e7ce2'; // мягкий синий (недостаток)
+  if (indicator >= 20 && indicator <= 50) return '#606c38'; // основной хаки (норма)
+  return '#d1603d'; // терракотовый (избыток)
+};
+
+// Функция для определения цвета содержания фосфора в почве
+const getGroundPhosphorusColor = (indicator) => {
+  if (indicator < 15) return '#5e7ce2'; // мягкий синий (недостаток)
+  if (indicator >= 15 && indicator <= 30) return '#606c38'; // основной хаки (норма)
+  return '#d1603d'; // терракотовый (избыток)
+};
+
+// Функция для определения цвета содержания калия в почве
+const getGroundPotassiumColor = (indicator) => {
+  if (indicator < 50) return '#5e7ce2'; // мягкий синий (недостаток)
+  if (indicator >= 50 && indicator <= 200) return '#606c38'; // основной хаки (норма)
+  return '#d1603d'; // терракотовый (избыток)
+};
             
 
   if (isMeteo) {

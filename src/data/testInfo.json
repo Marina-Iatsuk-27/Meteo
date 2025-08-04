@@ -1,0 +1,58 @@
+[
+  {
+    "_id": "70b3d50ad0005277",
+    "id": "ground1",
+    "name": "Ground Sensor",
+    "state": {
+      "time": 1754310538478,
+      "uplink": {
+        "deviceInfo": {
+          "deviceName": "Ground Sensor",
+          "devEui": "70b3d50ad0005277",
+          "deviceClassEnabled": "CLASS_A",
+          "deviceProfileName": "Ground Sensor Profile"
+        },
+        "object": {
+          "ph": 6.8,
+          "nitrogen": 25.4,
+          "humidity": 45.0,
+          "conductivity": 1.8,
+          "phosphorus": 12.3,
+          "temperature": 18.7,
+          "potassium": 150.2,
+          "tds": 850,
+          "salt_saturation": 5.2
+        }
+      }
+    }
+  },
+  {
+    "_id": "3834373156398315",
+    "id": "meteo1",
+    "name": "Agat Meteo",
+    "state": {
+      "time": 1754310863363,
+      "uplink": {
+        "deviceInfo": {
+          "deviceName": "Meteostation",
+          "devEui": "3834373156398315",
+          "deviceClassEnabled": "CLASS_C",
+          "deviceProfileName": "Meteo Station Profile"
+        },
+        "object": {
+          "batteryVoltage": 3.7,
+          "windSpeedMin": 0.5,
+          "windDirectionMax": 270,
+          "wetTemperature": 18.2,
+          "temperature": 22.5,
+          "windDirectionAvg": 245,
+          "humidity": 65,
+          "pressure": 755,
+          "rainfall": 0,
+          "windSpeedAvg": 2.1,
+          "windSpeedMax": 5.3
+        }
+      }
+    }
+  }
+]

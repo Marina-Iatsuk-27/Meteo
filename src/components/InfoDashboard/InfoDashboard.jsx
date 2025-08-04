@@ -1,5 +1,6 @@
 import React from 'react';
 import style from './InfoDashboard.module.scss';
+import Loader from "../Loader/Loader"
 import iconConductivity from '../../assets/icons/icons8-лабораторные-предметы.png';
 import iconPh from '../../assets/icons/icons8-кислота-на-поверхности.png';
 import iconSoilHumidity from '../../assets/icons/icons8-влажность.png';
@@ -16,6 +17,13 @@ import iconRainfall from '../../assets/icons/icons8-дождь.png';
 export default function InfoDashboard({ filteredDevices }) {
   console.log('filteredDevices в инфо: ', filteredDevices);
 
+ // Проверяем, есть ли данные для отображения
+ const isLoading = !filteredDevices || filteredDevices.length === 0 || 
+ filteredDevices.some(device => !device.state || !device.state.uplink);
+
+if (isLoading) {
+ return <Loader text="Загружаем данные..." />;
+}
   const renderGroundData = (device) => (
     <div className={style.dataList}>
       <h1 className={style.title}>Показатели почвы</h1>
@@ -173,10 +181,12 @@ export default function InfoDashboard({ filteredDevices }) {
       return <p>Данные не распознаны</p>;
     }
   };
+  if (!renderDeviceData) {
+    return <Loader text="Загружаем данные..."/>;
+}
 
   return (
     <div className={style.infoDashboard}>
-      
         {filteredDevices.map((device) => (
           <div className={style.card} key={device.id}>
             {renderDeviceData(device)}

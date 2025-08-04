@@ -1,3 +1,99 @@
-.canvas{
-    width: 90%;
+@use '../../assets/styles/templates' as t;
+
+.chartsContainer {
+  width: 100%;
+  padding: 20px;
+  background-color: t.$cardColor;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-top: 20px;
+
+  h2 {
+    color: t.$mainTextColor;
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    text-align: center;
+    position: relative;
+    
+    &::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 3px;
+      background: t.$khakiPrimary;
+      margin: 10px auto 0;
+    }
+  }
+
+  h3 {
+    color: t.$khakiPrimary;
+    font-size: 1.4rem;
+    margin: 30px 0 15px;
+    text-align: center;
+  }
+}
+
+.chartWrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 40px;
+  background-color: t.$mainBackgroundColor;
+  border: 1px solid t.$khakiLight;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.canvas {
+  width: 100% !important;
+  height: 350px !important;
+  
+  @media (max-width: 768px) {
+    height: 300px !important;
+  }
+  
+  @media (max-width: 480px) {
+    height: 250px !important;
+  }
+}
+
+/* Стили для подписей осей и легенды */
+.chartjs-render-monitor {
+  .chartjs-size-monitor {
+    + .chartjs-size-monitor {
+      .chartjs-tooltip {
+        background: t.$khakiDark !important;
+        border-color: t.$khakiDark !important;
+        color: white !important;
+      }
+    }
+  }
+  
+  text {
+    fill: t.$secondaryTextColor !important;
+    font-family: inherit !important;
+  }
+  
+  .chartjs-legend {
+    text-align: center !important;
+    margin-top: 15px !important;
+    
+    li {
+      display: inline-block !important;
+      margin: 0 10px !important;
+      
+      span {
+        border-radius: 3px !important;
+        display: inline-block !important;
+        margin-right: 5px !important;
+        vertical-align: middle !important;
+      }
+    }
+  }
 }

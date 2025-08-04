@@ -50,7 +50,6 @@ export default function WeatherSoilTable() {
               <th className={style["weather-soil-table__table-header-cell"]}>Температура воздуха</th>
               <th className={style["weather-soil-table__table-header-cell"]}>Влажность воздуха</th>
               <th className={style["weather-soil-table__table-header-cell"]}>Атмосферное давление</th>
-              <th className={style["weather-soil-table__table-header-cell"]}>Осадки</th>
               <th className={style["weather-soil-table__table-header-cell"]}>Направление ветра</th>
               <th className={style["weather-soil-table__table-header-cell"]}>Проводимость почвы</th>
               <th className={style["weather-soil-table__table-header-cell"]}>PH почвы</th>

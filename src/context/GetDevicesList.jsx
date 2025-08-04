@@ -23,7 +23,7 @@ export function GetDevicesList({ children }) {
     }
 
     if (!devicesList) {
-        return <Loader text="Загружаем список устройств..."/>;
+        return <Loader text="Загружаем устройства..."/>;
     }
 
     return (

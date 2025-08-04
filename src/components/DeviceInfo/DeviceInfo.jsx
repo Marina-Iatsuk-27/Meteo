@@ -23,7 +23,7 @@ export default function MeteoInfo() {
 
  
    return (
-    <div className={style.container}>
+    <div className={style.deviceInfo}>
       <h1 className={style.title}>
         {isMeteo && "Данные метеостанции"}
         {isGround && "Данные геодатчика"}

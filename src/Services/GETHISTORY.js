@@ -1,6 +1,13 @@
 
 class GETHISTORY{
     static async getDevice(id) {
+
+        //если это разработка, то возьми тестовые данные:
+      if (import.meta.env.MODE === 'development') {
+        const testData = await import('../data/testHistory.json');
+        return testData.default;
+    }
+    //конец теста
         
         // Устанавливаем границы интервала
         const fromDate = '2024-11-10T00:00'; // с 10 октября
