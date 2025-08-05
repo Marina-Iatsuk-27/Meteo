@@ -23,13 +23,20 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   transition: transform 0.2s, box-shadow 0.2s;
   min-height: 180px; // Минимальная высота для консистентности
 
   &:hover {
     transform: translateY(-3px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .status {
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
   }
 
   h3 {
@@ -96,3 +103,4 @@
     min-height: 130px;
   }
 }
+

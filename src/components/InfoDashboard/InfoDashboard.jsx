@@ -15,7 +15,7 @@ import iconRainfall from '../../assets/icons/icons8-дождь.png';
 
 
 export default function InfoDashboard({ filteredDevices }) {
-  console.log('filteredDevices в инфо: ', filteredDevices);
+  //console.log('filteredDevices в инфо: ', filteredDevices);
 
  // Проверяем, есть ли данные для отображения
  const isLoading = !filteredDevices || filteredDevices.length === 0 || 
