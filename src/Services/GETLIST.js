@@ -1,26 +1,21 @@
 
 class GETLIST{
     static async getDevicesList() {
-        const token = import.meta.env.VITE_TOKEN;
+        //const token = import.meta.env.VITE_TOKEN;
         try {
-          const response = await fetch(`api/v1/objects/`, {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
+          const response = await fetch(`/devices/summary`, {
           });
 
           
           if (!response.ok) {
             throw new Error(`Ошибка: ${response.status} - ${response.statusText}`);
           }
-        //   console.log(response);
+           //console.log(response);
           return await response.json();
           
         } catch (error) {
           console.error('Ошибка:', error);
-          return false; // при ошибке вернёт false
+          return false; 
         }
       }
 }

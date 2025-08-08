@@ -10,10 +10,13 @@ export default defineConfig({
     //для node.js
     proxy: {
        // Внешний API
-      '/api': {
-        target: 'https://sandbox.rightech.io',
-        changeOrigin: true,
-      },
+      
+        '/devices': {
+          target: 'http://185.71.82.247:3000',
+          changeOrigin: true,
+          secure: false,
+        }
+      
       // Внутренний API
     // '/internal': {
     //   target: 'http://localhost:5001',

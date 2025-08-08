@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import style from './InfoDashboard.module.scss';
-import Loader from "../Loader/Loader"
+import Loader from "../Loader/Loader";
+import { DevicesListContext } from "../../context/GetDevicesList";
+
+// Иконки 
 import iconConductivity from '../../assets/icons/icons8-лабораторные-предметы.png';
 import iconPh from '../../assets/icons/icons8-кислота-на-поверхности.png';
 import iconSoilHumidity from '../../assets/icons/icons8-влажность.png';
@@ -12,187 +15,205 @@ import iconAirTemperature from '../../assets/icons/icons8-температура
 import iconAirHumidity from '../../assets/icons/icons8-влажность.png';
 import iconPressure from '../../assets/icons/icons8-давление.png';
 import iconRainfall from '../../assets/icons/icons8-дождь.png';
+import iconWindSpeed from '../../assets/icons/icons8-ветер.png';
+import iconWindDirection from '../../assets/icons/icons8-компас.png';
+import iconUV from '../../assets/icons/icons8-uv-index.png';
+
+//взяты отсюда: https://icons8.com/icons/set, цвет #88B999
 
 
-export default function InfoDashboard({ filteredDevices }) {
-  //console.log('filteredDevices в инфо: ', filteredDevices);
 
- // Проверяем, есть ли данные для отображения
- const isLoading = !filteredDevices || filteredDevices.length === 0 || 
- filteredDevices.some(device => !device.state || !device.state.uplink);
+export default function InfoDashboard() {
+  const { devicesList } = useContext(DevicesListContext);
 
-if (isLoading) {
- return <Loader text="Загружаем данные..." />;
-}
-  const renderGroundData = (device) => (
+  if (!devicesList || devicesList.length === 0) {
+    return <Loader text="Загружаем данные..." />;
+  }
+
+  //КОД НИЖЕ ДЛЯ ЗАБОРА ДАННЫХ из raw_data непосредственно:
+
+  // const extractObjectFromRawData = (packet) => {
+  //   try {
+  //     if (typeof packet.raw_data !== 'string') return null;
+  //     const parsed = JSON.parse(packet.raw_data);
+  //     return parsed.object || null;
+  //   } catch (err) {
+  //     console.error("Ошибка парсинга raw_data:", err);
+  //     return null;
+  //   }
+  // };
+  // const mergeMeteoData = (readings) => {
+  //   const result = {};
+  //   readings.forEach(packet => {
+  //     const data = extractObjectFromRawData(packet);
+  //     if (!data) return;
+  
+  //     for (let key in data) {
+  //       if (data[key] !== null && data[key] !== undefined) {
+  //         result[key] = result[key] ?? data[key];
+  //       }
+  //     }
+  //   });
+  //   return result;
+  // };
+  // const pickLatestGroundData = (readings) => {
+  //   for (let packet of readings) {
+  //     const data = extractObjectFromRawData(packet);
+  //     if (!data) continue;
+  
+  //     const hasData = Object.keys(data).some(key =>
+  //       ['temperature', 'humidity', 'ph', 'conductivity'].includes(key) && data[key] !== null
+  //     );
+  //     if (hasData) return data;
+  //   }
+  //   return null;
+  // };
+  
+  
+  
+
+  // Для meteo: объединяем 3 пакета
+  const mergeMeteoData = (readings) => {
+    const result = {};
+    readings.forEach(packet => {
+      for (let key in packet) {
+        if (packet[key] !== null && key !== "time") {
+          result[key] = result[key] ?? packet[key];
+        }
+      }
+    });
+    return result;
+  };
+
+  // Для ground: берём первый по убыванию времени, в котором есть данные
+  const pickLatestGroundData = (readings) => {
+    for (let packet of readings) {
+      const hasData = Object.keys(packet).some(key =>
+        ['temperature', 'humidity', 'ph', 'conductivity'].includes(key) && packet[key] !== null
+      );
+      if (hasData) return packet;
+    }
+    return null;
+  };
+
+  const renderGroundData = (data) => (
     <div className={style.dataList}>
       <h1 className={style.title}>Показатели почвы</h1>
-      <div className={style.rows}> 
-
-        <div className={style.dataRow}>
-          <img src={iconConductivity} alt="Проводимость" className={style.icon} />
-          <div className={style.dataInfo}>
-            <span className={style.label}>Проводимость:</span>
-            <div className={style.dataIndication}>
-              <span className={style.text}>{device.state.uplink.object.conductivity || ''}</span>
-              <span className={style.unit}>мСм/см</span> 
-            </div>
-          </div> 
-        </div>
-
-
-        <div className={style.dataRow}>
-          <img src={iconPh} alt="pH" className={style.icon} />
-          <div className={style.dataInfo}>
-            <span className={style.label}>pH:</span>
-            <div className={style.dataIndication}>
-              <span className={style.text}>{device.state.uplink.object.ph || ''}</span>
-              <span className={style.unit}>pH</span>
-            </div>
-          </div>
-        </div>
-
-        <div className={style.dataRow}>
-          <img src={iconSoilHumidity} alt="Влажность почвы" className={style.icon} />
-          <div className={style.dataInfo}>
-            <span className={style.label}>Влажность почвы:</span>
-            <div className={style.dataIndication}>
-              <span className={style.text}>{device.state.uplink.object.humidity || ''}</span>
-              <span className={style.unit}>%</span>
-            </div>
-          </div>
-        </div>
-
-        <div className={style.dataRow}>
-          <img src={iconSoilTemperature} alt="Температура почвы" className={style.icon} />
-          <div className={style.dataInfo}>
-            <span className={style.label}>Температура почвы:</span>
-            <div className={style.dataIndication}>
-              <span className={style.text}>{device.state.uplink.object.temperature || ''}</span>
-              <span className={style.unit}>°C</span>
-            </div>
-          </div>
-        </div>
-
-        <div className={style.dataRow}>
-          <img src={iconNitrogen} alt="Азот" className={style.icon} />
-          <div className={style.dataInfo}>
-            <span className={style.label}>Азот:</span>
-            <div className={style.dataIndication}>
-              <span className={style.text}>{device.state.uplink.object.nitrogen || ''}</span>
-              <span className={style.unit}>г/кг</span>
-            </div>
-          </div>
-        </div>
-
-        <div className={style.dataRow}>
-          <img src={iconPhosphorus} alt="Фосфор" className={style.icon} />
-          <div className={style.dataInfo}>
-            <span className={style.label}>Фосфор:</span>
-            <div className={style.dataIndication}>
-              <span className={style.text}>{device.state.uplink.object.phosphorus || ''}</span>
-              <span className={style.unit}>г/кг</span>
-            </div>
-          </div>
-        </div>
-
-        <div className={style.dataRow}>
-          <img src={iconPotassium} alt="Калий" className={style.icon} />
-          <div className={style.dataInfo}>
-            <span className={style.label}>Калий:</span>
-            <div className={style.dataIndication}>
-              <span className={style.text}>{device.state.uplink.object.potassium || ''}</span>
-              <span className={style.unit}>г/кг</span>
-            </div>
-          </div>
-        </div>
-
+      <div className={style.rows}>
+        <RenderRow icon={iconConductivity} label="Проводимость" value={data.conductivity} unit="мСм/см" />
+        <RenderRow icon={iconPh} label="pH" value={data.ph} unit="pH" />
+        <RenderRow icon={iconSoilHumidity} label="Влажность почвы" value={data.humidity} unit="%" />
+        <RenderRow icon={iconSoilTemperature} label="Температура почвы" value={data.temperature} unit="°C" />
+        <RenderRow icon={iconNitrogen} label="Азот" value={data.nitrogen} unit="г/кг" />
+        <RenderRow icon={iconPhosphorus} label="Фосфор" value={data.phosphorus} unit="г/кг" />
+        <RenderRow icon={iconPotassium} label="Калий" value={data.potassium} unit="г/кг" />
       </div>
-      
     </div>
   );
-  
-  // Функция для отображения данных для устройства с намеком на "meteo"
-  const renderMeteoData = (device) => (
+
+  const renderMeteoData = (data) => (
     <div className={style.dataList}>
-       <h1 className={style.title}>Показатели воздуха</h1>
-       <div className={style.rows}>
-       <div className={style.dataRow}>
-        <img src={iconAirTemperature} alt="Температура воздуха" className={style.icon} />
-        <div className={style.dataInfo}>
-          <span className={style.label}>Температура воздуха:</span>
-          <div className={style.dataIndication}>
-            <span className={style.text}>{device.state.uplink.object.temperature || ''}</span>
-            <span className={style.unit}>°C</span>
-          </div>
-        </div>
-      </div>
-
-      <div className={style.dataRow}>
-        <img src={iconAirHumidity} alt="Влажность воздуха" className={style.icon} />
-        <div className={style.dataInfo}>
-          <span className={style.label}>Влажность воздуха:</span>
-          <div className={style.dataIndication}>
-            <span className={style.text}>{device.state.uplink.object.humidity || ''}</span>
-            <span className={style.unit}>%</span>
-          </div>
-        </div>
-      </div>
-
-      <div className={style.dataRow}>
-        <img src={iconPressure} alt="Атмосферное давление" className={style.icon} />
-        <div className={style.dataInfo}>
-          <span className={style.label}>Атмосферное давление:</span>
-          <div className={style.dataIndication}>
-            <span className={style.text}>{device.state.uplink.object.pressure || ''}</span>
-            <span className={style.unit}>мм рт. ст.</span>
-          </div>
-        </div>
-      </div>
-
-      <div className={style.dataRow}>
-        <img src={iconRainfall} alt="Осадки" className={style.icon} />
-        <div className={style.dataInfo}>
-          <span className={style.label}>Осадки:</span>
-          <div className={style.dataIndication}>
-            <span className={style.text}>{device.state.uplink.object.rainfall || ''}</span>
-            <span className={style.unit}>мм</span>
-          </div>
-        </div>
-      </div>
+      <h1 className={style.title}>Показатели воздуха</h1>
+      <div className={style.rows}>
+        <RenderRow icon={iconAirTemperature} label="Температура воздуха" value={data.temperature} unit="°C" />
+        <RenderRow icon={iconAirHumidity} label="Влажность воздуха" value={data.humidity} unit="%" />
+        <RenderRow icon={iconPressure} label="Давление" value={data.pressure} unit="мм рт. ст." />
+        <RenderRow icon={iconRainfall} label="Осадки" value={data.rainfall} unit="мм" />
+        <RenderRow icon={iconWindSpeed} label="Скорость ветра" value={data.windSpeed} unit="м/с" />
+        <WindDirectionRow direction={data.windDirection} />
+        <RenderRow icon={iconUV} label="UV-индекс" value={data.uvIndex} unit="" />
 
       </div>
-      
     </div>
   );
-  
 
+  const RenderRow = ({ icon, label, value, unit }) => (
+    <div className={style.dataRow}>
+      <img src={icon} alt={label} className={style.icon} />
+      <div className={style.dataInfo}>
+        <span className={style.label}>{label}:</span>
+        <div className={style.dataIndication}>
+          <span className={style.text}>{value ?? '-'}</span>
+          <span className={style.unit}>{value !== null ? unit : ''}</span>
+        </div>
+      </div>
+    </div>
+  );
 
-  
-
-  // Определение, какие данные показывать в зависимости от имени устройства
-  const renderDeviceData = (device) => {
-    const deviceName = device.state.uplink.deviceInfo.deviceName.toLowerCase();
-    if (deviceName.includes('ground')) {
-      return renderGroundData(device);
-    } else if (deviceName.includes('meteo')) {
-      return renderMeteoData(device);
-    } else {
-      return <p>Данные не распознаны</p>;
+  const WindDirectionRow = ({ direction }) => {
+    if (direction === null || direction === undefined) {
+      return (
+        <div className={style.dataRow}>
+          <img src={iconWindDirection} alt="Ветер" className={style.icon} />
+          <div className={style.dataInfo}>
+            <span className={style.label}>Направление ветра:</span>
+            <div className={style.dataIndication}>
+              <span className={style.text}>-</span>
+            </div>
+          </div>
+        </div>
+      );
     }
+  
+    const angle = direction % 360;
+  
+    const directionText = getDirectionText(angle);
+  
+    return (
+      <div className={style.dataRow}>
+        <img
+          src={iconWindDirection}
+          alt="Ветер"
+          className={style.icon}
+          style={{ transform: `rotate(${angle}deg)` }}
+        />
+        <div className={style.dataInfo}>
+          <span className={style.label}>Направление ветра:</span>
+          <div className={style.dataIndication}>
+            <span className={style.text}>{directionText}</span>
+          </div>
+        </div>
+      </div>
+    );
   };
-  if (!renderDeviceData) {
-    return <Loader text="Загружаем данные..."/>;
-}
+  
+  const getDirectionText = (angle) => {
+    if (angle >= 0 && angle <= 22 || angle > 337) return 'С';
+    if (angle > 22 && angle <= 67) return 'СВ';
+    if (angle > 67 && angle <= 112) return 'В';
+    if (angle > 112 && angle <= 157) return 'ЮВ';
+    if (angle > 157 && angle <= 202) return 'Ю';
+    if (angle > 202 && angle <= 247) return 'ЮЗ';
+    if (angle > 247 && angle <= 292) return 'З';
+    if (angle > 292 && angle <= 337) return 'СЗ';
+    return '-';
+  };
+  
+
+  const renderDevice = (device) => {
+    const name = device.deviceName.toLowerCase();
+    const readings = device.lastReadings;
+
+    if (name.includes('ground')) {
+      const data = pickLatestGroundData(readings);
+      return data ? renderGroundData(data) : <p>Нет данных по устройству</p>;
+    }
+
+    if (name.includes('meteo')) {
+      const data = mergeMeteoData(readings);
+      return renderMeteoData(data);
+    }
+
+    return <p>Тип устройства не распознан</p>;
+  };
 
   return (
     <div className={style.infoDashboard}>
-        {filteredDevices.map((device) => (
-          <div className={style.card} key={device.id}>
-            {renderDeviceData(device)}
-          </div>
-        ))}
-      
+      {devicesList.map(device => (
+        <div className={style.card} key={device.devEui}>
+          {renderDevice(device)}
+        </div>
+      ))}
     </div>
   );
 }
