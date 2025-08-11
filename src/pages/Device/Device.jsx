@@ -9,11 +9,10 @@ function App() {
   return (
     <>
  
-            <GetDeviceInfo>
-              <DeviceInfo />
-            </GetDeviceInfo>
             <GetDeviceHistory>
+            <DeviceInfo />
               <DeviceHistory/>
+             
             </GetDeviceHistory>
             </>
          

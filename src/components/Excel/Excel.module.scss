@@ -1,6 +1,6 @@
 @use '../../assets/styles/templates' as t; // Короткий алиас для удобства
 
-.form-container {
+.excelContainer {
   display: flex;
   flex-direction: column;
   gap: 16px; // Унифицированный отступ между элементами

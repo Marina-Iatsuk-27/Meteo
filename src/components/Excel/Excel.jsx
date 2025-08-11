@@ -94,45 +94,45 @@ const downloadTemplate = () => {
 
 
   return (
-    <div className={style["form-container"]}>
-      <h1 className={style["form-container__title"]}>Загрузить справочник</h1>
-      <div className={style["form-container__upload-section"]}>
+    <div className={style["excelContainer"]}>
+      <h1 className={style["excelContainer__title"]}>Загрузить справочник</h1>
+      <div className={style["excelContainer__upload-section"]}>
         <input
           type="file"
           accept=".xlsx, .xls"
           onChange={handleFile}
-          className={style["form-container__file-input"]}
+          className={style["excelContainer__file-input"]}
         />
         <button
           onClick={downloadTemplate}
-          className={style["form-container__download-button"]}
+          className={style["excelContainer__download-button"]}
         >
           Скачать шаблон
         </button>
        
       </div>
-      <div className={style["form-container__note"]}>Выгрузите шаблон, заполните  и загрузите его в систему</div>
+      <div className={style["excelContainer__note"]}>Выгрузите шаблон, заполните  и загрузите его в систему</div>
       
       {data.length > 0 && (
-        <div className={style["form-container__table-section"]}>
-          <p className={style["form-container__note-info"]}>Превью:</p>
-          <table className={style["form-container__table"]}>
-            <thead className={style["form-container__table-header"]}>
+        <div className={style["excelContainer__table-section"]}>
+          <p className={style["excelContainer__note-info"]}>Превью:</p>
+          <table className={style["excelContainer__table"]}>
+            <thead className={style["excelContainer__table-header"]}>
               <tr>
                 {Object.keys(data[0]).map((key) => (
-                  <th key={key} className={style["form-container__table-header-cell"]}>
+                  <th key={key} className={style["excelContainer__table-header-cell"]}>
                     {key}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className={style["form-container__table-body"]}>
+            <tbody className={style["excelContainer__table-body"]}>
               {data.map((row, rowIndex) => (
-                <tr key={rowIndex} className={style["form-container__table-row"]}>
+                <tr key={rowIndex} className={style["excelContainer__table-row"]}>
                   {Object.values(row).map((value, colIndex) => (
                     <td
                       key={colIndex}
-                      className={style["form-container__table-cell"]}
+                      className={style["excelContainer__table-cell"]}
                     >
                       {value}
                     </td>
@@ -143,7 +143,7 @@ const downloadTemplate = () => {
           </table>
         </div>
       )}
-      <button className={style["form-container__saveButton"]}>Сохранить справочник</button>
+      <button className={style["excelContainer__saveButton"]}>Сохранить справочник</button>
     </div>
   );
 };

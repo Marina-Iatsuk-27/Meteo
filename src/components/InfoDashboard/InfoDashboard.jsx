@@ -30,47 +30,6 @@ export default function InfoDashboard() {
     return <Loader text="Загружаем данные..." />;
   }
 
-  //КОД НИЖЕ ДЛЯ ЗАБОРА ДАННЫХ из raw_data непосредственно:
-
-  // const extractObjectFromRawData = (packet) => {
-  //   try {
-  //     if (typeof packet.raw_data !== 'string') return null;
-  //     const parsed = JSON.parse(packet.raw_data);
-  //     return parsed.object || null;
-  //   } catch (err) {
-  //     console.error("Ошибка парсинга raw_data:", err);
-  //     return null;
-  //   }
-  // };
-  // const mergeMeteoData = (readings) => {
-  //   const result = {};
-  //   readings.forEach(packet => {
-  //     const data = extractObjectFromRawData(packet);
-  //     if (!data) return;
-  
-  //     for (let key in data) {
-  //       if (data[key] !== null && data[key] !== undefined) {
-  //         result[key] = result[key] ?? data[key];
-  //       }
-  //     }
-  //   });
-  //   return result;
-  // };
-  // const pickLatestGroundData = (readings) => {
-  //   for (let packet of readings) {
-  //     const data = extractObjectFromRawData(packet);
-  //     if (!data) continue;
-  
-  //     const hasData = Object.keys(data).some(key =>
-  //       ['temperature', 'humidity', 'ph', 'conductivity'].includes(key) && data[key] !== null
-  //     );
-  //     if (hasData) return data;
-  //   }
-  //   return null;
-  // };
-  
-  
-  
 
   // Для meteo: объединяем 3 пакета
   const mergeMeteoData = (readings) => {
@@ -208,7 +167,7 @@ export default function InfoDashboard() {
   };
 
   return (
-    <div className={style.infoDashboard}>
+    <div className={style.infoDashboardContainer}>
       {devicesList.map(device => (
         <div className={style.card} key={device.devEui}>
           {renderDevice(device)}

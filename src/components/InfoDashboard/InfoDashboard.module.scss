@@ -1,7 +1,7 @@
 @use '../../assets/styles/templates' as templates; // Импорт переменных
 
 /* Базовые стили */
-.infoDashboard {
+.infoDashboardContainer {
   width: 80vw;
   display: flex;
   flex-direction: row;

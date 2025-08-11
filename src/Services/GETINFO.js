@@ -2,23 +2,23 @@ class GETINFO {
   static async getDevice(id) { // добавляем параметр id для передачи
 
        //если это разработка, то возьми тестовые данные и найду объект с нужный айди (айди из devEui взят):
-      //  if (import.meta.env.MODE === 'development') {
-      //   const testData = await import('../data/testInfo.json');
+       if (import.meta.env.MODE === 'development') {
+        const testData = await import('../data/testInfo.json');
         
-      //   // Ищем устройство по id или _id
-      //   const device = testData.default.find(d => d.id === id || d._id === id);
+        // Ищем устройство по id или _id
+        const device = testData.default.find(d => d.id === id || d._id === id);
         
-      //   if (!device) {
-      //     console.error(`Устройство с ID ${id} не найдено в тестовых данных`);
-      //     return null;
-      //   }
+        if (!device) {
+          console.error(`Устройство с ID ${id} не найдено в тестовых данных`);
+          return null;
+        }
         
-      //   // Возвращаем данные в ожидаемом формате
-      //   return {
-      //     name: device.name,
-      //     state: device.state
-      //   };
-      // }
+        // Возвращаем данные в ожидаемом формате
+        return {
+          name: device.name,
+          state: device.state
+        };
+      }
       //конец теста
 
 

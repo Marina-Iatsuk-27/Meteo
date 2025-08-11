@@ -1,5 +1,13 @@
 @use '../../assets/styles/templates' as templates; // Импорт переменных
 
+//убираем флаг украины. Важно добавить global
+:global(.leaflet-attribution-flag) {
+  display: none !important;
+}
+
+
+
+
 /* Базовые стили */
 .mapContainer {
   width: 80vw;

@@ -15,6 +15,11 @@ export default defineConfig({
           target: 'http://185.71.82.247:3000',
           changeOrigin: true,
           secure: false,
+        },
+        '/data': {
+          target: 'http://185.71.82.247:3000',
+          changeOrigin: true,
+          secure: false,
         }
       
       // Внутренний API

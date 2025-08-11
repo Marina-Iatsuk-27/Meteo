@@ -215,7 +215,7 @@ export default function DashboardHistory({ deviceHistory, isMeteo, isGround }) {
 
 
     return (
-        <div className={style.chartsContainer}>
+        <div className={style.dashboardHistoryContainer}>
           <h2>График изменений</h2>
           {isMeteo && (
             <>

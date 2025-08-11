@@ -19,6 +19,7 @@ body{
   background-color: templates.$mainBackgroundColor;
 }
 #root{
+  width: 100% !important;
   display: flex;
   flex-direction: column;
   align-items: center;
