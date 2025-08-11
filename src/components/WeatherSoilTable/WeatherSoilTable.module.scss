@@ -4,35 +4,25 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  width: 80vw;
+  width: 90vw;
   padding: 20px;
-  margin: 40px;
+  margin: 40px auto;
   border-radius: 12px;
-  background: white;
+  background: rgba(255, 255, 255, 0.238);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 
   &__header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
+    margin-bottom: 12px;
   }
 
   &__title {
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 20px;
+    //font-weight: 600;
     color: t.$khakiPrimary;
     margin: 0;
-  }
-
-  &__refresh-button {
-    @include t.default-button-style(8px 16px, 13px, 6px);
-    background-color: lighten(t.$khakiPrimary, 10%);
-    
-    &:hover {
-      background-color: t.$khakiPrimary;
-    }
   }
 
   &__table-section {
@@ -43,68 +33,105 @@
 
   &__table {
     width: 100%;
+    min-width: 1200px;
     border-collapse: separate;
     border-spacing: 0;
-    font-size: 13px;
+    font-size: 14px;
     color: t.$secondaryTextColor;
-    min-width: 1200px; // Минимальная ширина для всех колонок
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
-    &-header {
-      position: sticky;
-      top: 0;
-    }
-
-    &-header-cell {
-      padding: 10px 12px;
-      text-align: left;
-      font-weight: 500;
-      color: white;
+    thead {
       background: t.$khakiPrimary;
-      border-bottom: 1px solid darken(t.$khakiPrimary, 8%);
-      white-space: nowrap;
-      
-      &:first-child {
-        border-top-left-radius: 7px;
-      }
-      
-      &:last-child {
-        border-top-right-radius: 7px;
-      }
-    }
+      color: t.$mainBackgroundColor;;
+      font-weight: 600;
 
-    &-row {
-      transition: background-color 0.15s;
+      th {
+        padding: 10px 14px;
+        text-align: center;
+        border-right: 1px solid darken(t.$khakiPrimary, 12%);
+        
 
-      &:nth-child(even) {
-        background-color: lighten(t.$khakiPrimary, 48%);
-      }
+        &:first-child {
+          text-align: left;
+          padding-left: 20px;
+          min-width: 180px;
+          border-top-left-radius: 8px;
+          border-right: 1px solid darken(t.$khakiPrimary, 12%);
+        }
+        &:last-child {
+          border-top-right-radius: 8px;
+          border-right: none;
+        }
 
-      &:hover {
-        background-color: lighten(t.$khakiPrimary, 42%);
-      }
+        &.min-header {
+          background-color: lighten(t.$khakiLight, 5%);
+          color: t.$khakiLight;
+          font-weight: 600;
+          border-right: 1px solid lighten(t.$khakiLight, 10%);
+        }
 
-      &:last-child {
-        td {
-          border-bottom: none;
-          
-          &:first-child {
-            border-bottom-left-radius: 7px;
-          }
-          
-          &:last-child {
-            border-bottom-right-radius: 7px;
-          }
+        &.max-header {
+          background-color: darken(t.$khakiLight, 10%);
+          color: t.$khakiDark;
+          font-weight: 700;
+          border-right: 1px solid t.$khakiDark;
         }
       }
     }
 
-    &-cell {
-      padding: 10px 12px;
-      border-bottom: 1px solid lighten(t.$khakiPrimary, 45%);
-      max-width: 200px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+   
+      tbody {
+        tr {
+          transition: background-color 0.3s ease;
+          
+      
+          &:nth-child(odd) {
+            background-color: t.$cardColor;
+          }
+      
+          &:nth-child(even) {
+            background-color: t.$mainBackgroundColor;
+          }
+      
+          &:hover {
+            background-color: lighten(t.$khakiLight, 45%);
+          }
+        }
+      
+      
+
+      td {
+        padding: 10px 14px;
+        border-bottom: 1px solid lighten(t.$khakiPrimary, 45%);
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: center;
+        vertical-align: middle;
+
+        &:first-child {
+          text-align: left;
+          font-weight: 600;
+          color: t.$khakiDark;
+          max-width: 220px;
+          padding-left: 20px;
+          white-space: normal;
+        }
+
+        &.min-cell {
+          background-color: rgba(233, 237, 202, 0.156); // полупрозрачный accentBeige
+          color: t.$khakiLight;
+          font-weight: 600;
+        }
+        
+        &.max-cell {
+          background-color: rgba(82, 93, 35, 0.359); // полупрозрачный khakiLight
+          color: t.$khakiDark;
+          font-weight: 700;
+        }
+        
+      }
     }
   }
 }

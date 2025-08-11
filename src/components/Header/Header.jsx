@@ -44,7 +44,7 @@ export default function Header() {
                 setMenuOpen(false);
               }}
             >
-              Библиотека
+              Справочник
             </li>
           </ul>
         </nav>
