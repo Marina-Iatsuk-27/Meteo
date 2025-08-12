@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: 20px;
+  //gap: 20px;
   padding: 3% 20px 20px;
 }
 
@@ -45,7 +45,7 @@
 .rows {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 20px;
+  gap: 10px;
 }
 
 .dataRow {
@@ -81,8 +81,8 @@
 }
 
 .icon {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   margin: 5%;
 }
 

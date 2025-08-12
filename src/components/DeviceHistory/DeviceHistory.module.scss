@@ -32,7 +32,7 @@
     background-color: t.$khakiPrimary;
     color: t.$cardColor;
     font-weight: bold;
-    white-space: nowrap; // чтобы заголовки не ломались
+ 
   }
 
   td {
@@ -60,7 +60,7 @@
   @media (min-width: 1440px) {
     max-width: 80vw;
     .title {
-      font-size: 2rem;
+      font-size: 1rem;
     }
     th,
     td {
