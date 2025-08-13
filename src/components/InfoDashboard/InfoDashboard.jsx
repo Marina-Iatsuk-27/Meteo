@@ -25,35 +25,69 @@ import iconUV from '../../assets/icons/icons8-uv-index.png';
 
 export default function InfoDashboard() {
   const { devicesList } = useContext(DevicesListContext);
+  console.log('что в devicesList в инфодашборд:',devicesList);
+  
 
   if (!devicesList || devicesList.length === 0) {
     return <Loader text="Загружаем данные..." />;
   }
 
 
-  // Для meteo: объединяем 3 пакета
-  const mergeMeteoData = (readings) => {
-    const result = {};
-    readings.forEach(packet => {
-      for (let key in packet) {
-        if (packet[key] !== null && key !== "time") {
-          result[key] = result[key] ?? packet[key];
+// Универсальная функция нормализации пакета
+const normalizePacket = (packet) => {
+  let data = { ...packet };
+  
+  if (packet.raw_data) {
+    try {
+      const parsed = JSON.parse(packet.raw_data);
+      if (parsed.object) {
+        for (let key in parsed.object) {
+          // Подставляем только если сейчас null или undefined
+          if (
+            (data[key] === null || data[key] === undefined) &&
+            parsed.object[key] !== "undefined" &&
+            parsed.object[key] !== null
+          ) {
+            // Преобразуем числовые строки в число
+            const num = parseFloat(parsed.object[key]);
+            data[key] = isNaN(num) ? parsed.object[key] : num;
+          }
         }
       }
-    });
-    return result;
-  };
-
-  // Для ground: берём первый по убыванию времени, в котором есть данные
-  const pickLatestGroundData = (readings) => {
-    for (let packet of readings) {
-      const hasData = Object.keys(packet).some(key =>
-        ['temperature', 'humidity', 'ph', 'conductivity'].includes(key) && packet[key] !== null
-      );
-      if (hasData) return packet;
+    } catch (err) {
+      console.error("Ошибка парсинга raw_data:", err);
     }
-    return null;
-  };
+  }
+  
+  return data;
+};
+
+// Для meteo — объединяем 3 пакета
+const mergeMeteoData = (readings) => {
+  const result = {};
+  readings.map(normalizePacket).forEach(packet => {
+    for (let key in packet) {
+      if (packet[key] !== null && key !== "time") {
+        result[key] = result[key] ?? packet[key];
+      }
+    }
+  });
+  console.log('result',result);
+  
+  return result;
+};
+
+// Для ground — берём первый по убыванию времени с данными
+const pickLatestGroundData = (readings) => {
+  for (let packet of readings.map(normalizePacket)) {
+    const hasData = Object.keys(packet).some(key =>
+      ['temperature', 'humidity', 'ph', 'conductivity'].includes(key) && packet[key] !== null
+    );
+    if (hasData) return packet;
+  }
+  return null;
+};
+
 
   const renderGroundData = (data) => (
     <div className={style.dataList}>
@@ -74,14 +108,16 @@ export default function InfoDashboard() {
     <div className={style.dataList}>
       <h1 className={style.title}>Показатели воздуха</h1>
       <div className={style.rows}>
-        <RenderRow icon={iconAirTemperature} label="Температура воздуха" value={data.temperature} unit="°C" />
-        <RenderRow icon={iconAirHumidity} label="Влажность воздуха" value={data.humidity} unit="%" />
-        <RenderRow icon={iconPressure} label="Давление" value={data.pressure} unit="мм рт. ст." />
-        <RenderRow icon={iconRainfall} label="Осадки" value={data.rainfall} unit="мм" />
-        <RenderRow icon={iconWindSpeed} label="Скорость ветра" value={data.windSpeed} unit="м/с" />
-        <WindDirectionRow direction={data.windDirection} />
-        <RenderRow icon={iconUV} label="UV-индекс" value={data.uvIndex} unit="" />
-
+      <RenderRow icon={iconAirTemperature} label="Температура воздуха" value={data.temperature} unit="°C" />
+      <RenderRow icon={iconAirHumidity} label="Влажность воздуха" value={data.humidity} unit="%" />
+      <RenderRow icon={iconPressure} label="Давление" value={data.pressure} unit="мм рт. ст." />
+      <RenderRow icon={iconRainfall} label="Осадки" value={data.rainfall} unit="мм" />
+      <RenderRow icon={iconWindSpeed} label="Скорость ветра (средняя)" value={data.windSpeedAvg} unit="м/с" />
+      <RenderRow icon={iconWindSpeed} label="Скорость ветра (мин)" value={data.windSpeedMin} unit="м/с" />
+      <RenderRow icon={iconWindSpeed} label="Скорость ветра (макс)" value={data.windSpeedMax} unit="м/с" />
+      <WindDirectionRow direction={data.windDirectionAvg} label="Направление ветра (среднее)" />
+      <WindDirectionRow direction={data.windDirectionMax} label="Направление ветра (макс)" />
+      <RenderRow icon={iconUV} label="UV-индекс" value={data.uvIndex} />
       </div>
     </div>
   );
