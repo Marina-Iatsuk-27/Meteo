@@ -1,7 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useContext,useState } from 'react';
 import style from './InfoDashboard.module.scss';
 import Loader from "../Loader/Loader";
 import { DevicesListContext } from "../../context/GetDevicesList";
+import ChartModal from '../ChartModal/ChartModal'
 
 // Иконки 
 import iconConductivity from '../../assets/icons/icons8-лабораторные-предметы.png';
@@ -26,6 +27,8 @@ import iconUV from '../../assets/icons/icons8-uv-index.png';
 export default function InfoDashboard() {
   const { devicesList } = useContext(DevicesListContext);
   console.log('что в devicesList в инфодашборд:',devicesList);
+  const [activeChart, setActiveChart] = useState(null);
+  const [selectedDevice, setSelectedDevice] = useState(null);
   
 
   if (!devicesList || devicesList.length === 0) {
@@ -89,41 +92,55 @@ const pickLatestGroundData = (readings) => {
 };
 
 
-  const renderGroundData = (data) => (
+  const renderGroundData = (data, device) => (
     <div className={style.dataList}>
       <h1 className={style.title}>Показатели почвы</h1>
       <div className={style.rows}>
-        <RenderRow icon={iconConductivity} label="Проводимость" value={data.conductivity} unit="мСм/см" />
-        <RenderRow icon={iconPh} label="pH" value={data.ph} unit="pH" />
-        <RenderRow icon={iconSoilHumidity} label="Влажность почвы" value={data.humidity} unit="%" />
-        <RenderRow icon={iconSoilTemperature} label="Температура почвы" value={data.temperature} unit="°C" />
-        <RenderRow icon={iconNitrogen} label="Азот" value={data.nitrogen} unit="г/кг" />
-        <RenderRow icon={iconPhosphorus} label="Фосфор" value={data.phosphorus} unit="г/кг" />
-        <RenderRow icon={iconPotassium} label="Калий" value={data.potassium} unit="г/кг" />
+        <RenderRow icon={iconConductivity} label="Проводимость" value={data.conductivity} unit="мСм/см" device={device} metric="conductivity" />
+        <RenderRow icon={iconPh} label="pH" value={data.ph} unit="pH" device={device} metric="ph" />
+        <RenderRow icon={iconSoilHumidity} label="Влажность почвы" value={data.humidity} unit="%" device={device} metric="humidity" />
+        <RenderRow icon={iconSoilTemperature} label="Температура почвы" value={data.temperature} unit="°C" device={device} metric="temperature" />
+        <RenderRow icon={iconNitrogen} label="Азот" value={data.nitrogen} unit="г/кг" device={device} metric="nitrogen" />
+        <RenderRow icon={iconPhosphorus} label="Фосфор" value={data.phosphorus} unit="г/кг" device={device} metric="phosphorus" />
+        <RenderRow icon={iconPotassium} label="Калий" value={data.potassium} unit="г/кг" device={device} metric="potassium" />
       </div>
     </div>
   );
 
-  const renderMeteoData = (data) => (
+  const renderMeteoData = (data, device) => (
     <div className={style.dataList}>
       <h1 className={style.title}>Показатели воздуха</h1>
       <div className={style.rows}>
-      <RenderRow icon={iconAirTemperature} label="Температура воздуха" value={data.temperature} unit="°C" />
-      <RenderRow icon={iconAirHumidity} label="Влажность воздуха" value={data.humidity} unit="%" />
-      <RenderRow icon={iconPressure} label="Давление" value={data.pressure} unit="мм рт. ст." />
-      <RenderRow icon={iconRainfall} label="Осадки" value={data.rainfall} unit="мм" />
-      <RenderRow icon={iconWindSpeed} label="Скорость ветра (средняя)" value={data.windSpeedAvg} unit="м/с" />
-      <RenderRow icon={iconWindSpeed} label="Скорость ветра (мин)" value={data.windSpeedMin} unit="м/с" />
-      <RenderRow icon={iconWindSpeed} label="Скорость ветра (макс)" value={data.windSpeedMax} unit="м/с" />
-      <WindDirectionRow direction={data.windDirectionAvg} label="Направление ветра (среднее)" />
-      <WindDirectionRow direction={data.windDirectionMax} label="Направление ветра (макс)" />
-      <RenderRow icon={iconUV} label="UV-индекс" value={data.uvIndex} />
+        <RenderRow icon={iconAirTemperature} label="Температура воздуха" value={data.temperature} unit="°C" device={device} metric="temperature" />
+      <RenderRow icon={iconAirHumidity} label="Влажность воздуха" value={data.humidity} unit="%"  device={device} metric="humidity" />
+      <RenderRow icon={iconPressure} label="Давление" value={data.pressure} unit="мм рт. ст."  device={device} metric="pressure" />
+      <RenderRow icon={iconRainfall} label="Осадки" value={data.rainfall} unit="мм"  device={device} metric="rainfall" />
+      <RenderRow icon={iconWindSpeed} label="Скорость ветра (средняя)" value={data.windSpeedAvg} unit="м/с"  device={device} metric="windSpeedAvg" />
+      <RenderRow icon={iconWindSpeed} label="Скорость ветра (мин)" value={data.windSpeedMin} unit="м/с"  device={device} metric="windSpeedMin" />
+      <RenderRow icon={iconWindSpeed} label="Скорость ветра (макс)" value={data.windSpeedMax} unit="м/с"  device={device} metric="windSpeedMax" />
+      <WindDirectionRow direction={data.windDirectionAvg} label="Направление ветра (среднее)"  device={device} metric="windDirectionAvg" />
+      <WindDirectionRow direction={data.windDirectionMax} label="Направление ветра (макс)"  device={device} metric="windDirectionMax" />
+      <RenderRow icon={iconUV} label="UV-индекс" value={data.uvIndex}  device={device} metric="temperatuvIndexure" />
       </div>
     </div>
   );
 
-  const RenderRow = ({ icon, label, value, unit }) => (
-    <div className={style.dataRow}>
+  const handleRowClick = (device, metric) => {
+    setSelectedDevice(device);
+    setActiveChart(metric);
+  };
+
+  const closeChartModal = () => {
+    setActiveChart(null);
+    setSelectedDevice(null);
+  };
+
+  const RenderRow = ({ icon, label, value, unit, device, metric }) => (
+    <div 
+      className={style.dataRow} 
+      onClick={() => handleRowClick(device, metric)}
+      style={{ cursor: 'pointer' }}
+    >
       <img src={icon} alt={label} className={style.icon} />
       <div className={style.dataInfo}>
         <span className={style.label}>{label}:</span>
@@ -191,12 +208,12 @@ const pickLatestGroundData = (readings) => {
 
     if (name.includes('ground')) {
       const data = pickLatestGroundData(readings);
-      return data ? renderGroundData(data) : <p>Нет данных по устройству</p>;
+      return data ? renderGroundData(data, device) : <p>Нет данных по устройству</p>;
     }
 
     if (name.includes('meteo')) {
       const data = mergeMeteoData(readings);
-      return renderMeteoData(data);
+      return renderMeteoData(data, device);
     }
 
     return <p>Тип устройства не распознан</p>;
@@ -209,6 +226,18 @@ const pickLatestGroundData = (readings) => {
           {renderDevice(device)}
         </div>
       ))}
+      
+      {/* Модальное окно с графиком */}
+      {activeChart && selectedDevice && (
+        <ChartModal 
+          device={selectedDevice} 
+          metric={activeChart} 
+          onClose={closeChartModal}
+        />
+      )}
     </div>
   );
+
+
+  
 }

@@ -1,0 +1,134 @@
+@use '../../assets/styles/templates' as t;
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(t.$khakiDark, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(3px);
+  animation: fadeIn 0.3s ease-out;
+  padding: 20px;
+}
+
+.modalContent {
+  background-color: t.$cardColor;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(t.$khakiDark, 0.2);
+  width: min(90vw, 900px);
+  height: min(90vh, 800px);
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid t.$khakiLight;
+  overflow: hidden;
+}
+
+.closeButton {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 32px;
+  height: 32px;
+  background-color: t.$khakiPrimary;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 2;
+
+  &:hover {
+    background-color: t.$khakiDark;
+    transform: scale(1.1);
+  }
+}
+
+h2 {
+  color: t.$mainTextColor;
+  font-size: clamp(1.2rem, 4vw, 1.5rem);
+  margin-bottom: 20px;
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid t.$khakiLight;
+  flex-shrink: 0;
+}
+
+.chartContainer {
+  flex: 1;
+  min-height: 300px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.chartWrapper {
+  width:80%;
+  height: 80%;
+  position: relative;
+  flex: 1;
+  min-height: 300px;
+}
+
+.canvas {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+}
+
+.loadingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(t.$khakiDark, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+  backdrop-filter: blur(2px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .modalContent {
+    padding: 15px;
+    height: min(95vh, 700px);
+    width: min(98vw, 900px);
+  }
+
+  .chartContainer {
+    min-height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modalContent {
+    padding: 12px;
+    height: min(95vh, 600px);
+  }
+
+  h2 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+  }
+
+  .chartContainer {
+    min-height: 200px;
+  }
+}

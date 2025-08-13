@@ -11,8 +11,9 @@ import {
 } from 'chart.js';;
 Chart.register(LineController, LineElement, PointElement, LinearScale, Title, CategoryScale, Tooltip);;
 import style from "./DashboardHistory.module.scss";
+;
 
-export default function DashboardHistory({ deviceHistory, isMeteo, isGround }) {
+export default function DashboardHistory({ deviceHistory, isMeteo, isGround,singleMetric }) {
     console.log('deviceHistory в графиках', deviceHistory);
 
     console.log('isMeteo?', isMeteo);
@@ -39,6 +40,20 @@ export default function DashboardHistory({ deviceHistory, isMeteo, isGround }) {
             return new Date(entry.time).toLocaleString();
           }
         });
+        // Если передан singleMetric, показываем только один график
+    if (singleMetric) {
+        const metricConfig = getMetricConfig(singleMetric, isMeteo, isGround);
+        if (metricConfig) {
+          chartsRef.current[`${singleMetric}Chart`] = createChart(
+            `${singleMetric}Chart`,
+            metricConfig.label,
+            timestamps,
+            reversedHistory.map(entry => entry?.value ?? null),
+            metricConfig.color
+          );
+        }
+        return;
+      }
     
         if (isMeteo) {
             chartsRef.current.temperatureChart = createChart(
@@ -226,59 +241,89 @@ export default function DashboardHistory({ deviceHistory, isMeteo, isGround }) {
     };
     
     
-    
+    const getMetricConfig = (metric, isMeteo, isGround) => {
+        const configs = {
+          temperature: { label: 'Температура (°C)', color: 'rgba(255, 99, 132, 1)' },
+          humidity: { label: 'Влажность (%)', color: 'rgba(54, 162, 235, 1)' },
+          pressure: { label: 'Давление (hPa)', color: 'rgba(75, 192, 192, 1)' },
+          rainfall: { label: 'Осадки (мм)', color: 'rgba(153, 102, 255, 1)' },
+          conductivity: { label: 'Проводимость', color: 'rgba(255, 159, 64, 1)' },
+          ph: { label: 'pH', color: 'rgba(75, 192, 192, 1)' },
+          phosphorus: { label: 'Фосфор', color: 'rgba(153, 102, 255, 1)' },
+          potassium: { label: 'Калий', color: 'rgba(255, 99, 132, 1)' },
+          salt_saturation: { label: 'Насыщенность солей', color: 'rgba(54, 162, 235, 1)' },
+          tds: { label: 'TDS', color: 'rgba(75, 192, 192, 1)' },
+          nitrogen: { label: 'Азот', color: 'rgba(255, 206, 86, 1)' },
+          windSpeedAvg: { label: 'Скорость ветра (средняя)', color: 'rgba(199, 199, 199, 1)' },
+          windSpeedMin: { label: 'Скорость ветра (мин)', color: 'rgba(99, 255, 132, 1)' },
+          windSpeedMax: { label: 'Скорость ветра (макс)', color: 'rgba(255, 99, 99, 1)' },
+          windDirectionAvg: { label: 'Направление ветра (среднее)', color: 'rgba(132, 99, 255, 1)' },
+          windDirectionMax: { label: 'Направление ветра (макс)', color: 'rgba(255, 206, 86, 1)' },
+          uvIndex: { label: 'UV-индекс', color: 'rgba(255, 159, 64, 1)' },
+        };
+        
+        return configs[metric];
+      };
 
 
-    return (
+      return (
         <div className={style.dashboardHistoryContainer}>
-          <h2>График изменений</h2>
-          {isMeteo && (
+          {singleMetric ? (
+            <div className={style.chartWrapper}>
+              <canvas id={`${singleMetric}Chart`} className={style.canvas}></canvas>
+            </div>
+          ) : (
             <>
-              <h3>Метеостанция</h3>
-              <div className={style.chartWrapper}>
-                <canvas id="temperatureChart" className={style.canvas}></canvas>
-              </div>
-              <div className={style.chartWrapper}>
-                <canvas id="humidityChart" className={style.canvas}></canvas>
-              </div>
-              <div className={style.chartWrapper}>
-                <canvas id="pressureChart" className={style.canvas}></canvas>
-              </div>
-              <div className={style.chartWrapper}>
-                <canvas id="rainfallChart" className={style.canvas}></canvas>
-              </div>
-            </>
-          )}
-          {isGround && (
-            <>
-              <h3>Геодатчик</h3>
-              <div className={style.chartWrapper}>
-                <canvas id="conductivityChart" className={style.canvas}></canvas>
-              </div>
-              <div className={style.chartWrapper}>
-                <canvas id="groundHumidityChart" className={style.canvas}></canvas>
-              </div>
-              <div className={style.chartWrapper}>
-                <canvas id="phChart" className={style.canvas}></canvas>
-              </div>
-              <div className={style.chartWrapper}>
-                <canvas id="phosphorusChart" className={style.canvas}></canvas>
-              </div>
-              <div className={style.chartWrapper}>
-                <canvas id="potassiumChart" className={style.canvas}></canvas>
-              </div>
-              <div className={style.chartWrapper}>
-                <canvas id="saltSaturationChart" className={style.canvas}></canvas>
-              </div>
-              <div className={style.chartWrapper}>
-                <canvas id="tdsChart" className={style.canvas}></canvas>
-              </div>
-              <div className={style.chartWrapper}>
-                <canvas id="groundTemperatureChart" className={style.canvas}></canvas>
-              </div>
-              <div className={style.chartWrapper}>
-                <canvas id="nitrogenChart" className={style.canvas}></canvas>
-              </div>
+              <h2>График изменений</h2>
+              {isMeteo && (
+                <>
+                  <h3>Метеостанция</h3>
+                  <div className={style.chartWrapper}>
+                    <canvas id="temperatureChart" className={style.canvas}></canvas>
+                  </div>
+                  <div className={style.chartWrapper}>
+                    <canvas id="humidityChart" className={style.canvas}></canvas>
+                  </div>
+                  <div className={style.chartWrapper}>
+                    <canvas id="pressureChart" className={style.canvas}></canvas>
+                  </div>
+                  <div className={style.chartWrapper}>
+                    <canvas id="rainfallChart" className={style.canvas}></canvas>
+                  </div>
+                </>
+              )}
+              {isGround && (
+                <>
+                  <h3>Геодатчик</h3>
+                  <div className={style.chartWrapper}>
+                    <canvas id="conductivityChart" className={style.canvas}></canvas>
+                  </div>
+                  <div className={style.chartWrapper}>
+                    <canvas id="groundHumidityChart" className={style.canvas}></canvas>
+                  </div>
+                  <div className={style.chartWrapper}>
+                    <canvas id="phChart" className={style.canvas}></canvas>
+                  </div>
+                  <div className={style.chartWrapper}>
+                    <canvas id="phosphorusChart" className={style.canvas}></canvas>
+                  </div>
+                  <div className={style.chartWrapper}>
+                    <canvas id="potassiumChart" className={style.canvas}></canvas>
+                  </div>
+                  <div className={style.chartWrapper}>
+                    <canvas id="saltSaturationChart" className={style.canvas}></canvas>
+                  </div>
+                  <div className={style.chartWrapper}>
+                    <canvas id="tdsChart" className={style.canvas}></canvas>
+                  </div>
+                  <div className={style.chartWrapper}>
+                    <canvas id="groundTemperatureChart" className={style.canvas}></canvas>
+                  </div>
+                  <div className={style.chartWrapper}>
+                    <canvas id="nitrogenChart" className={style.canvas}></canvas>
+                  </div>
+                </>
+              )}
             </>
           )}
         </div>

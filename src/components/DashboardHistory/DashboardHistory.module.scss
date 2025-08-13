@@ -1,7 +1,7 @@
 @use '../../assets/styles/templates' as t;
 
 .dashboardHistoryContainer {
-  width: 100%;
+  width: 95%;
   padding: 20px;
   background-color: t.$cardColor;
   border-radius: 10px;
@@ -34,7 +34,7 @@
 }
 
 .chartWrapper {
-  width: 100%;
+  width: 95%;
   max-width: 1200px;
   margin: 0 auto 40px;
   background-color: t.$mainBackgroundColor;

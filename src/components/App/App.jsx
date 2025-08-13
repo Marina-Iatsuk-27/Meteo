@@ -8,12 +8,14 @@ import DeviceInfo from '../../pages/Device/Device';
 import Authorisation from '../Authorisation/Authorisation';
 import Library from '../../pages/Library/Library';
 import { useAuth } from '../../context/AuthContext';
+import GetDeviceHistory from '../../context/GetDeviceHistory';
 
 function App() {
   const { token } = useAuth();
 
 
   return (
+    
     <Router>
       <Header />
       <Routes>
