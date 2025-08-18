@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import styles from './Authorisation.module.scss';
 
 export default function Authorisation() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // 👈 флаг для глазика
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -22,11 +24,8 @@ export default function Authorisation() {
         password 
       });
 
-      console.log('username:',username, 'password:',password);
-      
-
       if (isLoginMode) {
-        login(response.data.token,username);
+        login(response.data.token, username);
         navigate('/');
       } else {
         setMessage('Регистрация успешна! Теперь войдите.');
@@ -48,19 +47,31 @@ export default function Authorisation() {
           placeholder="Имя пользователя"
           required
         />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Пароль"
-          required
-        />
+
+        <div className={styles.passwordWrapper}>
+          <input
+            type={showPassword ? 'text' : 'password'} // 👈 переключение
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Пароль"
+            required
+          />
+          <span
+            className={styles.eyeIcon}
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
+        </div>
+
         <button type="submit">
           {isLoginMode ? 'Войти' : 'Зарегистрироваться'}
         </button>
       </form>
+
       {message && <p>{message}</p>}
       {error && <p className={styles.error}>{error}</p>}
+
       <button onClick={() => setIsLoginMode(!isLoginMode)}>
         {isLoginMode ? 'Нет аккаунта? Зарегистрируйтесь' : 'Уже есть аккаунт? Войдите'}
       </button>

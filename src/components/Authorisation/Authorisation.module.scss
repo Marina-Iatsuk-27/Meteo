@@ -81,6 +81,30 @@
         margin-top: 1rem;
     }
 }
+.passwordWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  input {
+    width: 100%;
+    padding-right: 35px; // место под иконку
+  }
+}
+
+.eyeIcon {
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  color: #888;
+  font-size: 1.1rem;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #333;
+  }
+}
+
 
 /* Адаптивность */
 @media (max-width: 768px) {
