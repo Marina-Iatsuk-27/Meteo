@@ -20,7 +20,7 @@ npm install xlsx
 
 
 <!-- открыть: -->
-node backend/loginApi  
+node backend/loginApi.cjx  
 npm run dev 
 
 
@@ -31,3 +31,6 @@ node backend/loginApi
 npm run dev
 
 qwertasdf2
+
+<!-- Зависимости для бэкенда на сервак: -->
+npm install pg bcrypt express jsonwebtoken cors dotenv
