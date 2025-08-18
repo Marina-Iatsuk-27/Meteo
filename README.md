@@ -34,3 +34,20 @@ qwertasdf2
 
 <!-- Зависимости для бэкенда на сервак: -->
 npm install pg bcrypt express jsonwebtoken cors dotenv
+
+<!-- ЛОГИНЫ -->
+Роль admin проставляем вручную в БД (UPDATE users
+SET role = 'admin'
+WHERE username = 'admin';)
+таблица в БД вот такая:
+users;
+                                     Table "public.users"
+  Column  |          Type          | Collation | Nullable |              Default              
+----------+------------------------+-----------+----------+-----------------------------------
+ id       | integer                |           | not null | nextval('users_id_seq'::regclass)
+ username | character varying(255) |           | not null | 
+ password | character varying(255) |           | not null | 
+ role     | character varying(20)  |           |          | 'user'::character varying
+Indexes:
+    "users_pkey" PRIMARY KEY, btree (id)
+    "users_username_key" UNIQUE CONSTRAINT, btree (username)

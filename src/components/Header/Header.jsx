@@ -1,6 +1,6 @@
 import style from "./Header.module.scss";
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
 
@@ -42,25 +42,25 @@ export default function Header() {
           </div>
 
           <nav className={style.desktopNav}>
-  <ul className={style.navMenu}>
-    {token && (
-      <>
-        <li
-          className={style.nav}
-          onClick={() => navigate('/')}
-        >
-          Главная
-        </li>
-        <li
-          className={style.nav}
-          onClick={() => navigate('/library')}
-        >
-          Справочник
-        </li>
-      </>
-    )}
-  </ul>
-</nav>
+            <ul className={style.navMenu}>
+              {token && (
+                <>
+                  <li
+                    className={style.nav}
+                    onClick={() => navigate('/')}
+                  >
+                    Главная
+                  </li>
+                  <li
+                    className={style.nav}
+                    onClick={() => navigate('/library')}
+                  >
+                    Справочник
+                  </li>
+                </>
+              )}
+            </ul>
+          </nav>
 
         </div>
 
@@ -68,14 +68,22 @@ export default function Header() {
           {token ? (
             <div className={style.userProfile}>
             <div className={style.userInfo}>
-              <span className={style.userName}>Привет, {user?.username}!</span>
               <FaUserCircle className={style.avatar} size={24} />
+              <span className={style.userName}>Привет, {user?.username}!</span>
             </div>
+          
+            {user?.role === "admin" && (
+              <Link to="/admin" className={style.adminLink}>
+                Админка
+              </Link>
+            )}
+          
             <button className={style.logoutBtn} onClick={logout}>
               <FaSignOutAlt className={style.logoutIcon} />
               Выйти
             </button>
           </div>
+          
           ) : (
             <>
               {loginOpen && (

@@ -117,6 +117,31 @@ height: 10vh;
 .logoutIcon {
   font-size: 1rem;
 }
+.adminLink {
+  @include t.default-button-style($padding: 6px 12px, $font-size: 0.8rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: t.$cardColor;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  font-weight: 600;
+
+  &:hover {
+    background-color: t.$khakiDark;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  }
+}
+
 
 
 .formPopup {

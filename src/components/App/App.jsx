@@ -5,9 +5,10 @@ import Home from '../../pages/Home/Home';
 import DeviceInfo from '../../pages/Device/Device';
 import Authorisation from '../Authorisation/Authorisation';
 import Library from '../../pages/Library/Library';
+import AdminPage from "../../pages/AdminPage/AdminPage";
 
 function App() {
-  const { token, isLoading } = useAuth();
+  const { token, isLoading,user } = useAuth();
 
   if (isLoading) {
     return <div>Загрузка...</div>;
@@ -19,19 +20,13 @@ function App() {
       <Routes>
         <Route path="/login" element={!token ? <Authorisation /> : <Navigate to="/" />} />
         
-        <Route
-          path="/"
-          element={token ? <Home /> : <Navigate to="/login" replace />}
-        />
+        <Route path="/" element={token ? <Home /> : <Navigate to="/login" replace />} />
         
-        <Route
-          path="/device/:id"
-          element={token ? <DeviceInfo /> : <Navigate to="/login" replace />}
-        />
+        <Route path="/device/:id" element={token ? <DeviceInfo /> : <Navigate to="/login" replace />} />
         
-        <Route
-          path="/library"
-          element={token ? <Library /> : <Navigate to="/login" replace />}
+        <Route path="/library" element={token ? <Library /> : <Navigate to="/login" replace />} />
+
+        <Route path="/admin" element={token ? <AdminPage /> : <Navigate to="/login" replace />}
         />
       </Routes>
     </Router>

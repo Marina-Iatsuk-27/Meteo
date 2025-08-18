@@ -25,7 +25,7 @@ export default function Authorisation() {
       });
 
       if (isLoginMode) {
-        login(response.data.token, username);
+        login(response.data.token, response.data.username, response.data.role, response.data.id);
         navigate('/');
       } else {
         setMessage('Регистрация успешна! Теперь войдите.');

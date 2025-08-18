@@ -1,0 +1,88 @@
+@use '../../assets/styles/templates' as t;
+
+.adminPage {
+  padding: 30px;
+  background-color: t.$mainBackgroundColor;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .title {
+    color: t.$mainTextColor;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+  }
+}
+
+.addUserForm {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+
+  input, select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid t.$khakiLight;
+    font-size: 14px;
+  }
+
+  button {
+    @include t.default-button-style(10px 20px, 14px, 8px);
+  }
+
+  .passwordWrapper {
+    position: relative;
+
+    input {
+      padding-right: 35px;
+    }
+
+    .eyeIcon {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: t.$secondaryTextColor;
+
+      &:hover {
+        color: t.$khakiDark;
+      }
+    }
+  }
+}
+
+.userList {
+  list-style: none;
+  width: 60%;
+  padding: 0;
+
+  .userItem {
+    background-color: t.$cardColor;
+    border: 1px solid t.$khakiLight;
+    border-radius: 10px;
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    span {
+      color: t.$mainTextColor;
+      font-weight: 600;
+    }
+
+    .deleteBtn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: crimson;
+      font-size: 18px;
+
+      &:hover {
+        color: darkred;
+      }
+    }
+  }
+}

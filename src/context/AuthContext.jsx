@@ -4,7 +4,7 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
-  const [user, setUser] = useState(null); // Добавляем состояние для пользователя
+  const [user, setUser] = useState(null);  // Добавляем состояние для пользователя
   const [isLoading, setIsLoading] = useState(true);
 
   // Проверяем токен и данные пользователя при загрузке
@@ -24,20 +24,22 @@ export function AuthProvider({ children }) {
     setIsLoading(false);
   }, []);
 
-  const login = (newToken, username) => {
+  const login = (newToken, username, role, id) => {
     localStorage.setItem('token', newToken);
-    const userData = { username };
-    localStorage.setItem('user', JSON.stringify(userData)); // Сохраняем пользователя
+    const userData = { username, role, id };
+    localStorage.setItem('user', JSON.stringify(userData));
     setToken(newToken);
-    setUser(userData); // Устанавливаем данные пользователя
+    setUser(userData);
   };
 
+  
   const logout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('user'); // Удаляем данные пользователя
+    localStorage.removeItem('user');
     setToken(null);
-    setUser(null); // Сбрасываем данные пользователя
+    setUser(null); //
   };
+  
 
   return (
     <AuthContext.Provider value={{ token, user, login, logout, isLoading }}>
