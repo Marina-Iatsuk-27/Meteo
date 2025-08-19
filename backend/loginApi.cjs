@@ -29,6 +29,17 @@ pool.query('SELECT 1 FROM users LIMIT 1', (err) => {
     console.log('Подключение к БД успешно, таблица users доступна');
   }
 });
+// Проверка таблицы reference_data
+pool.query('SELECT 1 FROM reference_data LIMIT 1', (err) => {
+  if (err) {
+    console.error('Ошибка доступа к таблице reference_data:', err.message);
+    console.log('Таблица reference_data не существует или нет прав доступа');
+  } else {
+    console.log('Таблица reference_data доступна');
+  }
+});
+
+
 
 // Регистрация
 app.post('/register', async (req, res) => {
@@ -169,6 +180,94 @@ app.put('/admin/users/:id/role', authenticateToken, isAdmin, async (req, res) =>
 //     res.status(500).send('Ошибка удаления');
 //   }
 // });
+
+// Получить все справочники
+app.get('/reference', authenticateToken, async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM reference_data');
+    return res.json(result.rows);   // return чтобы не шло дальше
+  } catch (error) {
+    console.error("Ошибка получения справочников:", error);
+    if (!res.headersSent) {
+      return res.status(500).send("Ошибка сервера");
+    }
+  }
+});
+
+
+// Сохранить справочник (одна запись из Excel)
+app.post('/reference', authenticateToken, isAdmin, async (req, res) => {
+  try {
+    const data = req.body; // сюда придёт объект, который ты сохраняешь в sessionStorage
+
+    console.log(data);
+    
+
+    const query = `
+      INSERT INTO reference_data (
+        region,
+        airTempMin, airTempMax,
+        airHumidityMin, airHumidityMax,
+        pressureMin, pressureMax,
+        windDirectionMin, windDirectionMax,
+        soilConductivityMin, soilConductivityMax,
+        soilPHMin, soilPHMax,
+        soilTempMin, soilTempMax,
+        nitrogenMin, nitrogenMax,
+        phosphorusMin, phosphorusMax,
+        potassiumMin, potassiumMax
+      )
+      VALUES (
+        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,
+        $11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21
+      )
+      RETURNING *;
+    `;
+
+    const values = [
+      data.region || "Не указан регион",
+      data.airTempMin, data.airTempMax,
+      data.airHumidityMin, data.airHumidityMax,
+      data.pressureMin, data.pressureMax,
+      data.windDirectionMin, data.windDirectionMax,
+      data.soilConductivityMin, data.soilConductivityMax,
+      data.soilPHMin, data.soilPHMax,
+      data.soilTempMin, data.soilTempMax,
+      data.nitrogenMin, data.nitrogenMax,
+      data.phosphorusMin, data.phosphorusMax,
+      data.potassiumMin, data.potassiumMax
+    ];
+
+    const { rows } = await pool.query(query, values);
+    res.status(201).json(rows[0]);
+  } catch (err) {
+    console.error('Ошибка сохранения справочника:', err);
+    res.status(500).send('Ошибка сервера');
+  }
+});
+
+// Удаление записи справочника по id
+app.delete("/reference/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(
+      "DELETE FROM reference_data WHERE id = $1 RETURNING *",
+      [id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Запись не найдена" });
+    }
+
+    res.json({ message: "Запись удалена", deleted: result.rows[0] });
+  } catch (err) {
+    console.error("Ошибка при удалении:", err);
+    res.status(500).json({ message: "Ошибка при удалении" });
+  }
+});
+
+
 
 
 const PORT = process.env.PORT || 5001;

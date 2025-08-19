@@ -136,3 +136,23 @@
     }
   }
 }
+.deleteBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+
+  img {
+    width: 18px;
+    height: 18px;
+    transition: 0.2s;
+  }
+
+  &:hover img {
+    filter: brightness(0) saturate(100%) invert(36%) sepia(93%) saturate(7482%) hue-rotate(356deg) brightness(97%) contrast(110%);
+    transform: scale(1.2);
+  }
+}
+

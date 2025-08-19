@@ -101,22 +101,56 @@ const Excel = ({ onSave }) => {
     XLSX.writeFile(workbook, "шаблон_метео.xlsx");
   };
   
-  const saveData = () => {
+  // const saveData = () => {
+  //   if (rawData.length === 0) {
+  //     alert("Нет данных для сохранения");
+  //     return;
+  //   }
+  //   const grouped = groupDataByRegion(rawData);
+  //   //sessionStorage.setItem("libraryData", JSON.stringify(grouped));
+  
+    
+
+  //   // Передаем данные наверх для обновления таблицы
+  //   if (onSave) {
+  //     onSave(grouped);
+  //   }
+  //   setPreviewData([]); // Очистить превью после сохранения
+  //   alert("Данные сохранены и добавлены в таблицу");
+  // };
+
+
+  const saveData = async () => {
     if (rawData.length === 0) {
       alert("Нет данных для сохранения");
       return;
     }
+  
     const grouped = groupDataByRegion(rawData);
-    sessionStorage.setItem("libraryData", JSON.stringify(grouped));
-
-    // Передаем данные наверх для обновления таблицы
-    if (onSave) {
-      onSave(grouped);
+  
+    try {
+      for (let entry of grouped) {
+        await fetch("http://localhost:5001/reference", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("token") // если токен хранится в localStorage
+          },
+          body: JSON.stringify(entry)
+        });
+      }
+  
+      if (onSave) {
+        onSave(grouped);
+      }
+  
+      setPreviewData([]);
+      alert("Справочник сохранён в БД");
+    } catch (error) {
+      console.error("Ошибка при сохранении справочника:", error);
+      alert("Ошибка сохранения");
     }
-    setPreviewData([]); // Очистить превью после сохранения
-    alert("Данные сохранены и добавлены в таблицу");
   };
-
   return (
     <div className={style["excelContainer"]}>
       <h1 className={style["excelContainer__title"]}>Загрузить справочник</h1>

@@ -1,88 +1,193 @@
-@use '../../assets/styles/templates' as t;
-
+@use '../../assets/styles/templates' as templates;
 .adminPage {
-  padding: 30px;
-  background-color: t.$mainBackgroundColor;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 20px;
+}
 
-  .title {
-    color: t.$mainTextColor;
-    font-size: 2.5rem;
-    margin-bottom: 30px;
-  }
+.title {
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  font-weight: bold;
 }
 
 .addUserForm {
   display: flex;
   gap: 10px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
 
-  input, select {
+.inputField {
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.passwordWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.eyeIcon {
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  color: #666;
+}
+
+
+.addBtn {
+  @include templates.default-button-style(10px 20px, 14px, 8px);
+  color: templates.$mainBackgroundColor;
+  transition: background 0.3s;
+
+  &:hover {
+    background-color: #45a049;
+  }
+
+  &:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+  }
+}
+
+.successMessage {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 6px;
+  background: #e6ffe6;
+  color: #2d862d;
+  font-weight: 600;
+}
+
+.userTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+
+  th, td {
+    border: 1px solid #ddd;
     padding: 10px;
-    border-radius: 8px;
-    border: 1px solid t.$khakiLight;
-    font-size: 14px;
+    text-align: center;
   }
 
-  button {
-    @include t.default-button-style(10px 20px, 14px, 8px);
+  th {
+    background-color: #f4f4f4;
   }
 
-  .passwordWrapper {
-    position: relative;
-
-    input {
-      padding-right: 35px;
-    }
-
-    .eyeIcon {
-      position: absolute;
-      top: 50%;
-      right: 10px;
-      transform: translateY(-50%);
-      cursor: pointer;
-      color: t.$secondaryTextColor;
-
-      &:hover {
-        color: t.$khakiDark;
-      }
-    }
+  tr:nth-child(even) {
+    background-color: #fafafa;
   }
 }
 
-.userList {
-  list-style: none;
-  width: 60%;
-  padding: 0;
+.deleteBtn {
+  border: none;
+  background: none;
+  color: #d9534f;
+  font-size: 1.2rem;
+  cursor: pointer;
 
-  .userItem {
-    background-color: t.$cardColor;
-    border: 1px solid t.$khakiLight;
-    border-radius: 10px;
-    padding: 12px 20px;
-    margin-bottom: 10px;
+  &:hover {
+    color: #c9302c;
+  }
+}
+
+
+
+.userTableContainer {
+  width: 80vw;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  padding-bottom: 20px;
+  border-radius: 8px;
+  font-size: medium;
+
+  h3 {
+    color: templates.$mainTextColor;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+  }
+
+  th {
+    background-color: templates.$khakiPrimary;
+    color: templates.$cardColor;
+    font-weight: bold;
+  }
+
+  td {
+    color: templates.$secondaryTextColor;
+    background-color: #fcf8db91;
+  }
+
+  tr:hover td {
+    background-color: #fffad0;
+  }
+
+  tr:nth-child(even) td {
+    background-color: #fcf8db;
+  }
+
+  /* Кнопка удаления */
+  .deleteBtn {
+    @include templates.default-button-style(6px 12px, 13px, 5px);
+    background-color: crimson;
+    border-radius: 6px;
+    padding: 6px 12px;
+    color: #fff;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: center;
 
-    span {
-      color: t.$mainTextColor;
-      font-weight: 600;
+    svg {
+      font-size: 14px;
     }
 
-    .deleteBtn {
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      color: crimson;
-      font-size: 18px;
+    &:hover {
+      background-color: darkred;
+    }
+  }
 
-      &:hover {
-        color: darkred;
-      }
+  /* === Адаптив === */
+  @media (max-width: 1024px) {
+    width: 90vw;
+
+    h3 {
+      font-size: 1rem;
+    }
+
+    th,
+    td {
+      padding: 10px;
+      font-size: 0.95rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    width: 95vw;
+
+    h3 {
+      font-size: 0.8rem;
+    }
+
+    th,
+    td {
+      padding: 8px;
+      font-size: 0.85rem;
     }
   }
 }
+

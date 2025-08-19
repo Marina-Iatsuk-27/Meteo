@@ -51,3 +51,43 @@ users;
 Indexes:
     "users_pkey" PRIMARY KEY, btree (id)
     "users_username_key" UNIQUE CONSTRAINT, btree (username)
+
+    создание таблицы справочника:
+    sudo -u postgres psql -d meteo -c "
+CREATE TABLE reference_data (
+    id SERIAL PRIMARY KEY,
+    region VARCHAR(255) NOT NULL,
+    airTempMin VARCHAR(50),
+    airTempMax VARCHAR(50),
+    airHumidityMin VARCHAR(50),
+    airHumidityMax VARCHAR(50),
+    pressureMin VARCHAR(50),
+    pressureMax VARCHAR(50),
+    windDirectionMin VARCHAR(50),
+    windDirectionMax VARCHAR(50),
+    soilConductivityMin VARCHAR(50),
+    soilConductivityMax VARCHAR(50),
+    soilPHMin VARCHAR(50),
+    soilPHMax VARCHAR(50),
+    soilTempMin VARCHAR(50),
+    soilTempMax VARCHAR(50),
+    nitrogenMin VARCHAR(50),
+    nitrogenMax VARCHAR(50),
+    phosphorusMin VARCHAR(50),
+    phosphorusMax VARCHAR(50),
+    potassiumMin VARCHAR(50),
+    potassiumMax VARCHAR(50),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+"
+права на таблицу (вне sql) (иначе нельзя будет подключиться к таблице):
+sudo -u postgres psql -d meteo -c "
+GRANT ALL PRIVILEGES ON TABLE users TO \"postgres-meteo\";
+GRANT USAGE, SELECT ON SEQUENCE users_id_seq TO \"postgres-meteo\";
+"
+
+sudo -u postgres psql -d meteo -c "
+GRANT ALL PRIVILEGES ON TABLE reference_data TO \"postgres-meteo\";
+GRANT USAGE, SELECT ON SEQUENCE reference_data_id_seq TO \"postgres-meteo\";
+"
+
