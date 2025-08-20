@@ -69,8 +69,13 @@ export default function Header() {
             <div className={style.userProfile}>
             <div className={style.userInfo}>
               <FaUserCircle className={style.avatar} size={24} />
-              <span className={style.userName}>Привет, {user?.username}!</span>
+              <div className={style.userNameContainer}>
+                <span className={style.userName}>Привет, {user?.username}!</span>
+                <span className={style.userRole}>Роль: {user?.username === 'admin' ? 'агроном' : 'наблюдатель'}</span>
+              </div>
+              
             </div>
+          
           
             {user?.role === "admin" && (
               <Link to="/admin" className={style.adminLink}>

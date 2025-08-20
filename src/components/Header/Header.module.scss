@@ -76,12 +76,22 @@ height: 10vh;
     background: rgba(255, 255, 255, 0.08);
   }
 }
-
+.userNameContainer{
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+}
 .userName {
   color: t.$cardColor;
   font-size: 1rem;
   font-weight: 600;
   letter-spacing: 0.3px;
+}
+.userRole{
+    color: t.$cardColor;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.3px; 
 }
 
 .avatar {

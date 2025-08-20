@@ -38,18 +38,35 @@ export default function DeviceHistory() {
         if (isEmpty(val)) return "–";
         return val;
     };
+
+    // --- функция для получения значения из объекта с учетом raw_data ---
+    const getValue = (item, key) => {
+        // Сначала проверяем верхний уровень
+        if (item[key] !== undefined && !isEmpty(item[key])) {
+            return normalize(item[key]);
+        }
+        
+        // Если нет в верхнем уровне, проверяем raw_data.object
+        if (item.raw_data) {
+            try {
+                const rawObj = JSON.parse(item.raw_data);
+                if (rawObj?.object && rawObj.object[key] !== undefined && !isEmpty(rawObj.object[key])) {
+                    return normalize(rawObj.object[key]);
+                }
+            } catch (e) {
+                console.error("Error parsing raw_data:", e);
+            }
+        }
+        
+        return null;
+    };
+
     // --- универсальный фильтр: убирает строки, где все ключи пустые/null/undefined ---
     const cleanData = (data, keys) => {
         return data.filter(item =>
             keys.some(key => {
-                const val = item[key];
-                return (
-                    val !== null &&
-                    val !== undefined &&
-                    val !== "null" &&
-                    val !== "undefined" &&
-                    val !== ""
-                );
+                const val = getValue(item, key);
+                return !isEmpty(val);
             })
         );
     };
@@ -69,53 +86,38 @@ export default function DeviceHistory() {
                 roundedTime.setSeconds(Math.floor(entryTime.getSeconds() / 10) * 10, 0);
                 const key = roundedTime.toISOString();
 
-                // безопасно распарсим raw_data.object (если есть)
-                let rawObj = {};
-                if (entry.raw_data) {
-                    try {
-                        rawObj = JSON.parse(entry.raw_data)?.object || {};
-                    } catch (e) {
-                        rawObj = {};
-                    }
-                }
-
-                // нормализуем значения (учитываем строки "undefined"/"null" и числовые строки)
-                const rawTemperature = normalize(rawObj?.temperature);
-                const rawHumidity = normalize(rawObj?.humidity);
-                const rawPressure = normalize(rawObj?.pressure);
-                const rawRainfall = normalize(rawObj?.rainfall);
-                const rawBattery = normalize(rawObj?.batteryVoltage);
-
-                // top-level значения (они обычно уже числовые или null)
-                const topTemperature = normalize(entry.temperature);
-                const topHumidity = normalize(entry.humidity);
-                const topPressure = normalize(entry.pressure);
+                // получаем значения с учетом raw_data
+                const temperature = getValue(entry, 'temperature');
+                const humidity = getValue(entry, 'humidity');
+                const pressure = getValue(entry, 'pressure');
+                const rainfall = getValue(entry, 'rainfall');
+                const batteryVoltage = getValue(entry, 'batteryVoltage');
 
                 if (!groups[key]) {
                     groups[key] = {
                         time: roundedTime,
-                        temperature: topTemperature ?? rawTemperature ?? null,
-                        humidity: topHumidity ?? rawHumidity ?? null,
-                        pressure: topPressure ?? rawPressure ?? null,
-                        rainfall: rawRainfall ?? null,
-                        batteryVoltage: rawBattery ?? null
+                        temperature,
+                        humidity,
+                        pressure,
+                        rainfall,
+                        batteryVoltage
                     };
                 } else {
                     groups[key] = {
                         time: groups[key].time,
-                        // сохраняем уже найденное, иначе берем из текущего entry/raw
-                        temperature: groups[key].temperature ?? topTemperature ?? rawTemperature ?? null,
-                        humidity: groups[key].humidity ?? topHumidity ?? rawHumidity ?? null,
-                        pressure: groups[key].pressure ?? topPressure ?? rawPressure ?? null,
-                        rainfall: groups[key].rainfall ?? rawRainfall ?? null,
-                        batteryVoltage: groups[key].batteryVoltage ?? rawBattery ?? null
+                        // сохраняем уже найденное, иначе берем из текущего entry
+                        temperature: groups[key].temperature ?? temperature,
+                        humidity: groups[key].humidity ?? humidity,
+                        pressure: groups[key].pressure ?? pressure,
+                        rainfall: groups[key].rainfall ?? rainfall,
+                        batteryVoltage: groups[key].batteryVoltage ?? batteryVoltage
                     };
                 }
             });
 
-            // превратить в массив, отсортировать по времени (если нужно) и ОТФИЛЬТРОВАТЬ полностью пустые группы
+            // превратить в массив, отсортировать по времени и отфильтровать полностью пустые группы
             const rows = Object.values(groups)
-                .sort((a, b) => b.time - a.time) // по убыванию времени
+                .sort((a, b) => b.time - a.time)
                 .filter(row =>
                     !isEmpty(row.temperature) ||
                     !isEmpty(row.humidity) ||
@@ -126,10 +128,10 @@ export default function DeviceHistory() {
 
             return rows;
         })()
-        : []; // если не meteo — пустой массив, дальше будем брать deviceHistory для других типов
+        : [];
 
-    // parsedData — данные, которые будут рендериться (уже без пустых мета-строк)
-    let parsedData = []
+    // --- подготовка данных для отображения ---
+    let parsedData = [];
     if (isMeteo) {
         parsedData = cleanData(groupedData, [
             "temperature",
@@ -139,6 +141,7 @@ export default function DeviceHistory() {
             "batteryVoltage"
         ]);
     } else if (isGround) {
+        // Для ground датчиков используем оригинальные данные, но с учетом raw_data
         parsedData = cleanData(deviceHistory, [
             "temperature",
             "humidity",
@@ -154,12 +157,17 @@ export default function DeviceHistory() {
         parsedData = deviceHistory;
     }
 
+    // --- функция для отображения значения в таблице ---
+    const renderTableCell = (item, key) => {
+        const value = getValue(item, key);
+        return formatValue(value);
+    };
+
     return (
         <div>
             {isLoading ? (
                 <p>Загрузка данных...</p>
             ) : (
-                // Передаём в DashboardHistory уже очищенные parsedData
                 <DashboardHistory deviceHistory={parsedData} isMeteo={isMeteo} isGround={isGround} />
             )}
 
@@ -202,23 +210,23 @@ export default function DeviceHistory() {
                                 <td>{formatValue(new Date(item.time).toLocaleString().slice(0, -3))}</td>
                                 {isMeteo ? (
                                     <>
-                                        <td>{formatValue(item.temperature)}</td>
-                                        <td>{formatValue(item.humidity)}</td>
-                                        <td>{formatValue(item.pressure)}</td>
-                                        <td>{formatValue(item.rainfall)}</td>
-                                        <td>{formatValue(item.batteryVoltage)}</td>
+                                        <td>{renderTableCell(item, 'temperature')}</td>
+                                        <td>{renderTableCell(item, 'humidity')}</td>
+                                        <td>{renderTableCell(item, 'pressure')}</td>
+                                        <td>{renderTableCell(item, 'rainfall')}</td>
+                                        <td>{renderTableCell(item, 'batteryVoltage')}</td>
                                     </>
                                 ) : (
                                     <>
-                                        <td>{formatValue(item.temperature)}</td>
-                                        <td>{formatValue(item.humidity)}</td>
-                                        <td>{formatValue(item.conductivity)}</td>
-                                        <td>{formatValue(item.nitrogen)}</td>
-                                        <td>{formatValue(item.ph)}</td>
-                                        <td>{formatValue(item.phosphorus)}</td>
-                                        <td>{formatValue(item.potassium)}</td>
-                                        <td>{formatValue(item.salt_saturation)}</td>
-                                        <td>{formatValue(item.tds)}</td>
+                                        <td>{renderTableCell(item, 'temperature')}</td>
+                                        <td>{renderTableCell(item, 'humidity')}</td>
+                                        <td>{renderTableCell(item, 'conductivity')}</td>
+                                        <td>{renderTableCell(item, 'nitrogen')}</td>
+                                        <td>{renderTableCell(item, 'ph')}</td>
+                                        <td>{renderTableCell(item, 'phosphorus')}</td>
+                                        <td>{renderTableCell(item, 'potassium')}</td>
+                                        <td>{renderTableCell(item, 'salt_saturation')}</td>
+                                        <td>{renderTableCell(item, 'tds')}</td>
                                     </>
                                 )}
                             </tr>
