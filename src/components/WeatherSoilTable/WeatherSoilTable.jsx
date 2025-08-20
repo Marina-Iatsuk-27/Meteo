@@ -20,7 +20,7 @@ export default function WeatherSoilTable({ newData }) {
         });
         const result = await res.json();
         setData(result);
-        console.log('result in WeatherSoilTable', result);
+        //console.log('result in WeatherSoilTable', result);
       } catch (err) {
         console.error("Ошибка загрузки справочников:", err);
       }

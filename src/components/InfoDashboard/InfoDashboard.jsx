@@ -1,4 +1,4 @@
-import React, { useContext,useState } from 'react';
+import React, { useContext,useState,useEffect } from 'react';
 import style from './InfoDashboard.module.scss';
 import Loader from "../Loader/Loader";
 import { DevicesListContext } from "../../context/GetDevicesList";
@@ -26,14 +26,65 @@ import iconUV from '../../assets/icons/icons8-uv-index.png';
 
 export default function InfoDashboard() {
   const { devicesList } = useContext(DevicesListContext);
-  console.log('что в devicesList в инфодашборд:',devicesList);
+  //console.log('что в devicesList в инфодашборд:',devicesList);
   const [activeChart, setActiveChart] = useState(null);
   const [selectedDevice, setSelectedDevice] = useState(null);
+  const [selectedRegion, setSelectedRegion] = useState(null);
+
+  // Загружаем выбранный регион из localStorage
+  useEffect(() => {
+    const savedRegion = localStorage.getItem('selectedRegion');
+    if (savedRegion) {
+      setSelectedRegion(JSON.parse(savedRegion));
+    }
+  }, []);
   
 
   if (!devicesList || devicesList.length === 0) {
     return <Loader text="Загружаем данные..." />;
   }
+
+  // Функции сравнения (такие же как в Dashboard)
+  const neutralColor = "#9fa786";
+
+  const getComparisonStatus = (value, min, max, goodText = "Норма", lowText = "Низкое", highText = "Высокое") => {
+    if (value === null || min === null || max === null) return "Нет данных";
+    if (value < min) return lowText;
+    if (value > max) return highText;
+    return goodText;
+  };
+
+  const getComparisonColor = (value, min, max, goodColor = "#606c38", lowColor = "#6b84c4", highColor = "#d1603d") => {
+    if (value === null || min === null || max === null) return neutralColor;
+    if (value < min) return lowColor;
+    if (value > max) return highColor;
+    return goodColor;
+  };
+
+  // Функция для получения цвета значения в зависимости от региона
+  const getValueColor = (value, metricKey) => {
+    if (!selectedRegion || value === null) return 'inherit';
+    
+    const min = selectedRegion[`${metricKey}min`];
+    const max = selectedRegion[`${metricKey}max`];
+    
+    if (min === null || max === null) return 'inherit';
+    
+    return getComparisonColor(value, min, max);
+  };
+
+  // Функция для получения статуса значения
+  const getValueStatus = (value, metricKey, goodText, lowText, highText) => {
+    if (!selectedRegion || value === null) return null;
+    
+    const min = selectedRegion[`${metricKey}min`];
+    const max = selectedRegion[`${metricKey}max`];
+    
+    if (min === null || max === null) return null;
+    
+    return getComparisonStatus(value, min, max, goodText, lowText, highText);
+  };
+
 
 
 // Универсальная функция нормализации пакета
@@ -92,38 +143,172 @@ const pickLatestGroundData = (readings) => {
 };
 
 
-  const renderGroundData = (data, device) => (
-    <div className={style.dataList}>
-      <h1 className={style.title}>Показатели почвы</h1>
-      <div className={style.rows}>
-        <RenderRow icon={iconConductivity} label="Проводимость" value={data.conductivity} unit="мСм/см" device={device} metric="conductivity" />
-        <RenderRow icon={iconPh} label="pH" value={data.ph} unit="pH" device={device} metric="ph" />
-        <RenderRow icon={iconSoilHumidity} label="Влажность почвы" value={data.humidity} unit="%" device={device} metric="humidity" />
-        <RenderRow icon={iconSoilTemperature} label="Температура почвы" value={data.temperature} unit="°C" device={device} metric="temperature" />
-        <RenderRow icon={iconNitrogen} label="Азот" value={data.nitrogen} unit="г/кг" device={device} metric="nitrogen" />
-        <RenderRow icon={iconPhosphorus} label="Фосфор" value={data.phosphorus} unit="г/кг" device={device} metric="phosphorus" />
-        <RenderRow icon={iconPotassium} label="Калий" value={data.potassium} unit="г/кг" device={device} metric="potassium" />
+const renderGroundData = (data, device) => (
+  <div className={style.dataList}>
+    <h1 className={style.title}>Показатели почвы</h1>
+    {selectedRegion && (
+      <div className={style.regionInfo}>
+        Сравнение с: {selectedRegion.region}
       </div>
+    )}
+    <div className={style.rows}>
+      <RenderRow 
+        icon={iconConductivity} 
+        label="Проводимость" 
+        value={data.conductivity} 
+        unit="мСм/см" 
+        device={device} 
+        metric="conductivity"
+        valueColor={getValueColor(data.conductivity, 'soilconductivity')}
+        status={getValueStatus(data.conductivity, 'soilconductivity', "Норма", "Низкая", "Высокая")}
+      />
+      <RenderRow 
+        icon={iconPh} 
+        label="pH" 
+        value={data.ph} 
+        unit="pH" 
+        device={device} 
+        metric="ph"
+        valueColor={getValueColor(data.ph, 'soilph')}
+        status={getValueStatus(data.ph, 'soilph', "Норма", "Кислая", "Щелочная")}
+      />
+      <RenderRow 
+        icon={iconSoilHumidity} 
+        label="Влажность почвы" 
+        value={data.humidity} 
+        unit="%" 
+        device={device} 
+        metric="humidity"
+        valueColor={getValueColor(data.humidity, 'airhumidity')}
+        status={getValueStatus(data.humidity, 'airhumidity', "Норма", "Сухо", "Влажно")}
+      />
+      <RenderRow 
+        icon={iconSoilTemperature} 
+        label="Температура почвы" 
+        value={data.temperature} 
+        unit="°C" 
+        device={device} 
+        metric="temperature"
+        valueColor={getValueColor(data.temperature, 'soiltemp')}
+        status={getValueStatus(data.temperature, 'soiltemp', "Норма", "Холодно", "Жарко")}
+      />
+      <RenderRow 
+        icon={iconNitrogen} 
+        label="Азот" 
+        value={data.nitrogen} 
+        unit="г/кг" 
+        device={device} 
+        metric="nitrogen"
+        valueColor={getValueColor(data.nitrogen, 'nitrogen')}
+        status={getValueStatus(data.nitrogen, 'nitrogen')}
+      />
+      <RenderRow 
+        icon={iconPhosphorus} 
+        label="Фосфор" 
+        value={data.phosphorus} 
+        unit="г/кг" 
+        device={device} 
+        metric="phosphorus"
+        valueColor={getValueColor(data.phosphorus, 'phosphorus')}
+        status={getValueStatus(data.phosphorus, 'phosphorus')}
+      />
+      <RenderRow 
+        icon={iconPotassium} 
+        label="Калий" 
+        value={data.potassium} 
+        unit="г/кг" 
+        device={device} 
+        metric="potassium"
+        valueColor={getValueColor(data.potassium, 'potassium')}
+        status={getValueStatus(data.potassium, 'potassium')}
+      />
     </div>
-  );
+  </div>
+);
 
-  const renderMeteoData = (data, device) => (
-    <div className={style.dataList}>
-      <h1 className={style.title}>Показатели воздуха</h1>
-      <div className={style.rows}>
-        <RenderRow icon={iconAirTemperature} label="Температура воздуха" value={data.temperature} unit="°C" device={device} metric="temperature" />
-      <RenderRow icon={iconAirHumidity} label="Влажность воздуха" value={data.humidity} unit="%"  device={device} metric="humidity" />
-      <RenderRow icon={iconPressure} label="Давление" value={data.pressure} unit="мм рт. ст."  device={device} metric="pressure" />
-      <RenderRow icon={iconRainfall} label="Осадки" value={data.rainfall} unit="мм"  device={device} metric="rainfall" />
-      <RenderRow icon={iconWindSpeed} label="Скорость ветра (средняя)" value={data.windSpeedAvg} unit="м/с"  device={device} metric="windSpeedAvg" />
-      <RenderRow icon={iconWindSpeed} label="Скорость ветра (мин)" value={data.windSpeedMin} unit="м/с"  device={device} metric="windSpeedMin" />
-      <RenderRow icon={iconWindSpeed} label="Скорость ветра (макс)" value={data.windSpeedMax} unit="м/с"  device={device} metric="windSpeedMax" />
-      <WindDirectionRow direction={data.windDirectionAvg} label="Направление ветра (среднее)"  device={device} metric="windDirectionAvg" />
-      <WindDirectionRow direction={data.windDirectionMax} label="Направление ветра (макс)"  device={device} metric="windDirectionMax" />
-      <RenderRow icon={iconUV} label="UV-индекс" value={data.uvIndex}  device={device} metric="temperatuvIndexure" />
+const renderMeteoData = (data, device) => (
+  <div className={style.dataList}>
+    <h1 className={style.title}>Показатели воздуха</h1>
+    {selectedRegion && (
+      <div className={style.regionInfo}>
+        Сравнение с: {selectedRegion.region}
       </div>
+    )}
+    <div className={style.rows}>
+      <RenderRow 
+        icon={iconAirTemperature} 
+        label="Температура воздуха" 
+        value={data.temperature} 
+        unit="°C" 
+        device={device} 
+        metric="temperature"
+        valueColor={getValueColor(data.temperature, 'airtemp')}
+        status={getValueStatus(data.temperature, 'airtemp', "Норма", "Холодно", "Жарко")}
+      />
+      <RenderRow 
+        icon={iconAirHumidity} 
+        label="Влажность воздуха" 
+        value={data.humidity} 
+        unit="%" 
+        device={device} 
+        metric="humidity"
+        valueColor={getValueColor(data.humidity, 'airhumidity')}
+        status={getValueStatus(data.humidity, 'airhumidity', "Норма", "Низкая", "Высокая")}
+      />
+      <RenderRow 
+        icon={iconPressure} 
+        label="Давление" 
+        value={data.pressure} 
+        unit="мм рт. ст." 
+        device={device} 
+        metric="pressure"
+        valueColor={getValueColor(data.pressure, 'pressure')}
+        status={getValueStatus(data.pressure, 'pressure', "Норма", "Низкое", "Высокое")}
+      />
+      <RenderRow 
+        icon={iconRainfall} 
+        label="Осадки" 
+        value={data.rainfall} 
+        unit="мм" 
+        device={device} 
+        metric="rainfall"
+      />
+      <RenderRow 
+        icon={iconWindSpeed} 
+        label="Скорость ветра (средняя)" 
+        value={data.windSpeedAvg} 
+        unit="м/с" 
+        device={device} 
+        metric="windSpeedAvg"
+      />
+      <RenderRow 
+        icon={iconWindSpeed} 
+        label="Скорость ветра (мин)" 
+        value={data.windSpeedMin} 
+        unit="м/с" 
+        device={device} 
+        metric="windSpeedMin"
+      />
+      <RenderRow 
+        icon={iconWindSpeed} 
+        label="Скорость ветра (макс)" 
+        value={data.windSpeedMax} 
+        unit="м/с" 
+        device={device} 
+        metric="windSpeedMax"
+      />
+      <WindDirectionRow direction={data.windDirectionAvg} label="Направление ветра (среднее)" device={device} metric="windDirectionAvg" />
+      <WindDirectionRow direction={data.windDirectionMax} label="Направление ветра (макс)" device={device} metric="windDirectionMax" />
+      <RenderRow 
+        icon={iconUV} 
+        label="UV-индекс" 
+        value={data.uvIndex} 
+        device={device} 
+        metric="uvIndex"
+      />
     </div>
-  );
+  </div>
+);
 
   const handleRowClick = (device, metric) => {
     setSelectedDevice(device);
@@ -135,7 +320,7 @@ const pickLatestGroundData = (readings) => {
     setSelectedDevice(null);
   };
 
-  const RenderRow = ({ icon, label, value, unit, device, metric }) => (
+  const RenderRow = ({ icon, label, value, unit, device, metric, valueColor = 'inherit', status }) => (
     <div 
       className={style.dataRow} 
       onClick={() => handleRowClick(device, metric)}
@@ -143,11 +328,20 @@ const pickLatestGroundData = (readings) => {
     >
       <img src={icon} alt={label} className={style.icon} />
       <div className={style.dataInfo}>
-        <span className={style.label}>{label}:</span>
+        <div className={style.label}>{label}:</div>
         <div className={style.dataIndication}>
-          <span className={style.text}>{value ?? '-'}</span>
-          <span className={style.unit}>{value !== null ? unit : ''}</span>
+          <div className={style.text} style={{ color: valueColor }}>
+            {value ?? '-'}
+            {status && (
+            <span className={style.status} style={{ color: valueColor }}>
+              ({status})
+            </span>
+          )}
+          </div>
+          <div className={style.unit}>{value !== null ? unit : ''}</div>
+          
         </div>
+        
       </div>
     </div>
   );
