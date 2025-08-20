@@ -148,5 +148,5 @@ export default function WeatherSoilTable({ newData }) {
         </table>
       </div>
     </div>
-  );
+  ); 
 }

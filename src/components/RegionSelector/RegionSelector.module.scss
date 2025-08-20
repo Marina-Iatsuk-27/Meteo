@@ -1,0 +1,59 @@
+.regionSelector {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .regionButton {
+    padding: 8px 16px;
+    background-color: #606c38;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    min-width: 200px;
+    text-align: left;
+    
+    &:hover {
+      background-color: #4a552b;
+    }
+  }
+  
+  .regionDropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .regionOption {
+    font-size: 0.8rem;
+    padding: 3px 10px;
+    cursor: pointer;
+    
+    &:hover {
+      background-color: #f0f0f0;
+    }
+  }
+  
+  .clearButton {
+    margin-left: 8px;
+    padding: 4px 8px;
+    background-color: #d1603d;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    
+    &:hover {
+      background-color: #b85132;
+    }
+  }

@@ -1,6 +1,7 @@
 // Dashboard.js
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { RadialBarChart, RadialBar, PolarAngleAxis } from "recharts";
+import RegionSelector from "../RegionSelector/RegionSelector";;
 import styles from "./Dashboard.module.scss";
 
 /* ---------- Helpers ---------- */
@@ -111,55 +112,106 @@ const getWindDirectionText = (angle) => {
   return "–";
 };
 
-/* ---------- Цвета / Статусы (защита от null) ---------- */
+//Цвета / Статусы (защита от null) 
 const neutralColor = "#9fa786";
+//Функции сравнения
+const getComparisonStatus = (value, min, max, goodText = "Норма", lowText = "Низкое", highText = "Высокое") => {
+  if (value === null || min === null || max === null) return "Нет данных";
+  if (value < min) return lowText;
+  if (value > max) return highText;
+  return goodText;
+};
 
-const getAirHumidityColor = (val) => {
-  if (val === null) return neutralColor;
-  if (val < 30) return "#889069";
-  if (val >= 30 && val < 60) return "#606c38";
-  return "#d1603d";
+const getComparisonColor = (value, min, max, goodColor = "#606c38", lowColor = "#5e7ce2", highColor = "#d1603d") => {
+  if (value === null || min === null || max === null) return neutralColor;
+  if (value < min) return lowColor;
+  if (value > max) return highColor;
+  return goodColor;
 };
-const getAirTemperatureColor = (val) => {
+
+
+
+const getAirHumidityColor = (val, regionData) => {
   if (val === null) return neutralColor;
-  if (val < 15) return "#5e7ce2";
-  if (val >= 15 && val <= 25) return "#606c38";
-  return "#d1603d";
+  if (!regionData) {
+    if (val < 30) return "#889069";
+    if (val >= 30 && val < 60) return "#606c38";
+    return "#d1603d";
+  }
+  return getComparisonColor(val, regionData.airhumiditymin, regionData.airhumiditymax);
 };
-const getAirPressureColor = (val) => {
+
+const getAirTemperatureColor = (val, regionData) => {
   if (val === null) return neutralColor;
-  if (val < 740) return "#5e7ce2";
-  if (val >= 740 && val <= 779) return "#606c38";
-  return "#d1603d";
+  if (!regionData) {
+    if (val < 15) return "#5e7ce2";
+    if (val >= 15 && val <= 25) return "#606c38";
+    return "#d1603d";
+  }
+  return getComparisonColor(val, regionData.airtempmin, regionData.airtempmax);
 };
-const getGroundTemperatureColor = (val) => {
+
+const getAirPressureColor = (val, regionData) => {
   if (val === null) return neutralColor;
-  if (val < 16) return "#5e7ce2";
-  if (val >= 16 && val <= 22) return "#606c38";
-  return "#d1603d";
+  if (!regionData) {
+    if (val < 740) return "#5e7ce2";
+    if (val >= 740 && val <= 779) return "#606c38";
+    return "#d1603d";
+  }
+  return getComparisonColor(val, regionData.pressuremin, regionData.pressuremax);
 };
-const getGroundHumidityColor = (val) => {
+
+const getGroundTemperatureColor = (val, regionData) => {
   if (val === null) return neutralColor;
-  if (val < 10) return "#5e7ce2";
-  if (val >= 10 && val <= 40) return "#606c38";
-  return "#d1603d";
+  if (!regionData) {
+    if (val < 16) return "#5e7ce2";
+    if (val >= 16 && val <= 22) return "#606c38";
+    return "#d1603d";
+  }
+  return getComparisonColor(val, regionData.soiltempmin, regionData.soiltempmax);
 };
-const getGroundConductivityColor = (val) => {
+
+const getGroundHumidityColor = (val, regionData) => {
   if (val === null) return neutralColor;
-  if (val < 200) return "#5e7ce2";
-  if (val >= 200 && val <= 1200) return "#606c38";
-  return "#d1603d";
+  if (!regionData) {
+    if (val < 10) return "#5e7ce2";
+    if (val >= 10 && val <= 40) return "#606c38";
+    return "#d1603d";
+  }
+  return getComparisonColor(val, regionData.airhumiditymin, regionData.airhumiditymax);
 };
-const getGroundPHColor = (val) => {
+
+const getGroundConductivityColor = (val, regionData) => {
   if (val === null) return neutralColor;
-  if (val < 5) return "#5e7ce2";
-  if (val >= 5 && val <= 8) return "#606c38";
-  return "#d1603d";
+  if (!regionData) {
+    if (val < 200) return "#5e7ce2";
+    if (val >= 200 && val <= 1200) return "#606c38";
+    return "#d1603d";
+  }
+  return getComparisonColor(val, regionData.soilconductivitymin, regionData.soilconductivitymax);
+};
+
+const getGroundPHColor = (val, regionData) => {
+  if (val === null) return neutralColor;
+  if (!regionData) {
+    if (val < 5) return "#5e7ce2";
+    if (val >= 5 && val <= 8) return "#606c38";
+    return "#d1603d";
+  }
+  return getComparisonColor(val, regionData.soilphmin, regionData.soilphmax);
 };
 
 /* ---------- Компонент ---------- */
 
 const Dashboard = ({ deviceData, isMeteo, isGround }) => {
+  const [selectedRegion, setSelectedRegion] = useState(null);
+  useEffect(() => {
+    // Загружаем выбранный регион из localStorage
+    const savedRegion = localStorage.getItem('selectedRegion');
+    if (savedRegion) {
+      setSelectedRegion(JSON.parse(savedRegion));
+    }
+  }, []);
   // deviceData может быть либо объектом (state.uplink.object), либо массивом истории.
   if (!deviceData) return null;
 
@@ -206,7 +258,9 @@ const Dashboard = ({ deviceData, isMeteo, isGround }) => {
   // защитимся: readings будет объектом
   readings = readings || {};
 
-  /* --- метрики (приводим к числам где нужно) --- */
+  
+
+  // метрики (приводим к числам где нужно) 
   // Метео
   const temperature = toNumberOrNull(readings.temperature ?? readings.wetTemperature ?? null);
   const humidity = toNumberOrNull(readings.humidity ?? null);
@@ -231,225 +285,402 @@ const Dashboard = ({ deviceData, isMeteo, isGround }) => {
   const saltSaturation = toNumberOrNull(readings.salt_saturation ?? null);
   const tds = toNumberOrNull(readings.tds ?? null);
 
-  /* --- UI для метео --- */
-  if (isMeteo) {
-    return (
-      <div className={styles.dashboardContainer}>
-        <div className={styles.dataSection}>
+  const handleRegionSelect = (region) => {
+    setSelectedRegion(region);
+  };
 
-          {/* Влажность воздуха */}
-          <div className={styles.gaugeContainer}>
-            <h3>Влажность воздуха</h3>
-            <RadialBarChart
-              width={140}
-              height={140}
-              cx="50%"
-              cy="50%"
-              innerRadius="68%"
-              outerRadius="100%"
-              startAngle={90}
-              endAngle={-270}
-              data={[{ value: humidity ?? 0 }]}
-            >
-              <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
-              <RadialBar minAngle={15} background clockWise dataKey="value" fill={getAirHumidityColor(humidity)} />
-            </RadialBarChart>
-            <div className={styles.label}>{formatOrDash(humidity, "%")}</div>
-            <div className={styles.status} style={{ color: getAirHumidityColor(humidity) }}>
-              {humidity === null ? "Нет данных" : (humidity < 30 ? "Низкая" : (humidity < 60 ? "Норма" : "Высокая"))}
-            </div>
+//  метео 
+if (isMeteo) {
+  return (
+    <div className={styles.dashboardContainer}>
+      {/* Кнопка выбора региона и бейдж */}
+      <div className={styles.regionSection}>
+        <RegionSelector 
+          onRegionSelect={setSelectedRegion} 
+          selectedRegion={selectedRegion} 
+        />
+        {selectedRegion && (
+          <div className={styles.regionBadge}>
+            Сравнение с: {selectedRegion.region}
           </div>
-
-          {/* Температура воздуха */}
-          <div className={styles.gaugeContainer}>
-            <h3>Температура воздуха</h3>
-            <RadialBarChart
-              width={140}
-              height={140}
-              cx="50%"
-              cy="50%"
-              innerRadius="68%"
-              outerRadius="100%"
-              startAngle={180}
-              endAngle={0}
-              data={[{ value: temperature ?? 0 }]}
-            >
-              <PolarAngleAxis type="number" domain={[ -20, 50]} angleAxisId={0} tick={false} />
-              <RadialBar minAngle={15} background clockWise dataKey="value" fill={getAirTemperatureColor(temperature)} />
-            </RadialBarChart>
-            <div className={styles.label}>{formatOrDash(temperature, "°C")}</div>
-            <div className={styles.status} style={{ color: getAirTemperatureColor(temperature) }}>
-              {temperature === null ? "Нет данных" : (temperature < 15 ? "Холодно" : (temperature <= 25 ? "Норма" : "Жарко"))}
-            </div>
-          </div>
-
-          {/* Атмосферное давление */}
-          <div className={styles.gaugeContainer}>
-            <h3>Атмосферное давление</h3>
-            <div className={styles.pressureValue} style={{ color: getAirPressureColor(pressure) }}>
-              {formatOrDash(pressure, " мм рт. ст.")}
-            </div>
-            <div className={styles.status} style={{ color: getAirPressureColor(pressure) }}>
-              {pressure === null ? "Нет данных" : (pressure < 740 ? "Низкое" : (pressure <= 779 ? "Норма" : "Высокое"))}
-            </div>
-          </div>
-
-          {/* Осадки */}
-          <div className={styles.gaugeContainer}>
-            <h3>Осадки</h3>
-            <div className={styles.rainfall}>{formatOrDash(rainfall, " мм")}</div>
-          </div>
-
-          {/* Батарея */}
-          <div className={styles.gaugeContainer}>
-            <h3>Напряжение батареи</h3>
-            <div className={styles.value}>{formatOrDash(batteryVoltage, " В")}</div>
-          </div>
-
-          {/* Температура датчика */}
-          <div className={styles.gaugeContainer}>
-            <h3>Температура датчика</h3>
-            <div className={styles.value}>{formatOrDash(wetTemperature, "°C")}</div>
-          </div>
-
-          {/* Скорости ветра */}
-          <div className={styles.gaugeContainer}>
-            <h3>Скорость ветра (сред./мин./макс.)</h3>
-            <div className={styles.value}>
-              {formatOrDash(windSpeedAvg, " м/с")} / {formatOrDash(windSpeedMin, " м/с")} / {formatOrDash(windSpeedMax, " м/с")}
-            </div>
-          </div>
-
-          {/* Направление ветра */}
-          <div className={styles.gaugeContainer}>
-            <h3>Направление ветра</h3>
-            <div className={styles.value}>
-              {windDirectionDeg === null ? "–" : `${windDirectionDeg}°`} ({getWindDirectionText(windDirectionDeg)})
-            </div>
-          </div>
-
-          {/* UV индекс */}
-          <div className={styles.gaugeContainer}>
-            <h3>UV-индекс</h3>
-            <div className={styles.value}>{formatOrDash(uvIndex)}</div>
-          </div>
-
-        </div>
+        )}
       </div>
-    );
-  }
 
-  /* --- UI для геодатчика --- */
-  if (isGround) {
-    return (
-      <div className={styles.dashboardContainer}>
-        <div className={styles.dataSection}>
-          <div className={styles.gaugeContainer}>
-            <h3>Температура почвы</h3>
-            <RadialBarChart
-              width={140}
-              height={140}
-              cx="50%"
-              cy="50%"
-              innerRadius="68%"
-              outerRadius="100%"
-              startAngle={180}
-              endAngle={0}
-              data={[{ value: groundTemperature ?? 0 }]}
-            >
-              <PolarAngleAxis type="number" domain={[ -10, 50]} angleAxisId={0} tick={false} />
-              <RadialBar minAngle={15} background clockWise dataKey="value" fill={getGroundTemperatureColor(groundTemperature)} />
-            </RadialBarChart>
-            <div className={styles.label}>{formatOrDash(groundTemperature, "°C")}</div>
-            <div className={styles.status} style={{ color: getGroundTemperatureColor(groundTemperature) }}>
-              {groundTemperature === null ? "Нет данных" : (groundTemperature < 16 ? "Холодно" : (groundTemperature <= 22 ? "Норма" : "Жарко"))}
-            </div>
-          </div>
-
-          <div className={styles.gaugeContainer}>
-            <h3>Влажность почвы</h3>
-            <RadialBarChart
-              width={140}
-              height={140}
-              cx="50%"
-              cy="50%"
-              innerRadius="68%"
-              outerRadius="100%"
-              startAngle={90}
-              endAngle={-270}
-              data={[{ value: groundHumidity ?? 0 }]}
-            >
-              <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
-              <RadialBar minAngle={15} background clockWise dataKey="value" fill={getGroundHumidityColor(groundHumidity)} />
-            </RadialBarChart>
-            <div className={styles.label}>{formatOrDash(groundHumidity, "%")}</div>
-            <div className={styles.status} style={{ color: getGroundHumidityColor(groundHumidity) }}>
-              {groundHumidity === null ? "Нет данных" : (groundHumidity < 10 ? "Сухо" : (groundHumidity <= 40 ? "Норма" : "Влажно"))}
-            </div>
-          </div>
-
-          <div className={styles.gaugeContainer}>
-            <h3>Проводимость (EC)</h3>
-            <div className={styles.value} style={{ color: getGroundConductivityColor(conductivity) }}>
-              {formatOrDash(conductivity, " мкСм/см")}
-            </div>
-            <div className={styles.status} style={{ color: getGroundConductivityColor(conductivity) }}>
-              {conductivity === null ? "Нет данных" : (conductivity < 200 ? "Низкая" : (conductivity <= 1200 ? "Норма" : "Высокая"))}
-            </div>
-          </div>
-
-          <div className={styles.gaugeContainer}>
-            <h3>Азот (N)</h3>
-            <div className={styles.value}>{formatOrDash(nitrogen, " мг/л")}</div>
-          </div>
-
-          <div className={styles.gaugeContainer}>
-            <h3>Фосфор (P)</h3>
-            <div className={styles.value}>{formatOrDash(phosphorus, " мг/л")}</div>
-          </div>
-
-          <div className={styles.gaugeContainer}>
-            <h3>Калий (K)</h3>
-            <div className={styles.value}>{formatOrDash(potassium, " мг/л")}</div>
-          </div>
-
-          <div className={styles.gaugeContainer}>
-            <h3>pH</h3>
-            <RadialBarChart
-              width={140}
-              height={140}
-              cx="50%"
-              cy="50%"
-              innerRadius="68%"
-              outerRadius="100%"
-              startAngle={180}
-              endAngle={0}
-              data={[{ value: (ph !== null ? ph * 10 : 0) }]}
-            >
-              <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
-              <RadialBar minAngle={15} background clockWise dataKey="value" fill={getGroundPHColor(ph)} />
-            </RadialBarChart>
-            <div className={styles.label}>{formatOrDash(ph)}</div>
-            <div className={styles.status} style={{ color: getGroundPHColor(ph) }}>
-              {ph === null ? "Нет данных" : (ph < 5 ? "Кислая" : (ph <= 8 ? "Норма" : "Щелочная"))}
-            </div>
-          </div>
-
-          <div className={styles.gaugeContainer}>
-            <h3>Насыщенность солей</h3>
-            <div className={styles.value}>{formatOrDash(saltSaturation, " %")}</div>
-          </div>
-
-          <div className={styles.gaugeContainer}>
-            <h3>TDS</h3>
-            <div className={styles.value}>{formatOrDash(tds, " мг/л")}</div>
+      <div className={styles.dataSection}>
+        {/* Влажность воздуха */}
+        <div className={styles.gaugeContainer}>
+          <h3>Влажность воздуха</h3>
+          <RadialBarChart
+            width={140}
+            height={140}
+            cx="50%"
+            cy="50%"
+            innerRadius="68%"
+            outerRadius="100%"
+            startAngle={90}
+            endAngle={-270}
+            data={[{ value: humidity ?? 0 }]}
+          >
+            <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
+            <RadialBar minAngle={15} background clockWise dataKey="value" 
+              fill={selectedRegion 
+                ? getComparisonColor(humidity, selectedRegion.airhumiditymin, selectedRegion.airhumiditymax)
+                : (humidity === null ? neutralColor : (humidity < 30 ? "#889069" : (humidity < 60 ? "#606c38" : "#d1603d")))
+              } />
+          </RadialBarChart>
+          <div className={styles.label}>{formatOrDash(humidity, "%")}</div>
+          <div className={styles.status} style={{ 
+            color: selectedRegion 
+              ? getComparisonColor(humidity, selectedRegion.airhumiditymin, selectedRegion.airhumiditymax)
+              : (humidity === null ? neutralColor : (humidity < 30 ? "#889069" : (humidity < 60 ? "#606c38" : "#d1603d")))
+          }}>
+            {selectedRegion 
+              ? getComparisonStatus(humidity, selectedRegion.airhumiditymin, selectedRegion.airhumiditymax, "Норма", "Низкая", "Высокая")
+              : (humidity === null ? "Нет данных" : (humidity < 30 ? "Низкая" : (humidity < 60 ? "Норма" : "Высокая")))
+            }
           </div>
         </div>
-      </div>
-    );
-  }
 
-  return null;
+        {/* Температура воздуха */}
+        <div className={styles.gaugeContainer}>
+          <h3>Температура воздуха</h3>
+          <RadialBarChart
+            width={140}
+            height={140}
+            cx="50%"
+            cy="50%"
+            innerRadius="68%"
+            outerRadius="100%"
+            startAngle={180}
+            endAngle={0}
+            data={[{ value: temperature ?? 0 }]}
+          >
+            <PolarAngleAxis type="number" domain={[-20, 50]} angleAxisId={0} tick={false} />
+            <RadialBar minAngle={15} background clockWise dataKey="value" 
+              fill={selectedRegion 
+                ? getComparisonColor(temperature, selectedRegion.airtempmin, selectedRegion.airtempmax)
+                : (temperature === null ? neutralColor : (temperature < 15 ? "#5e7ce2" : (temperature <= 25 ? "#606c38" : "#d1603d")))
+              } />
+          </RadialBarChart>
+          <div className={styles.label}>{formatOrDash(temperature, "°C")}</div>
+          <div className={styles.status} style={{ 
+            color: selectedRegion 
+              ? getComparisonColor(temperature, selectedRegion.airtempmin, selectedRegion.airtempmax)
+              : (temperature === null ? neutralColor : (temperature < 15 ? "#5e7ce2" : (temperature <= 25 ? "#606c38" : "#d1603d")))
+          }}>
+            {selectedRegion 
+              ? getComparisonStatus(temperature, selectedRegion.airtempmin, selectedRegion.airtempmax, "Норма", "Холодно", "Жарко")
+              : (temperature === null ? "Нет данных" : (temperature < 15 ? "Холодно" : (temperature <= 25 ? "Норма" : "Жарко")))
+            }
+          </div>
+        </div>
+
+        {/* Атмосферное давление */}
+        <div className={styles.gaugeContainer}>
+          <h3>Атмосферное давление</h3>
+          <div className={styles.pressureValue} style={{ 
+            color: selectedRegion 
+              ? getComparisonColor(pressure, selectedRegion.pressuremin, selectedRegion.pressuremax)
+              : (pressure === null ? neutralColor : (pressure < 740 ? "#5e7ce2" : (pressure <= 779 ? "#606c38" : "#d1603d")))
+          }}>
+            {formatOrDash(pressure, " мм рт. ст.")}
+          </div>
+          <div className={styles.status} style={{ 
+            color: selectedRegion 
+              ? getComparisonColor(pressure, selectedRegion.pressuremin, selectedRegion.pressuremax)
+              : (pressure === null ? neutralColor : (pressure < 740 ? "#5e7ce2" : (pressure <= 779 ? "#606c38" : "#d1603d")))
+          }}>
+            {selectedRegion 
+              ? getComparisonStatus(pressure, selectedRegion.pressuremin, selectedRegion.pressuremax, "Норма", "Низкое", "Высокое")
+              : (pressure === null ? "Нет данных" : (pressure < 740 ? "Низкое" : (pressure <= 779 ? "Норма" : "Высокое")))
+            }
+          </div>
+        </div>
+
+        {/* Осадки */}
+        <div className={styles.gaugeContainer}>
+          <h3>Осадки</h3>
+          <div className={styles.rainfall}>{formatOrDash(rainfall, " мм")}</div>
+        </div>
+
+        {/* Батарея */}
+        <div className={styles.gaugeContainer}>
+          <h3>Напряжение батареи</h3>
+          <div className={styles.value}>{formatOrDash(batteryVoltage, " В")}</div>
+        </div>
+
+        {/* Температура датчика */}
+        <div className={styles.gaugeContainer}>
+          <h3>Температура датчика</h3>
+          <div className={styles.value}>{formatOrDash(wetTemperature, "°C")}</div>
+        </div>
+
+        {/* Скорости ветра */}
+        <div className={styles.gaugeContainer}>
+          <h3>Скорость ветра (сред./мин./макс.)</h3>
+          <div className={styles.value}>
+            {formatOrDash(windSpeedAvg, " м/с")} / {formatOrDash(windSpeedMin, " м/с")} / {formatOrDash(windSpeedMax, " м/с")}
+          </div>
+        </div>
+
+        {/* Направление ветра */}
+        <div className={styles.gaugeContainer}>
+          <h3>Направление ветра</h3>
+          <div className={styles.value}>
+            {windDirectionDeg === null ? "–" : `${windDirectionDeg}°`} ({getWindDirectionText(windDirectionDeg)})
+          </div>
+        </div>
+
+        {/* UV индекс */}
+        <div className={styles.gaugeContainer}>
+          <h3>UV-индекс</h3>
+          <div className={styles.value}>{formatOrDash(uvIndex)}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+//  геодатчик
+if (isGround) {
+  return (
+    <div className={styles.dashboardContainer}>
+      {/* Кнопка выбора региона и бейдж */}
+      <div className={styles.regionSection}>
+        <RegionSelector 
+          onRegionSelect={setSelectedRegion} 
+          selectedRegion={selectedRegion} 
+        />
+        {selectedRegion && (
+          <div className={styles.regionBadge}>
+            Сравнение с: {selectedRegion.region}
+          </div>
+        )}
+      </div>
+
+      <div className={styles.dataSection}>
+        {/* Температура почвы */}
+        <div className={styles.gaugeContainer}>
+          <h3>Температура почвы</h3>
+          <RadialBarChart
+            width={140}
+            height={140}
+            cx="50%"
+            cy="50%"
+            innerRadius="68%"
+            outerRadius="100%"
+            startAngle={180}
+            endAngle={0}
+            data={[{ value: groundTemperature ?? 0 }]}
+          >
+            <PolarAngleAxis type="number" domain={[-10, 50]} angleAxisId={0} tick={false} />
+            <RadialBar minAngle={15} background clockWise dataKey="value" 
+              fill={selectedRegion 
+                ? getComparisonColor(groundTemperature, selectedRegion.soiltempmin, selectedRegion.soiltempmax)
+                : (groundTemperature === null ? neutralColor : (groundTemperature < 16 ? "#5e7ce2" : (groundTemperature <= 22 ? "#606c38" : "#d1603d")))
+              } />
+          </RadialBarChart>
+          <div className={styles.label}>{formatOrDash(groundTemperature, "°C")}</div>
+          <div className={styles.status} style={{ 
+            color: selectedRegion 
+              ? getComparisonColor(groundTemperature, selectedRegion.soiltempmin, selectedRegion.soiltempmax)
+              : (groundTemperature === null ? neutralColor : (groundTemperature < 16 ? "#5e7ce2" : (groundTemperature <= 22 ? "#606c38" : "#d1603d")))
+          }}>
+            {selectedRegion 
+              ? getComparisonStatus(groundTemperature, selectedRegion.soiltempmin, selectedRegion.soiltempmax, "Норма", "Холодно", "Жарко")
+              : (groundTemperature === null ? "Нет данных" : (groundTemperature < 16 ? "Холодно" : (groundTemperature <= 22 ? "Норма" : "Жарко")))
+            }
+          </div>
+        </div>
+
+        {/* Влажность почвы */}
+        <div className={styles.gaugeContainer}>
+          <h3>Влажность почвы</h3>
+          <RadialBarChart
+            width={140}
+            height={140}
+            cx="50%"
+            cy="50%"
+            innerRadius="68%"
+            outerRadius="100%"
+            startAngle={90}
+            endAngle={-270}
+            data={[{ value: groundHumidity ?? 0 }]}
+          >
+            <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
+            <RadialBar minAngle={15} background clockWise dataKey="value" 
+              fill={selectedRegion 
+                ? getComparisonColor(groundHumidity, selectedRegion.airhumiditymin, selectedRegion.airhumiditymax)
+                : (groundHumidity === null ? neutralColor : (groundHumidity < 10 ? "#5e7ce2" : (groundHumidity <= 40 ? "#606c38" : "#d1603d")))
+              } />
+          </RadialBarChart>
+          <div className={styles.label}>{formatOrDash(groundHumidity, "%")}</div>
+          <div className={styles.status} style={{ 
+            color: selectedRegion 
+              ? getComparisonColor(groundHumidity, selectedRegion.airhumiditymin, selectedRegion.airhumiditymax)
+              : (groundHumidity === null ? neutralColor : (groundHumidity < 10 ? "#5e7ce2" : (groundHumidity <= 40 ? "#606c38" : "#d1603d")))
+          }}>
+            {selectedRegion 
+              ? getComparisonStatus(groundHumidity, selectedRegion.airhumiditymin, selectedRegion.airhumiditymax, "Норма", "Сухо", "Влажно")
+              : (groundHumidity === null ? "Нет данных" : (groundHumidity < 10 ? "Сухо" : (groundHumidity <= 40 ? "Норма" : "Влажно")))
+            }
+          </div>
+        </div>
+
+        {/* Проводимость (EC) */}
+        <div className={styles.gaugeContainer}>
+          <h3>Проводимость (EC)</h3>
+          <div className={styles.value} style={{ 
+            color: selectedRegion 
+              ? getComparisonColor(conductivity, selectedRegion.soilconductivitymin, selectedRegion.soilconductivitymax)
+              : (conductivity === null ? neutralColor : (conductivity < 200 ? "#5e7ce2" : (conductivity <= 1200 ? "#606c38" : "#d1603d")))
+          }}>
+            {formatOrDash(conductivity, " мкСм/см")}
+          </div>
+          <div className={styles.status} style={{ 
+            color: selectedRegion 
+              ? getComparisonColor(conductivity, selectedRegion.soilconductivitymin, selectedRegion.soilconductivitymax)
+              : (conductivity === null ? neutralColor : (conductivity < 200 ? "#5e7ce2" : (conductivity <= 1200 ? "#606c38" : "#d1603d")))
+          }}>
+            {selectedRegion 
+              ? getComparisonStatus(conductivity, selectedRegion.soilconductivitymin, selectedRegion.soilconductivitymax, "Норма", "Низкая", "Высокая")
+              : (conductivity === null ? "Нет данных" : (conductivity < 200 ? "Низкая" : (conductivity <= 1200 ? "Норма" : "Высокая")))
+            }
+          </div>
+        </div>
+
+        {/* Азот (N) */}
+        <div className={styles.gaugeContainer}>
+          <h3>Азот (N)</h3>
+          <div className={styles.value} style={{ 
+            color: selectedRegion 
+              ? getComparisonColor(nitrogen, selectedRegion.nitrogenmin, selectedRegion.nitrogenmax)
+              : (conductivity === null ? neutralColor : (conductivity < 200 ? "#5e7ce2" : (conductivity <= 1200 ? "#606c38" : "#d1603d")))
+          }}>
+            {formatOrDash(nitrogen, " мг/л")}</div>
+          <div className={styles.status} style={{ 
+            color: selectedRegion 
+              ? getComparisonColor(nitrogen, selectedRegion.nitrogenmin, selectedRegion.nitrogenmax)
+              : neutralColor
+          }}>
+            {selectedRegion 
+              ? getComparisonStatus(nitrogen, selectedRegion.nitrogenmin, selectedRegion.nitrogenmax, "В норме", "Ниже нормы", "Выше нормы")
+              : "Нет данных"
+            }
+          </div>
+        </div>
+
+        {/* Фосфор (P) */}
+        <div className={styles.gaugeContainer}>
+          <h3>Фосфор (P)</h3>
+          <div className={styles.value} style={{ 
+            color: selectedRegion 
+              ? getComparisonColor(phosphorus, selectedRegion.phosphorusmin, selectedRegion.phosphorusmax)
+              : (conductivity === null ? neutralColor : (conductivity < 200 ? "#5e7ce2" : (conductivity <= 1200 ? "#606c38" : "#d1603d")))
+          }}>
+            {formatOrDash(phosphorus, " мг/л")}</div>
+          <div className={styles.status} style={{ 
+            color: selectedRegion 
+              ? getComparisonColor(phosphorus, selectedRegion.phosphorusmin, selectedRegion.phosphorusmax)
+              : neutralColor
+          }}>
+            {selectedRegion 
+              ? getComparisonStatus(phosphorus, selectedRegion.phosphorusmin, selectedRegion.phosphorusmax, "В норме", "Ниже нормы", "Выше нормы")
+              : "Нет данных"
+            }
+          </div>
+        </div>
+
+        {/* Калий (K) */}
+        <div className={styles.gaugeContainer}>
+          <h3>Калий (K)</h3>
+          <div className={styles.value} style={{ 
+            color: selectedRegion 
+              ? getComparisonColor(potassium, selectedRegion.potassiummin, selectedRegion.potassiummax)
+              : (conductivity === null ? neutralColor : (conductivity < 200 ? "#5e7ce2" : (conductivity <= 1200 ? "#606c38" : "#d1603d")))
+          }}>
+            {formatOrDash(potassium, " мг/л")}</div>
+          <div className={styles.status} style={{ 
+            color: selectedRegion 
+              ? getComparisonColor(potassium, selectedRegion.potassiummin, selectedRegion.potassiummax)
+              : neutralColor
+          }}>
+            {selectedRegion 
+              ? getComparisonStatus(potassium, selectedRegion.potassiummin, selectedRegion.potassiummax, "В норме", "Ниже нормы", "Выше нормы")
+              : "Нет данных"
+            }
+          </div>
+        </div>
+
+        {/* pH */}
+        <div className={styles.gaugeContainer}>
+          <h3>pH</h3>
+          <RadialBarChart
+            width={140}
+            height={140}
+            cx="50%"
+            cy="50%"
+            innerRadius="68%"
+            outerRadius="100%"
+            startAngle={180}
+            endAngle={0}
+            data={[{ value: (ph !== null ? ph * 10 : 0) }]}
+          >
+            <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
+            <RadialBar minAngle={15} background clockWise dataKey="value" 
+              fill={selectedRegion 
+                ? getComparisonColor(ph, selectedRegion.soilphmin, selectedRegion.soilphmax)
+                : (ph === null ? neutralColor : (ph < 5 ? "#5e7ce2" : (ph <= 8 ? "#606c38" : "#d1603d")))
+              } />
+          </RadialBarChart>
+          <div className={styles.value} style={{ 
+            color: selectedRegion 
+              ? getComparisonColor(ph, selectedRegion.soilphmin, selectedRegion.soilphmax)
+              : (conductivity === null ? neutralColor : (conductivity < 200 ? "#5e7ce2" : (conductivity <= 1200 ? "#606c38" : "#d1603d")))
+          }}>
+            {formatOrDash(ph)}</div>
+          <div className={styles.status} style={{ 
+            color: selectedRegion 
+              ? getComparisonColor(ph, selectedRegion.soilphmin, selectedRegion.soilphmax)
+              : (ph === null ? neutralColor : (ph < 5 ? "#5e7ce2" : (ph <= 8 ? "#606c38" : "#d1603d")))
+          }}>
+            {selectedRegion 
+              ? getComparisonStatus(ph, selectedRegion.soilphmin, selectedRegion.soilphmax, "Норма", "Кислая", "Щелочная")
+              : (ph === null ? "Нет данных" : (ph < 5 ? "Кислая" : (ph <= 8 ? "Норма" : "Щелочная")))
+            }
+          </div>
+        </div>
+
+        {/* Насыщенность солей */}
+        <div className={styles.gaugeContainer}>
+          <h3>Насыщенность солей</h3>
+          <div className={styles.value} style={{ 
+            color: selectedRegion 
+              ? getComparisonColor(ph, selectedRegion.saltsaturationmin, selectedRegion.saltsaturationmax)
+              : (conductivity === null ? neutralColor : (conductivity < 200 ? "#5e7ce2" : (conductivity <= 1200 ? "#606c38" : "#d1603d")))
+          }}>
+            {formatOrDash(saltSaturation, " %")}</div>
+        </div>
+
+        {/* TDS */}
+        <div className={styles.gaugeContainer}>
+          <h3>TDS</h3>
+          <div className={styles.value} style={{ 
+            color: selectedRegion 
+              ? getComparisonColor(ph, selectedRegion.tdsmin, selectedRegion.tdsmax)
+              : (conductivity === null ? neutralColor : (conductivity < 200 ? "#5e7ce2" : (conductivity <= 1200 ? "#606c38" : "#d1603d")))
+          }}>
+            {formatOrDash(tds, " мг/л")}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+return null;
+
+
 };
+
 
 export default Dashboard;
