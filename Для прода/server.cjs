@@ -21,5 +21,5 @@ app.get('*', (req, res) => {
 });
 
 app.listen(5050, () => {
-  console.log('Meteo frontend running on port 5050');
+  //console.log('Meteo frontend running on port 5050');
 });

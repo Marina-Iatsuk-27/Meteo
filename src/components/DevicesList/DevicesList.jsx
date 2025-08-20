@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 import style from "./DevicesList.module.scss";
 
 export default function DevicesList() {
-  console.log("запуск списка");
+  //console.log("запуск списка");
 
   const { devicesList } = useContext(DevicesListContext);
-  console.log('devicesList в DevicesList', devicesList);
+  //console.log('devicesList в DevicesList', devicesList);
 
   return (
     <div className={style.deviceListContainer}>

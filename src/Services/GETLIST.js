@@ -10,7 +10,7 @@ class GETLIST{
           if (!response.ok) {
             throw new Error(`Ошибка: ${response.status} - ${response.statusText}`);
           }
-           //console.log(response);
+           ////console.log(response);
           return await response.json();
           
         } catch (error) {

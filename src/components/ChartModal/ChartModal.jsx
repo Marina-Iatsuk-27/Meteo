@@ -5,8 +5,8 @@ import style from './ChartModal.module.scss';
 import Loader from "../Loader/Loader";
 
 const ChartModal = ({ device, metric, onClose }) => {
-  console.log('device',device);
-  console.log('metric',metric);
+  //console.log('device',device);
+  //console.log('metric',metric);
   
   const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(true);

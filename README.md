@@ -20,14 +20,14 @@ npm install xlsx
 
 
 <!-- открыть: -->
-node backend/loginApi.cjx  
+node backend/api.cjs  
 npm run dev 
 
 
 
 
 запуск:
-node backend/loginApi
+node backend/api.cjs
 npm run dev
 
 qwertasdf2

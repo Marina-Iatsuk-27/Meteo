@@ -26,7 +26,7 @@ import iconUV from '../../assets/icons/icons8-uv-index.png';
 
 export default function InfoDashboard() {
   const { devicesList } = useContext(DevicesListContext);
-  //console.log('что в devicesList в инфодашборд:',devicesList);
+  ////console.log('что в devicesList в инфодашборд:',devicesList);
   const [activeChart, setActiveChart] = useState(null);
   const [selectedDevice, setSelectedDevice] = useState(null);
   const [selectedRegion, setSelectedRegion] = useState(null);
@@ -126,7 +126,7 @@ const mergeMeteoData = (readings) => {
       }
     }
   });
-  console.log('result',result);
+  //console.log('result',result);
   
   return result;
 };

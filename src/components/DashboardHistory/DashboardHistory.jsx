@@ -14,10 +14,10 @@ import style from "./DashboardHistory.module.scss";
 ;
 
 export default function DashboardHistory({ deviceHistory, isMeteo, isGround,singleMetric }) {
-    console.log('deviceHistory в графиках', deviceHistory);
+    //console.log('deviceHistory в графиках', deviceHistory);
 
-    console.log('isMeteo?', isMeteo);
-    console.log('isGround?', isGround);
+    //console.log('isMeteo?', isMeteo);
+    //console.log('isGround?', isGround);
     
     const chartsRef = useRef({});
 

@@ -19,7 +19,7 @@ export function GetDevicesList({ children }) {
         if (data && Array.isArray(data)) {
             const filtered = data.filter(device =>/meteo|ground/i.test(device.deviceName)
             );//test - регулярное выражение /meteo|ground/i проверяет наличие слов 'meteo' или 'ground' в свойстве name каждого объекта device, и флаг i делает проверку независимой от регистра.
-            console.log("отфильтрованные устройства:", filtered);
+            //console.log("отфильтрованные устройства:", filtered);
             setdevicesList(filtered); // Сохраняем отфильтрованные данные
         } else {
             setdevicesList([]); // Если данные не валидные

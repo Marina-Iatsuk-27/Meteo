@@ -20,7 +20,7 @@ export function GetDeviceHistory({ children }) {
     async function getDeviceServer(id) {
         try {
             const data = await GETHISTORY.getDevice(id); // Получаем данные устройства
-            console.log('История:', data);
+            //console.log('История:', data);
 
             if (Array.isArray(data) && data.length === 0) {
                 // Если данные пришли, но это пустой массив
@@ -34,7 +34,7 @@ export function GetDeviceHistory({ children }) {
         }
     }
 
-    console.log('deviceHistory', deviceHistory);
+    //console.log('deviceHistory', deviceHistory);
 
     if (deviceHistory === null) {
         // Если данные еще не загружены

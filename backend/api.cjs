@@ -23,19 +23,19 @@ const pool = new Pool({
 pool.query('SELECT 1 FROM users LIMIT 1', (err) => {
   if (err) {
     console.error('Ошибка доступа к таблице users:', err.message);
-    console.log('Таблица не существует или нет прав доступа');
+    //console.log('Таблица не существует или нет прав доступа');
     process.exit(1); // Завершаем процесс с ошибкой
   } else {
-    console.log('Подключение к БД успешно, таблица users доступна');
+    //console.log('Подключение к БД успешно, таблица users доступна');
   }
 });
 // Проверка таблицы reference_data
 pool.query('SELECT 1 FROM reference_data LIMIT 1', (err) => {
   if (err) {
     console.error('Ошибка доступа к таблице reference_data:', err.message);
-    console.log('Таблица reference_data не существует или нет прав доступа');
+    //console.log('Таблица reference_data не существует или нет прав доступа');
   } else {
-    console.log('Таблица reference_data доступна');
+    //console.log('Таблица reference_data доступна');
   }
 });
 
@@ -75,7 +75,7 @@ app.post('/login', async (req, res) => {
       process.env.SECRET_KEY,
       { expiresIn: '1h' }
     );
-    console.log("user from DB:", user);
+    //console.log("user from DB:", user);
 
     res.json({ token, role: user.role, username: user.username, id: user.id }); // отдаём на фронт
   } catch (err) {
@@ -110,7 +110,7 @@ app.get('/admin/users', authenticateToken, isAdmin, async (req, res) => {
     const { rows } = await pool.query('SELECT id, username, role FROM users ORDER BY id ASC');
     res.json(rows);
 
-    console.log('rows',rows);
+    //console.log('rows',rows);
     
   } catch (err) {
     console.error('Ошибка получения пользователей:', err);
@@ -200,7 +200,7 @@ app.post('/reference', authenticateToken, isAdmin, async (req, res) => {
   try {
     const data = req.body; // сюда придёт объект, который ты сохраняешь в sessionStorage
 
-    console.log(data);
+    //console.log(data);
     
 
     const query = `
@@ -272,5 +272,5 @@ app.delete("/reference/:id", async (req, res) => {
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
-  console.log(`Сервер запущен на порту ${PORT}`);
+  //console.log(`Сервер запущен на порту ${PORT}`);
 });
