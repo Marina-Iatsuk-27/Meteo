@@ -148,7 +148,7 @@ const renderGroundData = (data, device) => (
     <h1 className={style.title}>Показатели почвы</h1>
     {selectedRegion && (
       <div className={style.regionInfo}>
-        Сравнение с: {selectedRegion.region}
+        Используется справочник: {selectedRegion.region}
       </div>
     )}
     <div className={style.rows}>
@@ -231,7 +231,7 @@ const renderMeteoData = (data, device) => (
     <h1 className={style.title}>Показатели воздуха</h1>
     {selectedRegion && (
       <div className={style.regionInfo}>
-        Сравнение с: {selectedRegion.region}
+        Используется справочник: {selectedRegion.region}
       </div>
     )}
     <div className={style.rows}>
@@ -273,7 +273,7 @@ const renderMeteoData = (data, device) => (
         device={device} 
         metric="rainfall"
       />
-      <RenderRow 
+      {/* <RenderRow 
         icon={iconWindSpeed} 
         label="Скорость ветра (средняя)" 
         value={data.windSpeedAvg} 
@@ -298,7 +298,7 @@ const renderMeteoData = (data, device) => (
         metric="windSpeedMax"
       />
       <WindDirectionRow direction={data.windDirectionAvg} label="Направление ветра (среднее)" device={device} metric="windDirectionAvg" />
-      <WindDirectionRow direction={data.windDirectionMax} label="Направление ветра (макс)" device={device} metric="windDirectionMax" />
+      <WindDirectionRow direction={data.windDirectionMax} label="Направление ветра (макс)" device={device} metric="windDirectionMax" /> */}
       <RenderRow 
         icon={iconUV} 
         label="UV-индекс" 
@@ -311,8 +311,10 @@ const renderMeteoData = (data, device) => (
 );
 
   const handleRowClick = (device, metric) => {
-    setSelectedDevice(device);
-    setActiveChart(metric);
+    console.log('handleRowClick works', handleRowClick);
+    
+    // setSelectedDevice(device);
+    // setActiveChart(metric);
   };
 
   const closeChartModal = () => {

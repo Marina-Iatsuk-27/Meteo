@@ -295,10 +295,10 @@ export default function DeviceInfo() {
           )}
         </div>
 
-        <div className={style.section}>
+        {/* <div className={style.section}>
           <h2>Время показаний</h2>
           <p>{formatDateTime(deviceData.state.time)}</p>
-        </div>
+        </div> */}
       </div>
     </div>
   );

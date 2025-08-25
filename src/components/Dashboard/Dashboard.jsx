@@ -232,7 +232,7 @@ if (isMeteo) {
         />
         {selectedRegion && (
           <div className={styles.regionBadge}>
-            Сравнение с: {selectedRegion.region}
+            Используется справочник: {selectedRegion.region}
           </div>
         )}
       </div>
@@ -384,7 +384,7 @@ if (isGround) {
         />
         {selectedRegion && (
           <div className={styles.regionBadge}>
-            Сравнение с: {selectedRegion.region}
+            Используется справочник: {selectedRegion.region}
           </div>
         )}
       </div>

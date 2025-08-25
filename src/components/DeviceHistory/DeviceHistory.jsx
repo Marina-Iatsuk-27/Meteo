@@ -1,10 +1,11 @@
 // src/components/DeviceHistory/DeviceHistory.jsx
-import { useContext, useMemo, useState } from "react";
+import { useContext, useMemo, useState, useRef, useEffect } from "react";
 import { DeviceHistoryContext } from "../../context/GetDeviceHistory";
 import style from "./DeviceHistory.module.scss";
 import DashboardHistory from "../DashboardHistory/DashboardHistory";
 import Loader from "../Loader/Loader";
 
+// Функция для корректного значения date input
 function toLocalDateInputValue(date) {
   const d = new Date(date);
   const pad = (n) => String(n).padStart(2, "0");
@@ -15,22 +16,39 @@ export default function DeviceHistory() {
   const { deviceHistory = [], loading, setPeriod, setCustomRange, filters } =
     useContext(DeviceHistoryContext);
 
-  // custom range inputs
+  // === Состояние для выбора пользовательского периода ===
   const [showCustom, setShowCustom] = useState(false);
   const [customFrom, setCustomFrom] = useState(() =>
-    filters?.from ? toLocalDateInputValue(filters.from) : toLocalDateInputValue(new Date(Date.now() - 24 * 3600 * 1000))
+    filters?.from
+      ? toLocalDateInputValue(filters.from)
+      : toLocalDateInputValue(new Date(Date.now() - 24 * 3600 * 1000))
   );
   const [customTo, setCustomTo] = useState(() =>
     filters?.to ? toLocalDateInputValue(filters.to) : toLocalDateInputValue(new Date())
   );
 
+  // === Состояние для отображения истории ===
+  const [showHistory, setShowHistory] = useState(false);
+  const historyRef = useRef(null);
+
+  const toggleHistory = () => setShowHistory((prev) => !prev);
+
+  // Скроллим к истории при её открытии
+  useEffect(() => {
+    if (showHistory && historyRef.current) {
+      historyRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [showHistory]);
+
+  // === Определяем тип устройства ===
   const deviceName = deviceHistory[0]?.deviceName || null;
-  const isMeteo = deviceName && deviceName.toLowerCase().includes("meteo");
+  const isMeteo = deviceName?.toLowerCase().includes("meteo");
   const isGround =
     deviceName &&
     (deviceName.toLowerCase().includes("ground") ||
       deviceName.toLowerCase().includes("...5277"));
 
+  // === Хелперы для обработки данных ===
   const isEmpty = (v) =>
     v === undefined || v === null || v === "" || v === "undefined" || v === "null";
 
@@ -60,10 +78,12 @@ export default function DeviceHistory() {
   const cleanData = (data, keys) =>
     data.filter((item) => keys.some((key) => !isEmpty(getValue(item, key))));
 
+  // === Группировка данных для метеостанции ===
   const groupedData = useMemo(() => {
     if (!isMeteo) return [];
     const sorted = [...deviceHistory].sort((a, b) => new Date(b.time) - new Date(a.time));
     const groups = {};
+
     sorted.forEach((entry) => {
       const entryTime = new Date(entry.time);
       const roundedTime = new Date(entryTime);
@@ -102,10 +122,10 @@ export default function DeviceHistory() {
       );
   }, [isMeteo, deviceHistory]);
 
+  // === Подготовка данных для таблицы ===
   const parsedData = useMemo(() => {
     let baseData = deviceHistory;
-    console.log('baseData',baseData);
-    
+
     // последние 50 записей по умолчанию
     if (!filters?.from && !filters?.to) {
       baseData = baseData.slice(0, 50);
@@ -132,144 +152,148 @@ export default function DeviceHistory() {
 
   const renderTableCell = (item, key) => formatValue(getValue(item, key));
 
-  // apply custom range
+  // === Применение пользовательского диапазона ===
   const applyCustom = () => {
     if (!customFrom || !customTo) return;
     const fromDate = new Date(`${customFrom}T00:00:00`);
     const toDate = new Date(`${customTo}T23:59:59`);
     setCustomRange(fromDate, toDate);
-    setShowCustom(false); 
-  };;
+    setShowCustom(false); // Скрываем выбор даты после применения
+  };
 
   return (
     <div>
+      {/* === Кнопки выбора периода === */}
       <div className={style.periodButtons}>
         <button onClick={() => setPeriod("24h")} className={style.button}>За сутки</button>
         <button onClick={() => setPeriod("7d")} className={style.button}>За неделю</button>
         <button onClick={() => setPeriod("30d")} className={style.button}>За месяц</button>
         <button onClick={() => setPeriod("today")} className={style.button}>Сегодня</button>
-
         <button onClick={() => setShowCustom((s) => !s)} className={style.button}>
           {showCustom ? "Скрыть выбор дат" : "Выбрать даты"}
         </button>
       </div>
 
+      {/* === Выбор пользовательского диапазона === */}
       {showCustom && (
         <div className={style.customRange}>
-            <label>
+          <label>
             С:
             <input
-                type="date"
-                value={customFrom}
-                max={new Date().toISOString().split("T")[0]}   // не позже сегодняшнего дня
-                onChange={(e) => setCustomFrom(e.target.value)}
+              type="date"
+              value={customFrom}
+              max={new Date().toISOString().split("T")[0]} // не позже сегодняшнего дня
+              onChange={(e) => setCustomFrom(e.target.value)}
             />
-            </label>
-
-            <label>
+          </label>
+          <label>
             По:
             <input
-                type="date"
-                value={customTo}
-                min={customFrom || undefined}                  // не раньше даты "С"
-                max={new Date().toISOString().split("T")[0]}   // не позже сегодняшнего дня
-                onChange={(e) => setCustomTo(e.target.value)}
+              type="date"
+              value={customTo}
+              min={customFrom || undefined} // не раньше даты "С"
+              max={new Date().toISOString().split("T")[0]} // не позже сегодняшнего дня
+              onChange={(e) => setCustomTo(e.target.value)}
             />
-            </label>
-
-            <button onClick={applyCustom} className={style.button}>
-            Применить
-            </button>
+          </label>
+          <button onClick={applyCustom} className={style.button}>Применить</button>
         </div>
-        )}
+      )}
 
-
-
-
-        {loading ? (
-        <Loader text="Загрузка данных..." />  
-        ) : parsedData.length === 0 ? (
+      {/* === Основной контент (DashboardHistory) === */}
+      {loading ? (
+        <Loader text="Загрузка данных..." />
+      ) : parsedData.length === 0 ? (
         <div className={style.empty}>Нет данных за выбранный период</div>
-        ) : (
+      ) : (
         <DashboardHistory
-            deviceHistory={parsedData}
-            isMeteo={isMeteo}
-            isGround={isGround}
+          deviceHistory={parsedData}
+          isMeteo={isMeteo}
+          isGround={isGround}
         />
-        )}
-        {loading ? (
-        <Loader text="Загрузка данных..." /> 
-        ) : parsedData.length === 0 ? (
-        <div className={style.empty}>Нет данных за выбранный период</div>
-        ) : (
+      )}
+
+      {/* === Кнопка для показа/скрытия полной истории === */}
+      <div className={style.historyWrapper}>
+        <button className={style.toggleButton} onClick={toggleHistory}>
+          <span>{showHistory ? "Скрыть историю" : "Показать историю"}</span>
+          <span className={`${style.arrow} ${showHistory ? style.open : ""}`}>▼</span>
+        </button>
+
+        {/* === Полная история таблицей === */}
+        <div ref={historyRef} className={`${style.historyContent} ${showHistory ? style.open : ""}`}>
+          {loading ? (
+            <Loader text="Загрузка данных..." />
+          ) : parsedData.length === 0 ? (
+            <div className={style.empty}>Нет данных за выбранный период</div>
+          ) : (
             <div className={style.deviceHistoryContainer}>
-            <h1 className={style.title}>
-            {isMeteo && "История метеостанции"}
-            {isGround && "История геодатчика"}
-            {!isMeteo && !isGround && "История устройства"}
-            </h1>
+              <h1 className={style.title}>
+                {isMeteo && "История метеостанции"}
+                {isGround && "История геодатчика"}
+                {!isMeteo && !isGround && "История устройства"}
+              </h1>
 
-            <table className={style.table}>
-            <thead>
-                <tr>
-                <th>Дата/Время</th>
-                {isMeteo ? (
-                    <>
-                    <th>Температура (°C)</th>
-                    <th>Влажность (%)</th>
-                    <th>Давление (hPa)</th>
-                    <th>Осадки (mm)</th>
-                    <th>Батарея (V)</th>
-                    </>
-                ) : (
-                    <>
-                    <th>Температура (°C)</th>
-                    <th>Влажность (%)</th>
-                    <th>Проводимость (мкСм/см)</th>
-                    <th>Азот (мг/кг)</th>
-                    <th>pH</th>
-                    <th>Фосфор (мг/кг)</th>
-                    <th>Калий (мг/кг)</th>
-                    <th>Насыщенность солей (%)</th>
-                    <th>TDS</th>
-                    </>
-                )}
-                </tr>
-            </thead>
-            <tbody>
-                {parsedData.map((item, index) => (
-                <tr key={index}>
-                    <td>{formatValue(new Date(item.time).toLocaleString().slice(0, -3))}</td>
+              <table className={style.table}>
+                <thead>
+                  <tr>
+                    <th>Дата/Время</th>
                     {isMeteo ? (
-                    <>
-                        <td>{renderTableCell(item, "temperature")}</td>
-                        <td>{renderTableCell(item, "humidity")}</td>
-                        <td>{renderTableCell(item, "pressure")}</td>
-                        <td>{renderTableCell(item, "rainfall")}</td>
-                        <td>{renderTableCell(item, "batteryVoltage")}</td>
-                    </>
+                      <>
+                        <th>Температура (°C)</th>
+                        <th>Влажность (%)</th>
+                        <th>Давление (hPa)</th>
+                        <th>Осадки (mm)</th>
+                        <th>Батарея (V)</th>
+                      </>
                     ) : (
-                    <>
-                        <td>{renderTableCell(item, "temperature")}</td>
-                        <td>{renderTableCell(item, "humidity")}</td>
-                        <td>{renderTableCell(item, "conductivity")}</td>
-                        <td>{renderTableCell(item, "nitrogen")}</td>
-                        <td>{renderTableCell(item, "ph")}</td>
-                        <td>{renderTableCell(item, "phosphorus")}</td>
-                        <td>{renderTableCell(item, "potassium")}</td>
-                        <td>{renderTableCell(item, "salt_saturation")}</td>
-                        <td>{renderTableCell(item, "tds")}</td>
-                    </>
+                      <>
+                        <th>Температура (°C)</th>
+                        <th>Влажность (%)</th>
+                        <th>Проводимость (мкСм/см)</th>
+                        <th>Азот (мг/кг)</th>
+                        <th>pH</th>
+                        <th>Фосфор (мг/кг)</th>
+                        <th>Калий (мг/кг)</th>
+                        <th>Насыщенность солей (%)</th>
+                        <th>TDS</th>
+                      </>
                     )}
-                </tr>
-                ))}
-            </tbody>
-            </table>
+                  </tr>
+                </thead>
+                <tbody>
+                  {parsedData.map((item, index) => (
+                    <tr key={index}>
+                      <td>{formatValue(new Date(item.time).toLocaleString().slice(0, -3))}</td>
+                      {isMeteo ? (
+                        <>
+                          <td>{renderTableCell(item, "temperature")}</td>
+                          <td>{renderTableCell(item, "humidity")}</td>
+                          <td>{renderTableCell(item, "pressure")}</td>
+                          <td>{renderTableCell(item, "rainfall")}</td>
+                          <td>{renderTableCell(item, "batteryVoltage")}</td>
+                        </>
+                      ) : (
+                        <>
+                          <td>{renderTableCell(item, "temperature")}</td>
+                          <td>{renderTableCell(item, "humidity")}</td>
+                          <td>{renderTableCell(item, "conductivity")}</td>
+                          <td>{renderTableCell(item, "nitrogen")}</td>
+                          <td>{renderTableCell(item, "ph")}</td>
+                          <td>{renderTableCell(item, "phosphorus")}</td>
+                          <td>{renderTableCell(item, "potassium")}</td>
+                          <td>{renderTableCell(item, "salt_saturation")}</td>
+                          <td>{renderTableCell(item, "tds")}</td>
+                        </>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
-        )}
-
-
-      
+      </div>
     </div>
   );
 }
