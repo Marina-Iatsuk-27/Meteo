@@ -4,7 +4,7 @@ class GETLIST{
     static async getDevicesList() {
         //const token = import.meta.env.VITE_TOKEN;
         try {
-          const response = await fetch(`api/devices/summary`, {
+          const response = await fetch(`/api/devices/summary`, {
           });
 
           

@@ -346,13 +346,13 @@ const renderMeteoData = (data, device) => (
     </div>
   );
 
-  const WindDirectionRow = ({ direction }) => {
+  const WindDirectionRow = ({ direction, label }) => {
     if (direction === null || direction === undefined) {
       return (
         <div className={style.dataRow}>
           <img src={iconWindDirection} alt="Ветер" className={style.icon} />
           <div className={style.dataInfo}>
-            <span className={style.label}>Направление ветра:</span>
+          <span className={style.label}>{label}:</span>
             <div className={style.dataIndication}>
               <span className={style.text}>-</span>
             </div>
@@ -374,7 +374,7 @@ const renderMeteoData = (data, device) => (
           style={{ transform: `rotate(${angle}deg)` }}
         />
         <div className={style.dataInfo}>
-          <span className={style.label}>Направление ветра:</span>
+        <span className={style.label}>{label}:</span>
           <div className={style.dataIndication}>
             <span className={style.text}>{directionText}</span>
           </div>

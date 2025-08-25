@@ -4,7 +4,7 @@ class GETHISTORY{
     static async getDevice(id) {
                 
         try {
-          const response = await fetch(`api/data/${id}`, {
+          const response = await fetch(`/api/data/${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
