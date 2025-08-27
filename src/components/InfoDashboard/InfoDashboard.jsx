@@ -48,7 +48,7 @@ export default function InfoDashboard() {
   const neutralColor = "#9fa786";
 
   const getComparisonStatus = (value, min, max, goodText = "Норма", lowText = "Низкое", highText = "Высокое") => {
-    if (value === null || min === null || max === null) return "Нет данных";
+    if (value === null || min === null || max  === null) return "Нет данных";
     if (value < min) return lowText;
     if (value > max) return highText;
     return goodText;
@@ -302,7 +302,8 @@ const renderMeteoData = (data, device) => (
       <RenderRow 
         icon={iconUV} 
         label="UV-индекс" 
-        value={data.uvIndex} 
+        // value={data.uvIndex} 
+        value='0' 
         device={device} 
         metric="uvIndex"
       />

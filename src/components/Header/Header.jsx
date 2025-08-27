@@ -57,6 +57,12 @@ export default function Header() {
                   >
                     Справочник
                   </li>
+                  <li
+                    className={style.nav}
+                    onClick={() => navigate('/map')}
+                  >
+                    Карта
+                  </li>
                 </>
               )}
             </ul>

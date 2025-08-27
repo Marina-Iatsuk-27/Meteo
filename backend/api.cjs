@@ -26,7 +26,7 @@ pool.query('SELECT 1 FROM users LIMIT 1', (err) => {
     console.log('Таблица не существует или нет прав доступа');
     process.exit(1); // Завершаем процесс с ошибкой
   } else {
-    console.log('Подключение к БД успешно, таблица users доступна');
+    console.log('Подключение таблица users доступна');
   }
 });
 // Проверка таблицы reference_data
@@ -35,11 +35,18 @@ pool.query('SELECT 1 FROM reference_data LIMIT 1', (err) => {
     console.error('Ошибка доступа к таблице reference_data:', err.message);
     //console.log('Таблица reference_data не существует или нет прав доступа');
   } else {
-    //console.log('Таблица reference_data доступна');
+    console.log('Таблица reference_data доступна');
   }
 });
 
-
+pool.query('SELECT 1 FROM sensors LIMIT 1', (err) => {
+  if (err) {
+    console.error('Ошибка доступа к таблице sensors:', err.message);
+    console.log('Таблица sensors не существует или нет прав доступа');
+  } else {
+    console.log('Таблица sensors доступна');
+  }
+});
 
 // Регистрация
 app.post('/register', async (req, res) => {
@@ -84,25 +91,6 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Middleware: проверка токена и роли
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  if (!token) return res.sendStatus(401);
-
-  jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
-    if (err) return res.sendStatus(403);
-    req.user = user; // { id, role }
-    next();
-  });
-}
-
-function isAdmin(req, res, next) {
-  if (req.user.role !== 'admin') {
-    return res.status(403).json({ message: 'Нет доступа' });
-  }
-  next();
-}
 
 // Получить список пользователей
 app.get('/admin/users', authenticateToken, isAdmin, async (req, res) => {
@@ -267,7 +255,182 @@ app.delete("/reference/:id", async (req, res) => {
   }
 });
 
+// Получить все датчики
+app.get('/sensors', async (req, res) => {
+  
+  try {
 
+     const result = await pool.query('SELECT * FROM sensors');
+     
+    return res.json(result.rows);   // return чтобы не шло дальше
+  } catch (error) {
+    console.error("Ошибка получения координат:", error);
+    if (!res.headersSent) {
+      return res.status(500).send("Ошибка сервера");
+    }
+  }
+});;
+
+
+// // Добавить датчик
+// app.post('/sensors', /*authenticateToken, isAdmin,*/ async (req, res) => {
+//   console.log('какой там токен:', authenticateToken);
+  
+//   try {
+//     const { deviceName, devEui, latitude, longitude } = req.body;
+    
+//     const { rows } = await pool.query(
+//       'INSERT INTO sensors (deviceName, devEui, latitude, longitude) VALUES ($1, $2, $3, $4) RETURNING *',
+//       [deviceName, devEui, latitude, longitude]
+//     );
+    
+//     res.status(201).json(rows[0]);
+//   } catch (err) {
+//     console.error('Ошибка добавления датчика:', err);
+    
+//     if (err.code === '23505') { // unique violation
+//       return res.status(400).send('Датчик с таким devEui уже существует');
+//     }
+    
+//     res.status(500).send('Ошибка сервера');
+//   }
+// });
+
+// // Обновить координаты датчика по devEui
+// app.put('/sensors/:devEui/coordinates', authenticateToken, isAdmin, async (req, res) => {
+//   try {
+//     const { devEui } = req.params;
+//     const { latitude, longitude } = req.body;
+    
+//     const { rows } = await pool.query(
+//       'UPDATE sensors SET latitude = $1, longitude = $2 WHERE devEui = $3 RETURNING *',
+//       [latitude, longitude, devEui]
+//     );
+    
+//     if (rows.length === 0) {
+//       return res.status(404).send('Датчик не найден');
+//     }
+    
+//     res.json(rows[0]);
+//   } catch (err) {
+//     console.error('Ошибка обновления координат:', err);
+//     res.status(500).send('Ошибка сервера');
+//   }
+// });
+
+// Обновить или создать датчик с координатами
+app.put('/sensors/:devEui', authenticateToken, isAdmin, async (req, res) => {
+  try {
+    const { devEui } = req.params;
+    const { deviceName, latitude, longitude } = req.body;
+    
+    // Проверяем обязательные поля
+    if (!deviceName || latitude === undefined || longitude === undefined) {
+      return res.status(400).send('Необходимо указать deviceName, latitude и longitude');
+    }
+
+    const { rows } = await pool.query(`
+      INSERT INTO sensors (deviceName, devEui, latitude, longitude) 
+      VALUES ($1, $2, $3, $4)
+      ON CONFLICT (devEui) 
+      DO UPDATE SET 
+        deviceName = EXCLUDED.deviceName,
+        latitude = EXCLUDED.latitude,
+        longitude = EXCLUDED.longitude
+      RETURNING *
+    `, [deviceName, devEui, latitude, longitude]);
+    
+    res.json(rows[0]);
+  } catch (err) {
+    console.error('Ошибка обновления/создания датчика:', err);
+    res.status(500).send('Ошибка сервера');
+  }
+});
+
+// Обновить информацию о датчике по devEui (кроме самого devEui)
+app.put('/sensors/:devEui', authenticateToken, isAdmin, async (req, res) => {
+  try {
+    const { devEui } = req.params;
+    const { deviceName, latitude, longitude } = req.body;
+    
+    const { rows } = await pool.query(
+      'UPDATE sensors SET deviceName = $1, latitude = $2, longitude = $3 WHERE devEui = $4 RETURNING *',
+      [deviceName, latitude, longitude, devEui]
+    );
+    
+    if (rows.length === 0) {
+      return res.status(404).send('Датчик не найден');
+    }
+    
+    res.json(rows[0]);
+  } catch (err) {
+    console.error('Ошибка обновления датчика:', err);
+    res.status(500).send('Ошибка сервера');
+  }
+});
+
+// Удалить датчик по devEui
+app.delete('/sensors/:devEui', authenticateToken, isAdmin, async (req, res) => {
+  try {
+    const { devEui } = req.params;
+    
+    const { rows } = await pool.query(
+      'DELETE FROM sensors WHERE devEui = $1 RETURNING *',
+      [devEui]
+    );
+    
+    if (rows.length === 0) {
+      return res.status(404).send('Датчик не найден');
+    }
+    
+    res.json({ message: 'Датчик удален', deleted: rows[0] });
+  } catch (err) {
+    console.error('Ошибка удаления датчика:', err);
+    res.status(500).send('Ошибка сервера');
+  }
+});
+
+// Получить конкретный датчик по devEui
+app.get('/sensors/:devEui', authenticateToken, async (req, res) => {
+  try {
+    const { devEui } = req.params;
+    
+    const { rows } = await pool.query(
+      'SELECT * FROM sensors WHERE devEui = $1',
+      [devEui]
+    );
+    
+    if (rows.length === 0) {
+      return res.status(404).send('Датчик не найден');
+    }
+    
+    res.json(rows[0]);
+  } catch (err) {
+    console.error('Ошибка получения датчика:', err);
+    res.status(500).send('Ошибка сервера');
+  }
+});
+
+
+// Middleware: проверка токена и роли
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (!token) return res.sendStatus(401);
+
+  jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user; // { id, role }
+    next();
+  });
+}
+
+function isAdmin(req, res, next) {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Нет доступа' });
+  }
+  next();
+}
 
 
 const PORT = process.env.PORT || 5001;

@@ -6,6 +6,7 @@ import DeviceInfo from '../../pages/Device/Device';
 import Authorisation from '../Authorisation/Authorisation';
 import Library from '../../pages/Library/Library';
 import AdminPage from "../../pages/AdminPage/AdminPage";
+import MapPage from "../../pages/MapPage/MapPage";
 
 function App() {
   const { token, isLoading,user } = useAuth();
@@ -26,8 +27,9 @@ function App() {
         
         <Route path="/library" element={token ? <Library /> : <Navigate to="/login" replace />} />
 
-        <Route path="/admin" element={token ? <AdminPage /> : <Navigate to="/login" replace />}
-        />
+        <Route path="/admin" element={token ? <AdminPage /> : <Navigate to="/login" replace />} />
+
+        <Route path="/map" element={token ? <MapPage /> : <Navigate to="/map" replace />} />
       </Routes>
     </Router>
   );

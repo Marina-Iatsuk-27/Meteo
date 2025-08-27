@@ -91,3 +91,33 @@ GRANT ALL PRIVILEGES ON TABLE reference_data TO \"postgres-meteo\";
 GRANT USAGE, SELECT ON SEQUENCE reference_data_id_seq TO \"postgres-meteo\";
 "
 
+//или вот так не входя в sql:
+sudo -u postgres psql -d meteo -c "
+CREATE TABLE IF NOT EXISTS sensors (
+    id SERIAL PRIMARY KEY,
+    deviceName VARCHAR(255) NOT NULL,
+    devEui VARCHAR(255) UNIQUE NOT NULL,
+    latitude DECIMAL(10, 8),
+    longitude DECIMAL(11, 8),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+GRANT ALL PRIVILEGES ON TABLE sensors TO \"postgres-meteo\";
+GRANT USAGE, SELECT ON SEQUENCE sensors_id_seq TO \"postgres-meteo\";
+"
+
+
+meteo=> \d sensors
+                                        Table "public.sensors"
+   Column   |            Type             | Collation | Nullable |               Default               
+------------+-----------------------------+-----------+----------+-------------------------------------
+ id         | integer                     |           | not null | nextval('sensors_id_seq'::regclass)
+ devicename | character varying(255)      |           | not null | 
+ deveui     | character varying(255)      |           | not null | 
+ latitude   | numeric(10,8)               |           |          | 
+ longitude  | numeric(11,8)               |           |          | 
+ created_at | timestamp without time zone |           |          | CURRENT_TIMESTAMP
+Indexes:
+    "sensors_pkey" PRIMARY KEY, btree (id)
+    "sensors_deveui_key" UNIQUE CONSTRAINT, btree (deveui)
+
+meteo=> 
