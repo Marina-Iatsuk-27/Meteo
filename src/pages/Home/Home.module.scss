@@ -1,8 +1,120 @@
-@use '../../assets/styles/templates.scss' as templates; // Импорт переменных
+// Home.module.scss
+@use '../../assets/styles/templates' as t;
 
-.homeContainer{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
+.homeContainer {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 0;
+  min-height: calc(100vh - 120px);
+  width: 100%;
+}
+
+.sidebar {
+  //background: t.$cardColor;
+  border-right: 2px solid t.$khakiLight;
+  padding: 20px 15px;
+  height: calc(100vh - 120px);
+  position: sticky;
+  top: 80px;
+  overflow-y: auto;
+  //box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
+}
+
+.mainContent {
+  padding: 25px 40px;
+  background: t.$mainBackgroundColor;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.title {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 0 20px 0;
+  background: t.$mainBackgroundColor;
+
+  h1 {
+    color: t.$mainTextColor;
+    font-weight: 800;
+    font-size: 2.9rem;
+    line-height: 1;
+    transform: scaleY(0.9);
+    margin: 0;
+  }
+}
+
+.infoNote {
+  width: 60%;
+  border-radius: 20px;
+  background-color: t.$accentBeige;
+  color: t.$secondaryTextColor;
+  font-size: 18px;
+  padding: 20px;
+  text-align: center;
+  margin: 0 auto 30px auto;
+}
+
+// Стили для скроллбара сайдбара
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: t.$accentBeige;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: t.$khakiLight;
+  border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: t.$khakiPrimary;
+}
+
+// Адаптивность
+@media (max-width: 1024px) {
+  .homeContainer {
+    grid-template-columns: 260px 1fr;
+  }
+  
+  .sidebar {
+    padding: 15px 10px;
+  }
+  
+  .mainContent {
+    padding: 20px 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .homeContainer {
+    grid-template-columns: 1fr;
+  }
+  
+  .sidebar {
+    position: static;
+    height: auto;
+    max-height: 300px;
+    border-right: none;
+    border-bottom: 2px solid t.$khakiLight;
+    order: 1;
+  }
+  
+  .mainContent {
+    order: 2;
+    padding: 20px;
+  }
+  
+  .title h1 {
+    font-size: 2.2rem;
+  }
+  
+  .infoNote {
+    width: 90%;
+    font-size: 16px;
+  }
 }

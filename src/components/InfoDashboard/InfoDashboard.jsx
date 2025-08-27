@@ -1,4 +1,4 @@
-import React, { useContext,useState,useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import style from './InfoDashboard.module.scss';
 import Loader from "../Loader/Loader";
 import { DevicesListContext } from "../../context/GetDevicesList";
@@ -20,16 +20,12 @@ import iconWindSpeed from '../../assets/icons/icons8-ветер.png';
 import iconWindDirection from '../../assets/icons/icons8-компас.png';
 import iconUV from '../../assets/icons/icons8-uv-index.png';
 
-//взяты отсюда: https://icons8.com/icons/set, цвет #88B999
-
-
-
 export default function InfoDashboard() {
   const { devicesList } = useContext(DevicesListContext);
-  ////console.log('что в devicesList в инфодашборд:',devicesList);
   const [activeChart, setActiveChart] = useState(null);
   const [selectedDevice, setSelectedDevice] = useState(null);
   const [selectedRegion, setSelectedRegion] = useState(null);
+  const [expandedDevices, setExpandedDevices] = useState({});
 
   // Загружаем выбранный регион из localStorage
   useEffect(() => {
@@ -38,17 +34,16 @@ export default function InfoDashboard() {
       setSelectedRegion(JSON.parse(savedRegion));
     }
   }, []);
-  
 
   if (!devicesList || devicesList.length === 0) {
     return <Loader text="Загружаем данные..." />;
   }
 
-  // Функции сравнения (такие же как в Dashboard)
+  // Функции сравнения
   const neutralColor = "#9fa786";
 
   const getComparisonStatus = (value, min, max, goodText = "Норма", lowText = "Низкое", highText = "Высокое") => {
-    if (value === null || min === null || max  === null) return "Нет данных";
+    if (value === null || min === null || max === null) return "Нет данных";
     if (value < min) return lowText;
     if (value > max) return highText;
     return goodText;
@@ -61,7 +56,6 @@ export default function InfoDashboard() {
     return goodColor;
   };
 
-  // Функция для получения цвета значения в зависимости от региона
   const getValueColor = (value, metricKey) => {
     if (!selectedRegion || value === null) return 'inherit';
     
@@ -73,7 +67,6 @@ export default function InfoDashboard() {
     return getComparisonColor(value, min, max);
   };
 
-  // Функция для получения статуса значения
   const getValueStatus = (value, metricKey, goodText, lowText, highText) => {
     if (!selectedRegion || value === null) return null;
     
@@ -85,237 +78,64 @@ export default function InfoDashboard() {
     return getComparisonStatus(value, min, max, goodText, lowText, highText);
   };
 
-
-
-// Универсальная функция нормализации пакета
-const normalizePacket = (packet) => {
-  let data = { ...packet };
-  
-  if (packet.raw_data) {
-    try {
-      const parsed = JSON.parse(packet.raw_data);
-      if (parsed.object) {
-        for (let key in parsed.object) {
-          // Подставляем только если сейчас null или undefined
-          if (
-            (data[key] === null || data[key] === undefined) &&
-            parsed.object[key] !== "undefined" &&
-            parsed.object[key] !== null
-          ) {
-            // Преобразуем числовые строки в число
-            const num = parseFloat(parsed.object[key]);
-            data[key] = isNaN(num) ? parsed.object[key] : num;
+  const normalizePacket = (packet) => {
+    let data = { ...packet };
+    
+    if (packet.raw_data) {
+      try {
+        const parsed = JSON.parse(packet.raw_data);
+        if (parsed.object) {
+          for (let key in parsed.object) {
+            if (
+              (data[key] === null || data[key] === undefined) &&
+              parsed.object[key] !== "undefined" &&
+              parsed.object[key] !== null
+            ) {
+              const num = parseFloat(parsed.object[key]);
+              data[key] = isNaN(num) ? parsed.object[key] : num;
+            }
           }
         }
-      }
-    } catch (err) {
-      console.error("Ошибка парсинга raw_data:", err);
-    }
-  }
-  
-  return data;
-};
-
-// Для meteo — объединяем 3 пакета
-const mergeMeteoData = (readings) => {
-  const result = {};
-  readings.map(normalizePacket).forEach(packet => {
-    for (let key in packet) {
-      if (packet[key] !== null && key !== "time") {
-        result[key] = result[key] ?? packet[key];
+      } catch (err) {
+        console.error("Ошибка парсинга raw_data:", err);
       }
     }
-  });
-  //console.log('result',result);
-  
-  return result;
-};
+    
+    return data;
+  };
 
-// Для ground — берём первый по убыванию времени с данными
-const pickLatestGroundData = (readings) => {
-  for (let packet of readings.map(normalizePacket)) {
-    const hasData = Object.keys(packet).some(key =>
-      ['temperature', 'humidity', 'ph', 'conductivity'].includes(key) && packet[key] !== null
-    );
-    if (hasData) return packet;
-  }
-  return null;
-};
+  const mergeMeteoData = (readings) => {
+    const result = {};
+    readings.map(normalizePacket).forEach(packet => {
+      for (let key in packet) {
+        if (packet[key] !== null && key !== "time") {
+          result[key] = result[key] ?? packet[key];
+        }
+      }
+    });
+    return result;
+  };
 
+  const pickLatestGroundData = (readings) => {
+    for (let packet of readings.map(normalizePacket)) {
+      const hasData = Object.keys(packet).some(key =>
+        ['temperature', 'humidity', 'ph', 'conductivity'].includes(key) && packet[key] !== null
+      );
+      if (hasData) return packet;
+    }
+    return null;
+  };
 
-const renderGroundData = (data, device) => (
-  <div className={style.dataList}>
-    <h1 className={style.title}>Показатели почвы</h1>
-    {selectedRegion && (
-      <div className={style.regionInfo}>
-        Используется справочник: {selectedRegion.region}
-      </div>
-    )}
-    <div className={style.rows}>
-      <RenderRow 
-        icon={iconConductivity} 
-        label="Проводимость" 
-        value={data.conductivity} 
-        unit="мСм/см" 
-        device={device} 
-        metric="conductivity"
-        valueColor={getValueColor(data.conductivity, 'soilconductivity')}
-        status={getValueStatus(data.conductivity, 'soilconductivity', "Норма", "Низкая", "Высокая")}
-      />
-      <RenderRow 
-        icon={iconPh} 
-        label="pH" 
-        value={data.ph} 
-        unit="pH" 
-        device={device} 
-        metric="ph"
-        valueColor={getValueColor(data.ph, 'soilph')}
-        status={getValueStatus(data.ph, 'soilph', "Норма", "Кислая", "Щелочная")}
-      />
-      <RenderRow 
-        icon={iconSoilHumidity} 
-        label="Влажность почвы" 
-        value={data.humidity} 
-        unit="%" 
-        device={device} 
-        metric="humidity"
-        valueColor={getValueColor(data.humidity, 'airhumidity')}
-        status={getValueStatus(data.humidity, 'airhumidity', "Норма", "Сухо", "Влажно")}
-      />
-      <RenderRow 
-        icon={iconSoilTemperature} 
-        label="Температура почвы" 
-        value={data.temperature} 
-        unit="°C" 
-        device={device} 
-        metric="temperature"
-        valueColor={getValueColor(data.temperature, 'soiltemp')}
-        status={getValueStatus(data.temperature, 'soiltemp', "Норма", "Холодно", "Жарко")}
-      />
-      <RenderRow 
-        icon={iconNitrogen} 
-        label="Азот" 
-        value={data.nitrogen} 
-        unit="г/кг" 
-        device={device} 
-        metric="nitrogen"
-        valueColor={getValueColor(data.nitrogen, 'nitrogen')}
-        status={getValueStatus(data.nitrogen, 'nitrogen')}
-      />
-      <RenderRow 
-        icon={iconPhosphorus} 
-        label="Фосфор" 
-        value={data.phosphorus} 
-        unit="г/кг" 
-        device={device} 
-        metric="phosphorus"
-        valueColor={getValueColor(data.phosphorus, 'phosphorus')}
-        status={getValueStatus(data.phosphorus, 'phosphorus')}
-      />
-      <RenderRow 
-        icon={iconPotassium} 
-        label="Калий" 
-        value={data.potassium} 
-        unit="г/кг" 
-        device={device} 
-        metric="potassium"
-        valueColor={getValueColor(data.potassium, 'potassium')}
-        status={getValueStatus(data.potassium, 'potassium')}
-      />
-    </div>
-  </div>
-);
-
-const renderMeteoData = (data, device) => (
-  <div className={style.dataList}>
-    <h1 className={style.title}>Показатели воздуха</h1>
-    {selectedRegion && (
-      <div className={style.regionInfo}>
-        Используется справочник: {selectedRegion.region}
-      </div>
-    )}
-    <div className={style.rows}>
-      <RenderRow 
-        icon={iconAirTemperature} 
-        label="Температура воздуха" 
-        value={data.temperature} 
-        unit="°C" 
-        device={device} 
-        metric="temperature"
-        valueColor={getValueColor(data.temperature, 'airtemp')}
-        status={getValueStatus(data.temperature, 'airtemp', "Норма", "Холодно", "Жарко")}
-      />
-      <RenderRow 
-        icon={iconAirHumidity} 
-        label="Влажность воздуха" 
-        value={data.humidity} 
-        unit="%" 
-        device={device} 
-        metric="humidity"
-        valueColor={getValueColor(data.humidity, 'airhumidity')}
-        status={getValueStatus(data.humidity, 'airhumidity', "Норма", "Низкая", "Высокая")}
-      />
-      <RenderRow 
-        icon={iconPressure} 
-        label="Давление" 
-        value={data.pressure} 
-        unit="мм рт. ст." 
-        device={device} 
-        metric="pressure"
-        valueColor={getValueColor(data.pressure, 'pressure')}
-        status={getValueStatus(data.pressure, 'pressure', "Норма", "Низкое", "Высокое")}
-      />
-      <RenderRow 
-        icon={iconRainfall} 
-        label="Осадки" 
-        value={data.rainfall} 
-        unit="мм" 
-        device={device} 
-        metric="rainfall"
-      />
-      {/* <RenderRow 
-        icon={iconWindSpeed} 
-        label="Скорость ветра (средняя)" 
-        value={data.windSpeedAvg} 
-        unit="м/с" 
-        device={device} 
-        metric="windSpeedAvg"
-      />
-      <RenderRow 
-        icon={iconWindSpeed} 
-        label="Скорость ветра (мин)" 
-        value={data.windSpeedMin} 
-        unit="м/с" 
-        device={device} 
-        metric="windSpeedMin"
-      />
-      <RenderRow 
-        icon={iconWindSpeed} 
-        label="Скорость ветра (макс)" 
-        value={data.windSpeedMax} 
-        unit="м/с" 
-        device={device} 
-        metric="windSpeedMax"
-      />
-      <WindDirectionRow direction={data.windDirectionAvg} label="Направление ветра (среднее)" device={device} metric="windDirectionAvg" />
-      <WindDirectionRow direction={data.windDirectionMax} label="Направление ветра (макс)" device={device} metric="windDirectionMax" /> */}
-      <RenderRow 
-        icon={iconUV} 
-        label="UV-индекс" 
-        // value={data.uvIndex} 
-        value='0' 
-        device={device} 
-        metric="uvIndex"
-      />
-    </div>
-  </div>
-);
+  const toggleDeviceExpansion = (devEui) => {
+    setExpandedDevices(prev => ({
+      ...prev,
+      [devEui]: !prev[devEui]
+    }));
+  };
 
   const handleRowClick = (device, metric) => {
-    console.log('handleRowClick works', handleRowClick);
-    
-    // setSelectedDevice(device);
-    // setActiveChart(metric);
+    setSelectedDevice(device);
+    setActiveChart(metric);
   };
 
   const closeChartModal = () => {
@@ -336,15 +156,13 @@ const renderMeteoData = (data, device) => (
           <div className={style.text} style={{ color: valueColor }}>
             {value ?? '-'}
             {status && (
-            <span className={style.status} style={{ color: valueColor }}>
-              ({status})
-            </span>
-          )}
+              <span className={style.status} style={{ color: valueColor }}>
+                ({status})
+              </span>
+            )}
           </div>
           <div className={style.unit}>{value !== null ? unit : ''}</div>
-          
         </div>
-        
       </div>
     </div>
   );
@@ -355,7 +173,7 @@ const renderMeteoData = (data, device) => (
         <div className={style.dataRow}>
           <img src={iconWindDirection} alt="Ветер" className={style.icon} />
           <div className={style.dataInfo}>
-          <span className={style.label}>{label}:</span>
+            <span className={style.label}>{label}:</span>
             <div className={style.dataIndication}>
               <span className={style.text}>-</span>
             </div>
@@ -365,7 +183,6 @@ const renderMeteoData = (data, device) => (
     }
   
     const angle = direction % 360;
-  
     const directionText = getDirectionText(angle);
   
     return (
@@ -377,7 +194,7 @@ const renderMeteoData = (data, device) => (
           style={{ transform: `rotate(${angle}deg)` }}
         />
         <div className={style.dataInfo}>
-        <span className={style.label}>{label}:</span>
+          <span className={style.label}>{label}:</span>
           <div className={style.dataIndication}>
             <span className={style.text}>{directionText}</span>
           </div>
@@ -385,7 +202,7 @@ const renderMeteoData = (data, device) => (
       </div>
     );
   };
-  
+
   const getDirectionText = (angle) => {
     if (angle >= 0 && angle <= 22 || angle > 337) return 'С';
     if (angle > 22 && angle <= 67) return 'СВ';
@@ -397,32 +214,175 @@ const renderMeteoData = (data, device) => (
     if (angle > 292 && angle <= 337) return 'СЗ';
     return '-';
   };
-  
 
-  const renderDevice = (device) => {
-    const name = device.deviceName.toLowerCase();
-    const readings = device.lastReadings;
+  // Разделяем устройства на метео и грунтовые
+  const meteoDevices = devicesList.filter(device => 
+    device.deviceName.toLowerCase().includes('meteo')
+  );
 
-    if (name.includes('ground')) {
-      const data = pickLatestGroundData(readings);
-      return data ? renderGroundData(data, device) : <p>Нет данных по устройству</p>;
-    }
+  const groundDevices = devicesList.filter(device => 
+    device.deviceName.toLowerCase().includes('ground')
+  );
 
-    if (name.includes('meteo')) {
-      const data = mergeMeteoData(readings);
-      return renderMeteoData(data, device);
-    }
+  const renderMeteoDevice = (device) => {
+    const data = mergeMeteoData(device.lastReadings);
+    return (
+      <div className={style.meteoCard}>
+        <h3 className={style.deviceTitle}>Метеостанция</h3>
+        {selectedRegion && (
+          <div className={style.regionInfo}>
+            Справочник: {selectedRegion.region}
+          </div>
+        )}
+        <div className={style.meteoGrid}>
+          <RenderRow 
+            icon={iconAirTemperature} 
+            label="Температура" 
+            value={data.temperature} 
+            unit="°C" 
+            device={device} 
+            metric="temperature"
+            valueColor={getValueColor(data.temperature, 'airtemp')}
+            status={getValueStatus(data.temperature, 'airtemp', "Норма", "Холодно", "Жарко")}
+          />
+          <RenderRow 
+            icon={iconAirHumidity} 
+            label="Влажность" 
+            value={data.humidity} 
+            unit="%" 
+            device={device} 
+            metric="humidity"
+            valueColor={getValueColor(data.humidity, 'airhumidity')}
+            status={getValueStatus(data.humidity, 'airhumidity', "Норма", "Низкая", "Высокая")}
+          />
+          <RenderRow 
+            icon={iconPressure} 
+            label="Давление" 
+            value={data.pressure} 
+            unit="мм рт. ст." 
+            device={device} 
+            metric="pressure"
+            valueColor={getValueColor(data.pressure, 'pressure')}
+            status={getValueStatus(data.pressure, 'pressure', "Норма", "Низкое", "Высокое")}
+          />
+        </div>
+      </div>
+    );
+  };
 
-    return <p>Тип устройства не распознан</p>;
+  const renderGroundDevice = (device) => {
+    const data = pickLatestGroundData(device.lastReadings);
+    const isExpanded = expandedDevices[device.devEui];
+    
+    return (
+      <div className={`${style.groundCard} ${isExpanded ? style.expanded : ''}`}>
+        <div 
+          className={style.groundHeader}
+          onClick={() => toggleDeviceExpansion(device.devEui)}
+        >
+          <img src={iconPh} alt="pH" className={style.icon} />
+          <div className={style.groundInfo}>
+            <div className={style.deviceName}>{device.deviceName}</div>
+            <div 
+              className={style.phValue}
+              style={{ color: getValueColor(data?.ph, 'soilph') }}
+            >
+              pH: {data?.ph ?? '-'}
+            </div>
+          </div>
+          <div className={style.expandIcon}>
+            {isExpanded ? '▲' : '▼'}
+          </div>
+        </div>
+        
+        {isExpanded && data && (
+          <div className={style.groundDetails}>
+            {selectedRegion && (
+              <div className={style.regionInfo}>
+                Справочник: {selectedRegion.region}
+              </div>
+            )}
+            <div className={style.groundGrid}>
+              <RenderRow 
+                icon={iconConductivity} 
+                label="Проводимость" 
+                value={data.conductivity} 
+                unit="мСм/см" 
+                device={device} 
+                metric="conductivity"
+                valueColor={getValueColor(data.conductivity, 'soilconductivity')}
+                status={getValueStatus(data.conductivity, 'soilconductivity', "Норма", "Низкая", "Высокая")}
+              />
+              <RenderRow 
+                icon={iconSoilHumidity} 
+                label="Влажность" 
+                value={data.humidity} 
+                unit="%" 
+                device={device} 
+                metric="humidity"
+                valueColor={getValueColor(data.humidity, 'airhumidity')}
+                status={getValueStatus(data.humidity, 'airhumidity', "Норма", "Сухо", "Влажно")}
+              />
+              <RenderRow 
+                icon={iconSoilTemperature} 
+                label="Температура" 
+                value={data.temperature} 
+                unit="°C" 
+                device={device} 
+                metric="temperature"
+                valueColor={getValueColor(data.temperature, 'soiltemp')}
+                status={getValueStatus(data.temperature, 'soiltemp', "Норма", "Холодно", "Жарко")}
+              />
+              <RenderRow 
+                icon={iconNitrogen} 
+                label="Азот" 
+                value={data.nitrogen} 
+                unit="г/кг" 
+                device={device} 
+                metric="nitrogen"
+                valueColor={getValueColor(data.nitrogen, 'nitrogen')}
+                status={getValueStatus(data.nitrogen, 'nitrogen')}
+              />
+              <RenderRow 
+                icon={iconPhosphorus} 
+                label="Фосфор" 
+                value={data.phosphorus} 
+                unit="г/кг" 
+                device={device} 
+                metric="phosphorus"
+                valueColor={getValueColor(data.phosphorus, 'phosphorus')}
+                status={getValueStatus(data.phosphorus, 'phosphorus')}
+              />
+              <RenderRow 
+                icon={iconPotassium} 
+                label="Калий" 
+                value={data.potassium} 
+                unit="г/кг" 
+                device={device} 
+                metric="potassium"
+                valueColor={getValueColor(data.potassium, 'potassium')}
+                status={getValueStatus(data.potassium, 'potassium')}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
     <div className={style.infoDashboardContainer}>
-      {devicesList.map(device => (
-        <div className={style.card} key={device.devEui}>
-          {renderDevice(device)}
+      {/* Метео секция над грунтовыми датчиками, выровненная по правому краю */}
+      {meteoDevices.length > 0 && (
+        <div className={style.meteoSection}>
+          {meteoDevices.map(device => renderMeteoDevice(device))}
         </div>
-      ))}
+      )}
+      
+      {/* Грунтовые датчики */}
+      <div className={style.groundSection}>
+        {groundDevices.map(device => renderGroundDevice(device))}
+      </div>
       
       {/* Модальное окно с графиком */}
       {activeChart && selectedDevice && (
@@ -434,7 +394,4 @@ const renderMeteoData = (data, device) => (
       )}
     </div>
   );
-
-
-  
 }

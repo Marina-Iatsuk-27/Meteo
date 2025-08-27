@@ -1,12 +1,13 @@
 
 $mainBackgroundColor: #fffded;
 $mainTextColor: #283618;
-$cardColor: #fefae0;
+$cardColor: #fffcf2;
 $khakiPrimary: #606c38;        // основной хаки-цвет (меню, кнопки)
 $khakiDark: rgb(56, 62, 24);           // тёмный акцент (границы, hover)
 $khakiLight: #889069;         //светлый акцент
 $accentBeige: #e9edca;         // акцентный бежевый (второстепенные кнопки, маркеры)
 $secondaryTextColor: #9fa786;  // второй цвет текста (например, подписи, описания)
+$whiteColor: #f0f3e8;
 
 
 @mixin default-button-style(

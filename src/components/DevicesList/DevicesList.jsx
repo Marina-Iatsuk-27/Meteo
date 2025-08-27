@@ -1,41 +1,66 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useMemo } from "react";
 import { DevicesListContext } from "../../context/GetDevicesList";
 import { Link } from 'react-router-dom'; 
 import style from "./DevicesList.module.scss";
 
-export default function DevicesList() {
-  //console.log("запуск списка");
-
+export default function DevicesList({ compact = false }) {
   const { devicesList } = useContext(DevicesListContext);
-  //console.log('devicesList в DevicesList', devicesList);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredDevices = useMemo(() => {
+    if (!searchTerm) return devicesList;
+    
+    return devicesList.filter(device =>
+      device.deviceName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      device.devEui?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      device.description?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [devicesList, searchTerm]);
 
   return (
-    <div className={style.deviceListContainer}>
-      <h3>Список устройств:</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Имя датчика</th>
-            <th>ID</th>
-            <th>Описание</th>
-          </tr>
-        </thead>
-        <tbody>
-          {devicesList.map((device, index) => (
-            <tr key={device.devEui}>
-              <td>{index + 1}</td>
-              <td>
-                <Link to={`/device/${device.devEui}`}>
-                  {device.deviceName}
-                </Link>
-              </td>
-              <td>{device.devEui}</td>
-              <td>{device.description || "-"}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className={`${style.deviceListContainer} ${compact ? style.compactMode : ''}`}>
+      <h3>Устройства ({devicesList.length})</h3>
+      
+      <div className={style.searchContainer}>
+        <input
+          type="text"
+          placeholder="Поиск устройств..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className={style.searchInput}
+        />
+      </div>
+
+      <ul className={style.list}>
+        {filteredDevices.length === 0 ? (
+          <li className={style.emptyState}>
+            {searchTerm ? "Устройства не найдены" : "Нет устройств"}
+          </li>
+        ) : (
+          filteredDevices.map((device, index) => (
+            <li key={device.devEui} className={style.listItem}>
+              <div className={style.itemContent}>
+                <span className={style.itemNumber}>
+                  {index + 1}
+                </span>
+                
+                <div className={style.deviceInfo}>
+                  <Link 
+                    to={`/device/${device.devEui}`} 
+                    className={style.deviceName}
+                    title={device.deviceName}
+                  >
+                    {device.deviceName}
+                  </Link>
+                  <p className={style.deviceId} title={device.devEui}>
+                    {device.devEui}
+                  </p>
+                </div>
+              </div>
+            </li>
+          ))
+        )}
+      </ul>
     </div>
   );
 }

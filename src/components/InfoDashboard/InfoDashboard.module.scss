@@ -1,204 +1,194 @@
-@use '../../assets/styles/templates' as templates; // Импорт переменных
+@use '../../assets/styles/templates' as t;
 
-/* Базовые стили */
 .infoDashboardContainer {
-  width: 80vw;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  //gap: 20px;
-  padding: 3% 20px 20px;
-}
-
-.grid {
-  width: 90%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
+  flex-direction: column;
   gap: 20px;
+  position: relative;
+  background-color: t.$mainBackgroundColor;
+  min-height: 100vh;
+  width:  90%;
+  padding: 20px;
 }
 
-.title {
-  font-size: 1.5rem;
-  color: #7fa480fc;
-  margin: 0;
-  padding-top: 0;
+.meteoSection {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
 }
 
-.card {
-  width: 100%;
+.meteoCard {
+  background: t.$cardColor;
   padding: 15px;
-  margin-bottom: 15px;
-  background-color: templates.$cardColor;
-  border: 1px solid #7fa4806b;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid t.$khakiLight;
+  width: 300px;
 }
 
-.dataList {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.rows {
+.meteoGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: 1fr;
   gap: 10px;
 }
 
-.dataRow {
-  min-width: 10%;
+.groundSection {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 15px;
+}
+
+.groundCard {
+  background: t.$cardColor;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid t.$khakiLight;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  
+  &.expanded {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    border-color: t.$khakiPrimary;
+  }
+}
+
+.groundHeader {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 1%;
-  border: 1px solid templates.$accentBeige;
-  transition: transform 0.2s, background-color 0.3s;
+  padding: 15px;
+  cursor: pointer;
+  //background: t.$accentBeige;
+  border-bottom: 1px solid t.$khakiLight;
+  
+  &:hover {
+    background: darken(t.$accentBeige, 5%);
+  }
 }
 
-.dataRow:hover {
-  transform: scale(1.05);
-  background-color: templates.$mainBackgroundColor;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.groundInfo {
+  flex: 1;
+  margin-left: 12px;
 }
 
-.label {
-  display: inline-flex;
-  align-items: center;
-  font-size: 1rem;
-  color: templates.$secondaryTextColor;
-  padding-right: 3%;
+.deviceName {
+  font-weight: 600;
+  font-size: 14px;
+  color: t.$mainTextColor;
+}
+
+.phValue {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 4px;
+  color: t.$khakiPrimary;
+}
+
+.expandIcon {
+  font-size: 12px;
+  color: t.$secondaryTextColor;
+}
+
+.groundDetails {
+  padding: 15px;
+}
+
+.groundGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.deviceTitle {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: t.$mainTextColor;
   text-align: center;
-}
-
-.text {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-left: auto;
-  font-size: 2.5rem;
-  font-weight: bolder;
-  color: templates.$mainTextColor;
-}
-
-.icon {
-  width: 50px;
-  height: 50px;
-  margin: 5%;
-}
-
-.dataInfo {
-  width: 60%;
-  margin: 5%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.unit {
-  margin-left: 1%;
-  text-align: end;
-  font-size: 1rem;
-  color: templates.$secondaryTextColor;
+  font-weight: 600;
 }
 
 .regionInfo {
-  //background-color: #f0f8f0;
-  padding: 8px 12px;
+  font-size: 12px;
+  color: t.$secondaryTextColor;
+  margin-bottom: 12px;
+  text-align: center;
+  font-style: italic;
+}
+
+// Остальные стили
+.dataRow {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  cursor: pointer;
   border-radius: 6px;
-  margin-bottom: 15px;
-  font-size: 14px;
-  color: #606c38;
-  border: 1px solid #ddeedd;
+  
+  &:hover {
+    background: t.$accentBeige;
+  }
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+}
+
+.dataInfo {
+  flex: 1;
+}
+
+.label {
+  font-size: 13px;
+  color: t.$secondaryTextColor;
+  margin-bottom: 2px;
 }
 
 .dataIndication {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.text {
+  font-size: 14px;
+  font-weight: 600;
+  color: t.$mainTextColor;
+}
+
+.unit {
+  font-size: 12px;
+  color: t.$secondaryTextColor;
 }
 
 .status {
-  font-size: 12px;
-  font-style: italic;
+  font-size: 11px;
+  font-weight: normal;
+  margin-left: 4px;
 }
 
-/* === Адаптив === */
-
-/* Большие экраны: ширина контейнера — 50vw */
-@media (min-width: 1440px) {
-  .infoDashboard {
-    width: 50vw;
-  }
-}
-
-/* Средние экраны: планшеты */
-@media (max-width: 1024px) {
-  .infoDashboard {
-    width: 90vw;
-    padding: 20px;
-    gap: 15px;
-  }
-
-  .grid {
-    width: 100%;
-    gap: 15px;
-  }
-
-  .icon {
-    width: 50px;
-    height: 50px;
-  }
-
-  .text {
-    font-size: 2rem;
-  }
-
-  .label, .unit {
-    font-size: 0.9rem;
-  }
-
-  .dataInfo {
-    width: 100%;
-    margin: 0;
+// Анимация для появления элементов
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-/* Малые экраны: телефоны */
-@media (max-width: 768px) {
-  .infoDashboard {
-    width: 95vw;
-    flex-direction: column;
-    padding: 15px;
-    gap: 10px;
+.groundCard {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease-out forwards;
+  
+  @for $i from 1 through 20 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.1}s;
+    }
   }
+}
 
-  .grid {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .rows {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
-  .icon {
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
-  }
-
-  .text {
-    font-size: 1rem;
-  }
-
-  .label, .unit {
-    font-size: 0.85rem;
-  }
+.meteoCard {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease-out forwards;
+  animation-delay: 0.2s;
 }

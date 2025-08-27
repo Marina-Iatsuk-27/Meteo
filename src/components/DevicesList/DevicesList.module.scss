@@ -1,93 +1,159 @@
-@use '../../assets/styles/templates' as templates; // Импорт переменных
+// DevicesList.module.scss
+@use '../../assets/styles/templates' as t;
 
 .deviceListContainer {
-  width: 80vw;
-  margin-top: 50px;
-  margin-bottom: 50px;
-  padding-bottom: 20px;
-  border-radius: 8px;
-  font-size: medium;
+  padding: 15px 0;
+  background-color: transparent;
   
-
   h3 {
-    color: templates.$mainTextColor;
-    text-align: center;
-    margin-bottom: 20px;
-    
+    color: t.$mainTextColor;
+    margin: 0 0 15px 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding-bottom: 8px;
+    border-bottom: 1px solid t.$khakiLight;
   }
+}
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 400px;
+  overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 4px;
   }
-
-  th,
-  td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: left;
+  
+  &::-webkit-scrollbar-track {
+    background: t.$accentBeige;
   }
-
-  th {
-    background-color: templates.$khakiPrimary;
-    color: templates.$cardColor;
-    font-weight: bold;
+  
+  &::-webkit-scrollbar-thumb {
+    background: t.$khakiLight;
+    border-radius: 2px;
   }
+}
 
-  td {
-    color: templates.$secondaryTextColor;
-    background-color: #fcf8db91;;
-    text-decoration: none;
+.listItem {
+  padding: 8px 15px;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+  
+  &:hover {
+    background-color: t.$accentBeige;
+    border-left-color: t.$khakiPrimary;
   }
-  tr {
-    text-decoration: none !important;
+}
+
+.itemContent {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.itemNumber {
+  min-width: 20px;
+  color: t.$secondaryTextColor;
+  font-size: 11px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.deviceInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.deviceName {
+  color: t.$mainTextColor;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  &:hover {
+    color: t.$khakiPrimary;
   }
+}
 
-  tr:hover td {
-    background-color: #fffad0;
+.deviceId {
+  color: t.$secondaryTextColor;
+  font-size: 10px;
+  margin: 2px 0 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.3px;
+}
+
+.deviceDescription {
+  display: none; // Скрываем описание в компактном режиме
+}
+
+// Компактный вариант для очень большого количества устройств
+.compactMode {
+  .listItem {
+    padding: 6px 12px;
   }
-
-  tr:nth-child(even) td {
-    background-color: #fcf8db;
+  
+  .itemNumber {
+    font-size: 10px;
+    min-width: 18px;
   }
-
-  /* === Адаптив === */
-
-  // @media (min-width: 1440px) {
-  //   width: 50vw;
-  // }
-
-  @media (max-width: 1024px) {
-    width: 90vw;
-
-    h3 {
-      font-size: 1rem;
-    }
-
-    th,
-    td {
-      padding: 10px;
-      font-size: 0.95rem;
-    }
+  
+  .deviceName {
+    font-size: 12px;
   }
+  
+  .deviceId {
+    font-size: 9px;
+  }
+}
 
-  @media (max-width: 768px) {
-    width: 95vw;
+// Поиск и фильтрация для сайдбара
+.searchContainer {
+  padding: 0 15px 10px 15px;
+}
 
-    h3 {
-      font-size: 0.8rem;
-    }
+.searchInput {
+  width: 90%;
+  padding: 8px 12px;
+  border: 1px solid t.$khakiLight;
+  border-radius: 6px;
+  font-size: 12px;
+  background: t.$whiteColor;
+  
+  &:focus {
+    outline: none;
+    border-color: t.$khakiPrimary;
+    box-shadow: 0 0 0 2px rgba(96, 108, 56, 0.1);
+  }
+  
+  &::placeholder {
+    color: t.$secondaryTextColor;
+  }
+}
 
-    th,
-    td {
-      padding: 8px;
-      font-size: 0.85rem;
-    }
+.emptyState {
+  padding: 20px 15px;
+  text-align: center;
+  color: t.$secondaryTextColor;
+  font-size: 12px;
+}
 
-    // table {
-    //   display: block;
-    //   overflow-x: auto;
-    //   white-space: nowrap;
-    // }
+// Адаптивность
+@media (max-width: 768px) {
+  .deviceListContainer {
+    padding: 10px 0;
+  }
+  
+  .list {
+    max-height: 300px;
   }
 }
