@@ -150,6 +150,15 @@ export default function Header() {
             >
               Справочник
             </li>
+            <li
+              className={style.nav}
+              onClick={() => {
+                navigate('/map');
+                setMenuOpen(false);
+              }}
+            >
+              Карта
+            </li>
             {!token && (
               <li
                 className={style.nav}

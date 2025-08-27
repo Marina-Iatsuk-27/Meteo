@@ -7,8 +7,8 @@
 
 /* Базовые стили */
 .mapContainer {
-  width: 80vw;
-  height: 50vh;
+  width: 90vw;
+  height: 70vh;
   display: flex;
   margin-top: 50px;
 }
@@ -112,12 +112,80 @@
   color: templates.$khakiPrimary;
 }
 
+.sensorRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.sensorButton {
+  width: 100%;
+  padding: 8px 10px;
+  background-color: templates.$khakiPrimary;
+  color: templates.$mainBackgroundColor;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  font-weight: 500;
+}
+
+.sensorButton:hover,
+.sensorButton:focus {
+  background-color: darken(templates.$khakiPrimary, 10%);
+  outline: none;
+}
+
+.coordButton {
+  width: 100%;
+  padding: 4px 8px;
+  background-color: transparent;
+  color: templates.$khakiLight;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.8rem;
+  text-align: center;
+  margin-top: 2px;
+}
+
+.coordButton:hover,
+.coordButton:focus {
+  background-color: templates.$khakiLight;
+  color: templates.$mainBackgroundColor;
+  outline: none;
+}
+
+// Стили для попапа с измерениями
+.measurements {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid #eee;
+}
+
+.measurement {
+  margin: 6px 0;
+  font-size: 14px;
+  line-height: 1.4;
+  
+  b {
+    color: templates.$khakiDark;
+    font-weight: 600;
+  }
+}
+
+
+
+
 /* === Адаптив === */
 
 /* Большие экраны */
 @media (min-width: 1440px) {
   .mapContainer {
-    width: 50vw;
+    width: 70vw;
   }
 }
 

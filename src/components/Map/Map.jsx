@@ -50,8 +50,8 @@ const closeCoordinatesForm = () => {
 const devicesWithData = devicesList.map(device => {
   const latest = device.lastReadings[0] || {};
   const sensorInfo = sensors.find(s => s.deveui === device.devEui); 
-  console.log('Данные из devicesList:', devicesList);
-  console.log('Данные из sensorInfo:', sensorInfo);
+  // console.log('Данные из devicesList:', devicesList);
+  // console.log('Данные из sensorInfo:', sensorInfo);
  
   return {
     devEui: device.devEui,
@@ -74,7 +74,7 @@ const devicesWithData = devicesList.map(device => {
 });
 
 // После цикла выведите итоговый результат
-console.log('Итоговый devicesWithData:', devicesWithData);
+// console.log('Итоговый devicesWithData:', devicesWithData);
 
   // Сохранение координат
   const handleSaveCoords = async (devEui) => {
@@ -86,6 +86,41 @@ console.log('Итоговый devicesWithData:', devicesWithData);
     setEditingDevEui(null);
     setCoordsInput({ lat: "", lng: "" });
   };
+  // Функция для преобразования ключей в читаемые названия
+    const getFieldLabel = (key) => {
+      const labels = {
+        temperature: 'Температура',
+        humidity: 'Влажность',
+        pressure: 'Давление',
+        ph: 'pH',
+        conductivity: 'Электропроводность',
+        rainfall: 'Осадки',
+        windSpeed: 'Скорость ветра',
+        windDirection: 'Направление ветра',
+        batteryVoltage: 'Напряжение батареи'
+        // добавьте другие поля по необходимости
+      };
+      return labels[key] || key;
+    };
+
+    // Функция для форматирования значений
+    const formatValue = (key, value) => {
+      if (typeof value === 'number') {
+        // Для числовых значений добавляем единицы измерения
+        const units = {
+          temperature: '°C',
+          humidity: '%',
+          pressure: ' hPa',
+          ph: '',
+          conductivity: ' µS/cm',
+          rainfall: ' mm',
+          windSpeed: ' m/s',
+          batteryVoltage: ' V'
+        };
+        return `${value}${units[key] || ''}`;
+      }
+      return value;
+    };
 
   return (
   <div className={styles.mapContainer}>
@@ -103,7 +138,7 @@ console.log('Итоговый devicesWithData:', devicesWithData);
                   className={styles.sensorButton}
                   onClick={() => setSelectedSensor(device)}
                 >
-                  {device.deviceName} ({device.devEui})
+                  {device.deviceName} 
                 </button>
 
                 {!hasCoordinates && (
@@ -112,6 +147,7 @@ console.log('Итоговый devicesWithData:', devicesWithData);
                     onClick={() =>
                       openCoordinatesForm({
                         mode: "update",
+                        devEui: device.devEui,
                         deviceName: device.deviceName,
                       })
                     }
@@ -127,6 +163,7 @@ console.log('Итоговый devicesWithData:', devicesWithData);
                       openCoordinatesForm({
                         mode: "update",
                         devEui: device.devEui,
+                        deviceName: device.deviceName,
                         latitude: device.latitude,
                         longitude: device.longitude,
                       })
@@ -175,7 +212,24 @@ console.log('Итоговый devicesWithData:', devicesWithData);
                   <h4 className={styles.header}>{device.deviceName}</h4>
                   <p className={styles.id}>
                     <b>DevEUI:</b> {device.devEui}<br/>
-                   </p>
+                  </p>
+                  
+                  {/* Динамически отображаем все доступные показатели */}
+                  <div className={styles.measurements}>
+                    {Object.entries(device)
+                      .filter(([key, value]) => 
+                        // Пропускаем системные поля и пустые значения
+                        !['devEui', 'deviceName', 'id', 'deduplicationId', 'time', 
+                          'applicationName', 'raw_data', 'latitude', 'longitude'].includes(key) &&
+                        value !== null && value !== undefined && value !== ''
+                      )
+                      .map(([key, value]) => (
+                        <p key={key} className={styles.measurement}>
+                          <b>{getFieldLabel(key)}:</b> {formatValue(key, value)}
+                        </p>
+                      ))
+                    }
+                  </div>
                 </div>
               </Popup>
             </Marker>
