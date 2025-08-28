@@ -2,30 +2,30 @@
 @use '../../assets/styles/templates' as t;
 
 .homeContainer {
-  display: grid;
+  display: flex;
   grid-template-columns: 300px 1fr;
   gap: 0;
   min-height: calc(100vh - 120px);
-  width: 100%;
+  width: 100vw;
 }
 
 .sidebar {
-  //background: t.$cardColor;
+width: 15%;
   border-right: 2px solid t.$khakiLight;
   padding: 20px 15px;
   height: calc(100vh - 120px);
   position: sticky;
   top: 80px;
   overflow-y: auto;
-  //box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
+
 }
 
 .mainContent {
-  padding: 25px 40px;
+  padding: 10px;
   background: t.$mainBackgroundColor;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
+ // max-width: 1200px;
+  //margin: 0 auto;
+  width: fit-content;
 }
 
 .title {
@@ -46,16 +46,7 @@
   }
 }
 
-.infoNote {
-  width: 60%;
-  border-radius: 20px;
-  background-color: t.$accentBeige;
-  color: t.$secondaryTextColor;
-  font-size: 18px;
-  padding: 20px;
-  text-align: center;
-  margin: 0 auto 30px auto;
-}
+
 
 // Стили для скроллбара сайдбара
 .sidebar::-webkit-scrollbar {
@@ -113,8 +104,5 @@
     font-size: 2.2rem;
   }
   
-  .infoNote {
-    width: 90%;
-    font-size: 16px;
-  }
+
 }

@@ -280,19 +280,24 @@ export default function InfoDashboard() {
           className={style.groundHeader}
           onClick={() => toggleDeviceExpansion(device.devEui)}
         >
-          <img src={iconPh} alt="pH" className={style.icon} />
-          <div className={style.groundInfo}>
-            <div className={style.deviceName}>{device.deviceName}</div>
-            <div 
-              className={style.phValue}
-              style={{ color: getValueColor(data?.ph, 'soilph') }}
-            >
-              pH: {data?.ph ?? '-'}
+          <div className={style.deviceName}>{device.deviceName}</div>
+          <div className={style.dataRow}>
+            <img src={iconPh} alt="pH" className={style.icon} />
+            <div className={style.groundInfo}>
+              <div className={style.label}>Кислотность</div>
+              <div 
+                className={style.phValue}
+                style={{ color: getValueColor(data?.ph, 'soilph') }}
+              >
+                pH: {data?.ph ?? '-'}
+              </div>
             </div>
-          </div>
-          <div className={style.expandIcon}>
+            <div className={style.expandIcon}>
             {isExpanded ? '▲' : '▼'}
           </div>
+          </div>
+          
+          
         </div>
         
         {isExpanded && data && (
@@ -375,6 +380,9 @@ export default function InfoDashboard() {
       {/* Метео секция над грунтовыми датчиками, выровненная по правому краю */}
       {meteoDevices.length > 0 && (
         <div className={style.meteoSection}>
+          <div className={style.infoNote}>
+        Добро пожаловать в систему АгроМониторинг! Здесь вы можете отслеживать все важные показатели почвы и воздуха для вашего хозяйства в режиме реального времени.
+      </div> 
           {meteoDevices.map(device => renderMeteoDevice(device))}
         </div>
       )}

@@ -230,11 +230,12 @@ if (isMeteo) {
           onRegionSelect={setSelectedRegion} 
           selectedRegion={selectedRegion} 
         />
-        {selectedRegion && (
-          <div className={styles.regionBadge}>
-            Используется справочник: {selectedRegion.region}
-          </div>
-        )}
+        <div className={styles.regionInfo}>
+          {selectedRegion
+            ? `Выбран справочник: ${selectedRegion.region}`
+            : "Регион не выбран"}
+        </div>
+
       </div>
 
       <div className={styles.dataSection}>
@@ -382,11 +383,11 @@ if (isGround) {
           onRegionSelect={setSelectedRegion} 
           selectedRegion={selectedRegion} 
         />
-        {selectedRegion && (
-          <div className={styles.regionBadge}>
-            Используется справочник: {selectedRegion.region}
-          </div>
-        )}
+         <div className={styles.regionInfo}>
+          {selectedRegion
+            ? `Выбран справочник: ${selectedRegion.region}`
+            : "Регион не выбран"}
+        </div>
       </div>
 
       <div className={styles.dataSection}>

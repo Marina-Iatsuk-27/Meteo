@@ -50,20 +50,32 @@ $whiteColor: #f0f3e8;
 
 
 .infoNote{
-  width: 40vw;
+  display: flex;
+  align-items: center;
+  width: 60%;
   border-radius: 20px;
   background-color: $accentBeige;
   color: $secondaryTextColor;
   font-size: 20px;
-  padding: 2%;
+  //padding: 2%;
   text-align: center;
   opacity: 0;
   transform: translateY(20px);
   animation: fadeInUp 0.6s ease-out forwards;
   animation-delay: 0.2s;
-  margin-bottom: 20px;
+  margin-right: 20px;
 
 }
+
+.regionInfo {
+  font-size: 12px;
+  color: $secondaryTextColor;
+  margin-bottom: 12px;
+  margin-top: 12px;
+  text-align: start;
+  font-style: italic;
+}
+
 @keyframes fadeInUp {
   to {
     opacity: 1;
