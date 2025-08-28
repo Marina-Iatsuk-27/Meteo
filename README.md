@@ -35,6 +35,13 @@ qwertasdf2
 <!-- Зависимости для бэкенда на сервак: -->
 npm install pg bcrypt express jsonwebtoken cors dotenv
 
+
+
+<!-- Для прода: -->
+Везде вместо http://localhost:5001 ставить /internal-api
+
+В сервисах перед /data и /devices ставить /api
+
 <!-- ЛОГИНЫ -->
 Роль admin проставляем вручную в БД (UPDATE users
 SET role = 'admin'

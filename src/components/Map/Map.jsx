@@ -46,35 +46,72 @@ const closeCoordinatesForm = () => {
     return null;
   };
 
-  // Склеиваем devicesList + sensors (берём координаты только из sensors!)
+// Склеиваем devicesList + sensors (берём координаты только из sensors!)
 const devicesWithData = devicesList.map(device => {
-  const latest = device.lastReadings[0] || {};
-  const sensorInfo = sensors.find(s => s.deveui === device.devEui); 
-  // console.log('Данные из devicesList:', devicesList);
+  const sensorInfo = sensors.find(s => s.deveui === device.devEui);
+  const recentReadings = device.lastReadings.slice(0, 3); // Берем последние 3 чтения
+
+   // console.log('Данные из devicesList:', devicesList);
   // console.log('Данные из sensorInfo:', sensorInfo);
- 
+
+  // Функция для поиска значения в raw_data
+  const findValueInRawData = (readings, field) => {
+    for (const reading of readings) {
+      try {
+        const rawData = JSON.parse(reading.raw_data);
+        const objectData = rawData.object || {};
+        
+        // Ищем значение в object (разные возможные форматы)
+        if (objectData[field] !== null && objectData[field] !== undefined && objectData[field] !== "undefined") {
+          // Преобразуем строковые числа в числа
+          const value = objectData[field];
+          return typeof value === 'string' && !isNaN(value) ? parseFloat(value) : value;
+        }
+      } catch (e) {
+        console.error('Ошибка парсинга raw_data:', e);
+      }
+    }
+    return null;
+  };
+
+  // Функция для поиска значения в основном объекте или raw_data
+  const findValue = (readings, field) => {
+    // Сначала ищем в основном объекте
+    for (const reading of readings) {
+      if (reading[field] !== null && reading[field] !== undefined) {
+        return reading[field];
+      }
+    }
+    
+    // Если не нашли в основном объекте, ищем в raw_data
+    return findValueInRawData(readings, field);
+  };
+
+  // Базовые данные из первого (самого свежего) чтения
+  const baseData = recentReadings[0] || {};
+
   return {
     devEui: device.devEui,
     deviceName: device.deviceName,
     latitude: sensorInfo?.latitude || null,
     longitude: sensorInfo?.longitude || null,
-    // явно перечисляем нужные поля из latest
-    id: latest.id,
-    deduplicationId: latest.deduplicationId,
-    time: latest.time,
-    applicationName: latest.applicationName,
-    temperature: latest.temperature,
-    humidity: latest.humidity,
-    pressure: latest.pressure,
-    ph: latest.ph,
-    conductivity: latest.conductivity,
-    raw_data: latest.raw_data
-    // НЕ включаем latitude и longitude из latest!
+    // Данные из самого свежего чтения
+    id: baseData.id || null,
+    deduplicationId: baseData.deduplicationId || null,
+    time: baseData.time || null,
+    applicationName: baseData.applicationName || null,
+    raw_data: baseData.raw_data || null,
+    // Ищем значения в последних чтениях (основной объект + raw_data)
+    temperature: findValue(recentReadings, 'temperature'),
+    humidity: findValue(recentReadings, 'humidity'),
+    pressure: findValue(recentReadings, 'pressure'),
+    ph: findValue(recentReadings, 'ph'),
+    conductivity: findValue(recentReadings, 'conductivity')
   };
 });
 
-// После цикла выведите итоговый результат
-// console.log('Итоговый devicesWithData:', devicesWithData);
+
+console.log('Итоговый devicesWithData:', devicesWithData);
 
   // Сохранение координат
   const handleSaveCoords = async (devEui) => {
@@ -218,9 +255,9 @@ const devicesWithData = devicesList.map(device => {
                   <div className={styles.measurements}>
                     {Object.entries(device)
                       .filter(([key, value]) => 
-                        // Пропускаем системные поля и пустые значения
+                        // Пропускаем системные поля и электропроводность
                         !['devEui', 'deviceName', 'id', 'deduplicationId', 'time', 
-                          'applicationName', 'raw_data', 'latitude', 'longitude'].includes(key) &&
+                          'applicationName', 'raw_data', 'latitude', 'longitude', 'conductivity'].includes(key) &&
                         value !== null && value !== undefined && value !== ''
                       )
                       .map(([key, value]) => (

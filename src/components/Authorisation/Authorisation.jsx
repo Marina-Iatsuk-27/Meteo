@@ -24,6 +24,14 @@ export default function Authorisation() {
         password 
       });
 
+      //для прода:
+      // try {
+      //   const endpoint = isLoginMode ? '/login' : '/register';
+      //   const response = await axios.post(`/internal-api${endpoint}`, { 
+      //     username, 
+      //     password 
+      //   });
+
       if (isLoginMode) {
         login(response.data.token, response.data.username, response.data.role, response.data.id);
         navigate('/');

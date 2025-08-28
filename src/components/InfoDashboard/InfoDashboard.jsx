@@ -282,22 +282,20 @@ export default function InfoDashboard() {
         >
           <div className={style.deviceName}>{device.deviceName}</div>
           <div className={style.dataRow}>
-            <img src={iconPh} alt="pH" className={style.icon} />
-            <div className={style.groundInfo}>
-              <div className={style.label}>Кислотность</div>
-              <div 
-                className={style.phValue}
-                style={{ color: getValueColor(data?.ph, 'soilph') }}
-              >
-                pH: {data?.ph ?? '-'}
-              </div>
-            </div>
+          <RenderRow 
+                icon={iconSoilHumidity} 
+                label="Влажность" 
+                value={data.humidity} 
+                unit="%" 
+                device={device} 
+                metric="humidity"
+                valueColor={getValueColor(data.humidity, 'airhumidity')}
+                status={getValueStatus(data.humidity, 'airhumidity', "Норма", "Сухо", "Влажно")}
+              />
             <div className={style.expandIcon}>
             {isExpanded ? '▲' : '▼'}
           </div>
           </div>
-          
-          
         </div>
         
         {isExpanded && data && (
@@ -308,6 +306,16 @@ export default function InfoDashboard() {
               </div>
             )}
             <div className={style.groundGrid}>
+            <RenderRow 
+                icon={iconPh} 
+                label="Кислотность" 
+                value={data.ph} 
+                unit="pH" 
+                device={device} 
+                metric="soilph"
+                valueColor={getValueColor(data.humidity, 'soilph')}
+                status={getValueStatus(data.humidity, 'soilph', "Кислая", "Нормальная", "Щелочная")}
+              />
               <RenderRow 
                 icon={iconConductivity} 
                 label="Проводимость" 
@@ -318,16 +326,7 @@ export default function InfoDashboard() {
                 valueColor={getValueColor(data.conductivity, 'soilconductivity')}
                 status={getValueStatus(data.conductivity, 'soilconductivity', "Норма", "Низкая", "Высокая")}
               />
-              <RenderRow 
-                icon={iconSoilHumidity} 
-                label="Влажность" 
-                value={data.humidity} 
-                unit="%" 
-                device={device} 
-                metric="humidity"
-                valueColor={getValueColor(data.humidity, 'airhumidity')}
-                status={getValueStatus(data.humidity, 'airhumidity', "Норма", "Сухо", "Влажно")}
-              />
+             
               <RenderRow 
                 icon={iconSoilTemperature} 
                 label="Температура" 
